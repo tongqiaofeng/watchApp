@@ -1,0 +1,25 @@
+<template>
+	<view class="">
+		每个库存点手表数量
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				watchNumId: null,
+
+			}
+		},
+		onLoad(option) {
+			this.watchNumId = option.id;
+		},
+		methods: {
+
+		}
+	}
+</script>
+
+<style>
+</style>

@@ -1,0 +1,602 @@
+<template>
+	<view class="sale-product-container">
+		<!-- 出售商品 -->
+		<view class="sale-product-msg sale-msg">
+			<view class="title"> 出售商品 </view>
+			<view class="product-input">
+				<uni-easyinput class="uni-mt-5" suffixIcon="search" v-model="keyword" placeholder="输入手表型号查找手表" confirm-type="search"
+					@iconClick="searchWatch" @confirm="searchWatch"></uni-easyinput>
+			</view>
+			<view style="margin-top: 40rpx">
+				<uni-table border emptyText="暂无数据">
+					<uni-tr>
+						<uni-th width="100" align="center">型号</uni-th>
+						<uni-th width="170" align="center">出售金额</uni-th>
+						<uni-th width="100" align="center">成本(HKD)</uni-th>
+						<uni-th align="center">操作</uni-th>
+					</uni-tr>
+					<uni-tr v-for="(item, index) in sellOrderDetailList" :key="index">
+						<uni-td>
+							<text>{{ item.brand }}</text>
+							<view class="model">
+								{{ item.model }}
+							</view>
+						</uni-td>
+						<uni-td>
+							<view style="display: flex">
+								<uni-easyinput class="uni-input" type="number" placeholder="请输入"
+									v-model="item.sellMoney" />
+								<picker mode="selector" :range="priceCurrencys" range-key="text"
+									@change="currencyChange">
+									<view class="currency-sel" :style="{
+				              color: saleWatchData.sellCurrency ? '#000' : '#999',
+				            }">
+										{{
+				              saleWatchData.sellCurrency
+				                ? saleWatchData.sellCurrency
+				                : "选择币种"
+				            }}
+									</view>
+								</picker>
+							</view>
+						</uni-td>
+						<uni-td>
+							<view style="display: flex">
+								<uni-easyinput class="uni-input" type="number" placeholder="请输入" v-model="item.cost" />
+							</view>
+						</uni-td>
+						<uni-td align="center">
+							<text @click="delWatch(index)">删除</text>
+						</uni-td>
+					</uni-tr>
+				</uni-table>
+			</view>
+		</view>
+		<uni-popup ref="watchPopup" type="bottom">
+			<view class="watch-popup-container">
+				<view v-if="checkWatchList.length == 0" class="no-data" style="padding-top: 150rpx">
+					<image src="../static/imgs/common/no.png" mode="aspectFill"></image>
+					<text style="font-size: 30rpx">没有查找到相关手表哦~</text>
+				</view>
+				<view v-else>
+					<view class="popup-title">
+						<text class="title">手表列表</text>
+						<text class="yes" @click="selEnd">完成</text>
+					</view>
+					<view class="product-msg" style="height: 65vh; overflow-y: scroll">
+						<view v-for="item in checkWatchList" :key="item.stockId">
+							<view class="item">
+								<view class="img">
+									<image class="img" v-if="item.pic" :src="imgUrl + item.pic.replace('\\', '/')"
+										mode="aspectFill">
+									</image>
+								</view>
+								<view style="flex: 1">
+									<view class="every-name">
+										<view class="bh">{{ item.brand + " - " + item.series }}
+											<text style="margin-left: 10rpx; color: #1ecc99"
+												v-if="!item.stockId">新购</text>
+										</view>
+										<view class="sale-button" @click.stop="selThisWatch(item)">
+											添加
+										</view>
+									</view>
+									<view class="every-main">
+										<view class="cs">{{ item.model }}</view>
+										<view class="cs" v-if="item.warehouseName">
+											库存地：<text>{{ item.warehouseName }}</text>
+										</view>
+									</view>
+									<view class="every-main">
+										<view class="cs">
+											<text>{{ getPrice(item.marketHkPrice, "HKD") }}</text>
+										</view>
+									</view>
+								</view>
+							</view>
+						</view>
+
+						<!-- <checkbox-group @change="checkChange">
+							<view v-for="item in checkWatchList" :key="item.stockId">
+								<view class="item">
+									<view class="img">
+										<image class="img" v-if="item.pic" :src="imgUrl + item.pic.replace('\\', '/')"
+											mode="aspectFill">
+										</image>
+									</view>
+									<view style="flex: 1">
+										<view class="every-name">
+											<view class="bh">{{ item.brand + " - " + item.series }}
+												<text style="margin-left: 10rpx; color: #1ecc99"
+													v-if="!item.stockId">新购</text>
+											</view>
+											<label class="box-check">
+												<checkbox :value="item.id" :checked="item.checked" color="#85dbd0"
+													style="transform: scale(0.7); border-radius: 50%" />
+											</label>
+										</view>
+										<view class="every-main">
+											<view class="cs">{{ item.model }}</view>
+											<view class="cs" v-if="item.warehouseName">
+												库存地：<text>{{ item.warehouseName }}</text>
+											</view>
+										</view>
+										<view class="every-main">
+											<view class="cs">
+												<text>{{ getPrice(item.marketHkPrice, "HKD") }}</text>
+											</view>
+										</view>
+									</view>
+								</view>
+							</view>
+						</checkbox-group> -->
+					</view>
+				</view>
+			</view>
+		</uni-popup>
+		<view class="sale-msg">
+			<view class="title"> 销售信息 </view>
+			<uni-forms labelWidth="70" labelAlign="right" ref="saleWatchForm" :modelValue="saleWatchData"
+				:rules="saleWatchRules">
+				<uni-forms-item label="出售时间" name="sellTime">
+					<uni-datetime-picker type="date" v-model="saleWatchData.sellTime" />
+				</uni-forms-item>
+				<uni-forms-item label="渠道" name="channelId">
+					<picker mode="selector" :range="terraceList" range-key="name" @change="terraceChange">
+						<view class="currency-sel" :style="{ color: saleWatchData.channelId ? '#000' : '#999' }">
+							{{
+                saleWatchData.channelId
+                  ? saleWatchData.channelId.name
+                  : "请选择"
+              }}
+						</view>
+					</picker>
+				</uni-forms-item>
+				<uni-forms-item label="收货地址" name="address">
+					<uni-easyinput type="text" placeholder="请输入" v-model="saleWatchData.address" />
+				</uni-forms-item>
+				<uni-forms-item label="客户名称" name="customer">
+					<uni-easyinput type="text" placeholder="请输入" v-model="saleWatchData.customer" />
+				</uni-forms-item>
+				<view class="title"> 付款信息 </view>
+				<view style="margin-bottom: 40rpx">
+					<uni-table border>
+						<uni-tr>
+							<uni-th width="150" align="center">付款日期</uni-th>
+							<uni-th width="200" align="center">付款金额</uni-th>
+							<uni-th width="200" align="center">外币金额</uni-th>
+							<uni-th width="150" align="center">付款备注</uni-th>
+							<uni-th width="100" align="center">操作</uni-th>
+						</uni-tr>
+						<uni-tr v-for="(pay, index2) in saleWatchData.paymentList" :key="index2">
+							<uni-td>
+								<uni-datetime-picker type="date" v-model="pay.payTime" />
+							</uni-td>
+							<uni-td>
+								<view style="display: flex">
+									<uni-easyinput class="uni-input" type="number" placeholder="请输入金额"
+										v-model="pay.payMoney" />
+									<picker mode="selector" :range="priceCurrencys" range-key="text"
+										@change="currencyChange">
+										<view class="currency-sel" :style="{
+                        color: saleWatchData.sellCurrency ? '#000' : '#999',
+                      }">
+											{{
+                        saleWatchData.sellCurrency
+                          ? saleWatchData.sellCurrency
+                          : "选择币种"
+                      }}
+										</view>
+									</picker>
+								</view>
+							</uni-td>
+							<uni-td>
+								<view style="display: flex">
+									<uni-easyinput class="uni-input" type="number" placeholder="请输入金额"
+										v-model="pay.foreignMoney" />
+									<picker mode="selector" :range="priceCurrencys" range-key="text"
+										@change="currencyChange2">
+										<view class="currency-sel" @click="currencyClick(index2)"
+											:style="{ color: pay.foreignCurrency ? '#000' : '#999' }">
+											{{
+                        pay.foreignCurrency ? pay.foreignCurrency : "外币币种"
+                      }}
+										</view>
+									</picker>
+								</view>
+							</uni-td>
+							<uni-td>
+								<uni-easyinput type="textarea" v-model="pay.note" placeholder="请输入"></uni-easyinput>
+							</uni-td>
+							<uni-td align="center">
+								<image v-if="index2 == 0" src="../static/imgs/chat/add.png" mode="aspectFill"
+									style="width: 40rpx; height: 40rpx" @click="addPayMsg"></image>
+								<uni-icons v-else type="trash-filled" size="26" @click="delPayMsg(index2)"></uni-icons>
+							</uni-td>
+						</uni-tr>
+					</uni-table>
+				</view>
+
+				<uni-forms-item label="出售备注" name="note">
+					<uni-easyinput type="textarea" v-model="saleWatchData.note" placeholder="请输入"></uni-easyinput>
+				</uni-forms-item>
+			</uni-forms>
+		</view>
+		<view class="submit-btn" @click="addSale"> 提交 </view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				imgUrl: this.$baseUrl + "/watch/api",
+				keyword: "",
+				checkWatchList: [],
+				terraceList: [],
+
+				payIndex: null,
+				sellOrderDetailList: [],
+				saleWatchData: {
+					channelId: "",
+					address: "",
+					customer: "",
+					sellCurrency: "",
+					sellTime: "",
+					paymentList: [{
+						payTime: "",
+						payMoney: "",
+						foreignMoney: "",
+						foreignCurrency: "",
+						note: "",
+					}, ],
+					note: "",
+				},
+				saleWatchRules: {
+					customer: {
+						rules: [{
+							required: true,
+							errorMessage: "请输入客户名称",
+							trigger: "blur",
+						}, ],
+					},
+				},
+				priceCurrencys: [{
+						value: 1,
+						text: "CNY",
+					},
+					{
+						value: 2,
+						text: "HKD",
+					},
+					{
+						value: 3,
+						text: "USD",
+					},
+					{
+						value: 4,
+						text: "EUR",
+					},
+					{
+						value: 5,
+						text: "GBP",
+					},
+					{
+						value: 6,
+						text: "AUD",
+					},
+				],
+			};
+		},
+		onLoad() {
+			this.getChannelList();
+		},
+		methods: {
+			// 生成销售单
+			addSale() {
+				console.log(this.sellOrderDetailList);
+
+				this.$refs.saleWatchForm
+					.validate()
+					.then((res) => {
+						console.log("表单数据", res);
+						uni.showLoading({
+							title: "提交中......",
+						});
+						uni.request({
+							method: "POST",
+							url: this.$baseUrl + "/newWatch/api/sellOrderSave",
+							header: {
+								"content-type": "application/json",
+								token: uni.getStorageSync("token"),
+							},
+							data: {
+								address: this.saleWatchData.address,
+								channelId: this.saleWatchData.channelId ? this.saleWatchData.channelId.id : "",
+								sellOrderDetailList: this.sellOrderDetailList,
+								customer: this.saleWatchData.customer,
+								sellTime: this.saleWatchData.sellTime,
+								sellCurrency: this.saleWatchData.sellCurrency,
+								note: this.saleWatchData.note,
+								paymentList: this.saleWatchData.paymentList,
+							},
+							complete: (res) => {
+								console.log("新增销售单");
+								console.log(res);
+
+								uni.hideLoading();
+
+								if (res.statusCode == 200) {
+									uni.navigateTo({
+										url: "./saleReport",
+									});
+								} else {
+									uni.showToast({
+										icon: "none",
+										title: res.data.status,
+									});
+								}
+							},
+						});
+					})
+					.catch((err) => {
+						console.log("表单错误", err);
+					});
+			},
+			// 删除手表
+			delWatch(index) {
+				this.sellOrderDetailList.splice(index, 1)
+			},
+			// 选中手表
+			selThisWatch(item) {
+				this.sellOrderDetailList.push({
+					brand: item.brand,
+					model: item.model,
+					sellMoney: "",
+					cost: item.cost == 0 ? "" : item.cost,
+					stockId: item.stockId,
+					watchId: item.id
+				})
+			},
+			// 是否选中
+			checkChange(e) {
+				console.log("是否选中");
+				console.log(e);
+
+				let values = e.detail.value;
+				this.sellOrderDetailList = [];
+
+				for (let i = 0; i < this.checkWatchList.length; ++i) {
+					const item = this.checkWatchList[i];
+					if (values.includes(item.id)) {
+						this.sellOrderDetailList.push({
+							brand: item.brand,
+							model: item.model,
+							sellMoney: "",
+							cost: item.cost == 0 ? "" : item.cost,
+							stockId: item.stockId,
+							watchId: item.id
+						});
+						this.$set(item, "checked", true);
+					} else {
+						this.$set(item, "checked", false);
+					}
+				}
+
+				console.log(this.sellOrderDetailList);
+			},
+			// 选择完成
+			selEnd() {
+				this.$refs.watchPopup.close();
+			},
+
+			// 增加付款信息
+			addPayMsg() {
+				this.saleWatchData.paymentList.push({
+					payTime: "",
+					payMoney: "",
+					foreignMoney: "",
+					foreignCurrency: "",
+					note: "",
+				});
+			},
+			// 删除付款信息
+			delPayMsg(index) {
+				this.saleWatchData.paymentList.splice(index, 1);
+			},
+			// 选择平台
+			terraceChange(val) {
+				console.log(val);
+				this.saleWatchData.channelId = this.terraceList[val.detail.value];
+			},
+			// 选择出售币种
+			currencyChange(val) {
+				console.log(val);
+				this.saleWatchData.sellCurrency =
+					this.priceCurrencys[val.detail.value].text;
+			},
+			currencyClick(index) {
+				this.payIndex = index;
+			},
+			currencyChange2(val) {
+				console.log(val);
+				this.saleWatchData.paymentList[this.payIndex].foreignCurrency =
+					this.priceCurrencys[val.detail.value].text;
+			},
+			// 获取平台列表
+			getChannelList() {
+				uni.request({
+					url: this.$baseUrl + "/newWatch/api/channelList",
+					header: {
+						"content-type": "application/json",
+						token: uni.getStorageSync("token"),
+					},
+					complete: (ret) => {
+						console.log("平台列表");
+						console.log(ret);
+
+						if (this.checkBack(ret, true) == false) return;
+						if (ret.data.length > 0) this.terraceList = ret.data;
+					},
+				});
+			},
+			// 查找手表
+			searchWatch() {
+				uni.showLoading({
+					title: "加载中...",
+				});
+				uni.request({
+					url: this.$baseUrl +
+						"/newWatch/api/watchStockSearchWithKeyWord?keyword=" +
+						this.keyword,
+					header: {
+						"content-type": "application/json",
+						token: uni.getStorageSync("token"),
+					},
+					complete: (res) => {
+						console.log("手表列表");
+						console.log(res);
+						uni.hideLoading();
+
+						if (this.checkBack(res, true) == false) return;
+						this.checkWatchList = res.data;
+
+						this.$refs.watchPopup.open();
+					},
+				});
+			},
+		},
+	};
+</script>
+
+<style lang="scss" scoped>
+	.sale-product-container {
+		padding: 20rpx 24rpx 40rpx;
+		background-color: #f4f8fb;
+
+		.sale-product-msg {
+			margin-bottom: 40rpx;
+		}
+
+		.model {
+			width: 200rpx;
+			overflow: hidden;
+			word-break: keep-all;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			font-size: 24rpx;
+		}
+
+		.item {
+			margin-bottom: 20rpx;
+			display: flex;
+			align-items: center;
+			color: #999999;
+
+			.img {
+				width: 140rpx;
+				height: 190rpx;
+				margin-right: 20rpx;
+			}
+
+			.every-name {
+				width: 100%;
+				display: flex;
+				justify-content: space-between;
+
+				.bh {
+					width: 350rpx;
+					flex: 1;
+					overflow: hidden;
+					word-break: keep-all;
+					white-space: nowrap;
+					text-overflow: ellipsis;
+					font-size: 28rpx;
+					font-weight: bold;
+					color: #000;
+				}
+
+				.sale-button {
+					font-size: 26rpx;
+				}
+			}
+
+			.every-main {
+				.cs {
+					margin-top: 10rpx;
+					font-size: 22rpx;
+				}
+			}
+		}
+
+		.watch-popup-container {
+			height: 70vh;
+			padding: 24rpx;
+			background-color: #fff;
+			border-top-left-radius: 20rpx;
+			border-top-right-radius: 20rpx;
+
+			.popup-title {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+
+				.title {
+					flex: 1;
+					text-align: center;
+				}
+
+				.yes {
+					margin-bottom: 30rpx;
+					color: #03314b;
+					font-size: 28rpx;
+				}
+			}
+
+			.line {
+				width: 100%;
+				height: 2rpx;
+				margin: 30rpx 0;
+				background-color: #f4f8fb;
+			}
+
+			.product-msg::-webkit-scrollbar {
+				display: none;
+			}
+		}
+
+		.sale-msg {
+			padding: 20rpx;
+			background-color: #fff;
+			border-radius: 20rpx;
+		}
+
+		.title {
+			margin-bottom: 30rpx;
+			color: #03314b;
+			font-size: 30rpx;
+			font-weight: bold;
+		}
+
+		.submit-btn {
+			margin: 100rpx 24rpx 0;
+			padding: 30rpx 0;
+			background-color: #03314b;
+			color: #fff;
+			font-size: 28rpx;
+			border-radius: 20rpx;
+			text-align: center;
+			cursor: pointer;
+		}
+
+		.currency-sel {
+			padding: 0 20rpx;
+			line-height: 68rpx;
+			font-size: 24rpx;
+			font-weight: 200;
+			border: 2rpx solid #f0f0f0;
+			box-sizing: border-box;
+			border-radius: 8rpx;
+		}
+	}
+</style>

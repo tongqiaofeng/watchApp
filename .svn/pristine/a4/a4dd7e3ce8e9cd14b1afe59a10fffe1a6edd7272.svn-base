@@ -1,0 +1,205 @@
+<template>
+	<view class="check-sales-receipts-container">
+		<!-- 销售凭证 -->
+		<view class="check-sales-receipts-top">
+			<view class="top-label">
+				{{salesReceiptsMsg.unPaidMoney == 0 ? "已结清" : "未结清"}}
+			</view>
+			<view class="top-one">
+				<text>客户名称：{{salesReceiptsMsg.customer}}</text>
+				<text>收货地址：{{salesReceiptsMsg.address}}</text>
+			</view>
+			<view class="top-one">
+				<text>销售员：{{"暂无"}}</text>
+				<text>出售时间：{{salesReceiptsMsg.sellTime}}</text>
+			</view>
+		</view>
+
+		<view class="check-sales-receipts-product">
+			<uni-table border emptyText="暂无数据">
+				<uni-tr>
+					<uni-th width="100" align="center">图片</uni-th>
+					<uni-th align="center">型号</uni-th>
+					<uni-th align="center">出售金额</uni-th>
+				</uni-tr>
+				<uni-tr v-for="(item, index) in salesReceiptsMsg.watchList" :key="index">
+					<uni-td>
+						<image class="img" v-if="item.pic" :src="imgUrl + item.pic.replace('\\', '/')"
+							mode="aspectFill">
+						</image>
+					</uni-td>
+					<uni-td>
+						<text>{{ item.brand + ' - ' + item.series }}</text>
+						<view class="">
+							{{ item.model }}
+						</view>
+					</uni-td>
+					<uni-td>
+						{{getPrice(item.sellMoney, salesReceiptsMsg.sellCurrency)}}
+					</uni-td>
+				</uni-tr>
+			</uni-table>
+		</view>
+		<view class="check-sales-receipts-pay">
+			<view class="title">
+				付款信息
+			</view>
+			<uni-table border>
+				<uni-tr>
+					<uni-th align="center">付款日期</uni-th>
+					<uni-th align="center">付款金额</uni-th>
+					<uni-th align="center">外币金额</uni-th>
+					<uni-th align="center">付款备注</uni-th>
+				</uni-tr>
+				<uni-tr v-for="(pay, index2) in salesReceiptsMsg.paymentList" :key="index2">
+					<uni-td align="center">
+						{{pay.payTime}}
+					</uni-td>
+					<uni-td align="center">
+						{{getPrice(pay.payMoney, salesReceiptsMsg.sellCurrency)}}
+					</uni-td>
+					<uni-td align="center">
+						{{getPrice(pay.foreignMoney, pay.foreignCurrency)}}
+					</uni-td>
+					<uni-td align="center">
+						{{pay.note}}
+					</uni-td>
+				</uni-tr>
+			</uni-table>
+		</view>
+		<view class="check-sales-receipts-not">
+			<view>已付{{getPrice(salesReceiptsMsg.paidMoney, salesReceiptsMsg.sellCurrency)}}</view>
+			<view>未付{{getPrice(salesReceiptsMsg.unPaidMoney, salesReceiptsMsg.sellCurrency)}}</view>
+		</view>
+		<view class="check-sales-receipts-bank">
+			<view class="title">
+				收款账户
+			</view>
+			<view v-for="(item,index) in salesReceiptsMsg.bankAccountList" :key="index">
+				<text>{{item}}</text>
+				<text class="copy" @click="copyBank(item)">复制</text>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				imgUrl: this.$baseUrl + "/watch/api",
+				checkId: null,
+				salesReceiptsMsg: {},
+			}
+		},
+		onLoad(option) {
+			this.checkId = option.id;
+
+			this.getSalesRecMsg();
+		},
+		methods: {
+			// 复制收款账户
+			copyBank(item) {
+				uni.setClipboardData({
+					data: item,
+					success: () => {
+						//复制成功的回调函数
+						uni.showToast({
+							//提示
+							title: "复制成功",
+							icon: "none"
+						});
+					},
+				});
+			},
+			// 获取销售凭证信息
+			getSalesRecMsg() {
+				uni.request({
+					url: this.$baseUrl + "/newWatch/api/salesCredentials?id=" + this.checkId,
+					header: {
+						"content-type": "application/json",
+						token: uni.getStorageSync("token"),
+					},
+					complete: (res) => {
+						console.log("销售凭证信息");
+						console.log(res);
+
+						this.salesReceiptsMsg = res.data;
+					},
+				});
+			},
+		}
+	}
+</script>
+
+<style lang="scss" scoped>
+	.check-sales-receipts-container {
+		min-height: 100vh;
+		padding-bottom: 40rpx;
+		background-color: #F4F8FB;
+
+		.check-sales-receipts-top {
+			padding: 24rpx 24rpx 0;
+
+			.top-label {
+				margin-bottom: 40rpx;
+				font-size: 32rpx;
+				color: #03314B;
+				text-align: right;
+			}
+
+			.top-one {
+				display: flex;
+				justify-content: space-between;
+				font-size: 28rpx;
+			}
+		}
+
+		.check-sales-receipts-product {
+			margin-top: 40rpx;
+
+			.img {
+				width: 150rpx;
+				height: 150rpx;
+				border-radius: 20rpx;
+			}
+		}
+
+		.check-sales-receipts-pay {
+
+			.title {
+				margin: 40rpx 0 20rpx;
+				text-align: left;
+				font-size: 28rpx;
+				color: #565656;
+				font-weight: bold;
+			}
+		}
+
+		.check-sales-receipts-not {
+			margin-top: 40rpx;
+			padding: 24rpx;
+			background-color: #fff;
+		}
+
+		.check-sales-receipts-bank {
+			margin-top: 40rpx;
+			padding: 24rpx;
+			background-color: #fff;
+
+			.title {
+				margin-bottom: 20rpx;
+				text-align: left;
+				font-size: 28rpx;
+				color: #565656;
+				font-weight: bold;
+			}
+
+			.copy {
+				margin-left: 40rpx;
+				color: #1ecc99;
+				font-size: 28rpx;
+			}
+		}
+	}
+</style>

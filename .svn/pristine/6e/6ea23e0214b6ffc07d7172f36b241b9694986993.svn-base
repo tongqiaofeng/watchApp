@@ -1,0 +1,48 @@
+<template>
+	<view class="stock-number-container">
+		<uni-table border stripe emptyText="暂无更多数据">
+			<uni-tr>
+				<uni-th align="center">机芯号</uni-th>
+				<uni-th align="center">保卡时间</uni-th>
+				<uni-th align="center">库存地</uni-th>
+			</uni-tr>
+			<uni-tr v-for="(item, index) in stockMsgList" :key="index">
+				<uni-td align="center">
+					{{item.buyWatchSn}}
+				</uni-td>
+				<uni-td align="center">
+					{{item.buyWatchCard}}
+				</uni-td>
+				<uni-td align="center">
+					{{item.warehouseName}}
+				</uni-td>
+			</uni-tr>
+		</uni-table>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				stockMsgList: null,
+
+			}
+		},
+		onLoad(option) {
+			this.stockMsgList = JSON.parse(decodeURIComponent(option.stockMsgList));
+			console.log(this.stockMsgList);
+		},
+		methods: {
+
+		}
+	}
+</script>
+
+<style lang="scss" scoped>
+	.stock-number-container{
+		min-height: 100vh;
+		padding: 24rpx 24rpx 30rpx;
+		background-color: #F4F8FB;
+	}
+</style>

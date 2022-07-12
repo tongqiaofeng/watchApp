@@ -1,0 +1,225 @@
+<template>
+	<view class="search-container">
+		<view>
+			<view v-if="newRecommendationsList.length == 0" class="no-data" style="padding-top: 300rpx">
+				<image src="../static/imgs/common/no.png" mode="aspectFill"></image>
+				<text style="font-size: 30rpx">暂无商品哦~</text>
+			</view>
+			<view v-else>
+				<view class="product-list">
+					<view class="item" v-for="(item, index) in newRecommendationsList" :key="index">
+						<view v-if="item.pic" class="img" @click="checkDetails(item)">
+							<easy-loadimage class="img" :image-src="item.pic" :scroll-top="scrollTop"
+								border-radius="30rpx" mode="aspectFill"></easy-loadimage>
+						</view>
+						<view class="paimai-img" v-if="item.isAuction == 1">
+							<image src="../static/imgs/index/new/sale.png" mode="aspectFill"></image>
+						</view>
+						<view class="title">{{ getShowTitle(item) }}</view>
+						<view class="title" style="margin-top: 10rpx;">{{ item.model }}</view>
+						<view v-if="item.marketHkPrice != 0" class="price">
+							<text> HKD <text
+									style="font-size: 36rpx;font-weight: bold;">{{ " " + formatNumberRgx(item.marketHkPrice) }}</text></text>
+						</view>
+						<view v-else class="price" style="font-size: 24rpx">价格请咨询客服</view>
+					</view>
+				</view>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				jewelryImgUrl: this.$baseUrl + "/jewellery/api",
+				newRecommendationsList: [],
+
+			};
+		},
+		onLoad(option) {
+			console.log(option);
+			this.newRecommendationsList = JSON.parse(decodeURIComponent(option.newRecommendationsList));
+
+		},
+		onReady() {
+			this.hidePageNavInWechatBrowser();
+		},
+
+		methods: {
+			// 查看手表详情
+			checkDetails(item) {
+				uni.navigateTo({
+					url: "../watch/detail?id=" + item.id
+				})
+			},
+
+			getShowTitle(item) {
+				if (item.series && item.series != '其他') {
+					return item.brand + ' - ' + item.series;
+				} else {
+					return item.brand;
+				}
+			}
+		},
+	};
+</script>
+
+<style lang="scss" scoped>
+	.search-container {
+		min-height: 100vh;
+		background-color: #F4F8FB;
+
+		.product-list {
+			padding: 20rpx;
+			display: grid;
+			justify-content: space-between;
+			grid-template-columns: repeat(auto-fill, 344rpx);
+			grid-gap: 20rpx;
+			border-top-left-radius: 30rpx;
+			border-top-right-radius: 30rpx;
+
+			.item {
+				padding: 15rpx 15rpx 22rpx;
+				border-radius: 30rpx;
+				background-color: #fff;
+				position: relative;
+
+
+				.paimai-img {
+					position: absolute;
+					top: -4rpx;
+					right: 0;
+					width: 89rpx;
+					height: 69rpx;
+					line-height: 69rpx;
+					text-align: center;
+					background: url("../static/imgs/index/new/saleBack.png") no-repeat;
+					background-size: 100% 100%;
+
+					image {
+						width: 38rpx;
+						height: 38rpx;
+					}
+				}
+
+				.img {
+					width: 200rpx;
+					height: 300rpx;
+					margin: 0 auto;
+				}
+
+				.title {
+					margin-top: 28rpx;
+					font-size: 28rpx;
+					overflow: hidden;
+					text-overflow: ellipsis;
+					white-space: nowrap;
+				}
+
+				.note {
+					margin-top: 18rpx;
+					font-size: 20rpx;
+					overflow: hidden;
+					text-overflow: ellipsis;
+					white-space: nowrap;
+				}
+
+				.price {
+					margin-top: 22rpx;
+					font-size: 22rpx;
+					color: #1ECC99;
+				}
+			}
+		}
+
+		.search-main {
+			margin-top: 230rpx;
+			//padding: 0 20rpx;
+
+			.main-container {
+				display: grid;
+				justify-content: space-between;
+				grid-template-columns: repeat(auto-fill, 344rpx);
+				grid-gap: 20rpx;
+				background-color: #fff;
+				border-top-left-radius: 30px;
+				border-top-right-radius: 30px;
+			}
+
+			.main-every {
+				width: 344rpx;
+				text-align: center;
+
+				.every-image {
+					height: 344rpx;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					background-color: #fffcf7;
+					border-top-left-radius: 10px;
+					border-top-right-radius: 10px;
+
+					image {
+						width: 100%;
+						height: 100%;
+						border-top-left-radius: 10px;
+						border-top-right-radius: 10px;
+					}
+				}
+
+				.every-main {
+					min-height: 100rpx;
+					padding: 22rpx 20rpx 17rpx;
+					margin-bottom: 30rpx;
+					display: flex;
+					flex-direction: column;
+					justify-content: space-between;
+					text-align: left;
+					border-bottom-left-radius: 10px;
+					border-bottom-right-radius: 10px;
+					border-top: 0;
+					box-shadow: 0px -5px 0 0 #fffcf7, -10rpx 0px 20rpx 0 #f9f9f9,
+						10rpx 0px 20rpx 0 #f9f9f9, 0px 20rpx 30rpx 0 #f9f9f9;
+
+					.main-model {
+						color: #000;
+						font-size: 24rpx;
+						font-weight: bold;
+						overflow: hidden;
+						text-overflow: ellipsis;
+						display: -webkit-box;
+						-webkit-box-orient: vertical;
+						-webkit-line-clamp: 2;
+					}
+
+					.main-price {
+						display: flex;
+						justify-content: space-between;
+
+						.price-money {
+							margin-top: 10rpx;
+							font-size: 26rpx;
+							color: #ff8b62;
+							font-weight: bold;
+						}
+
+						.price-qi {
+							image {
+								width: 42rpx;
+								height: 27rpx;
+							}
+
+							.currency {
+								margin-top: 5rpx;
+								text-align: center;
+								font-size: 24rpx;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+</style>

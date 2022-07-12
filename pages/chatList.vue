@@ -1,0 +1,112 @@
+<template>
+	<view>
+		<view v-if="userList.length > 0" class="userList" v-for="(user, index) in userList" :key="index">
+			<!-- <navigator :url="'./chat/chat/chat?id=' + +user.userId"> -->
+			<navigator :url="'../chat/chat?id=' + user.userId + '&name=' + user.username">
+				<view class="user">
+					<image class="head"
+						:src="user.head_pic ? baseFileUrl + '/file/' + user.head_pic : '../static/imgs/mine/avatar.png'"
+						mode="aspectFill"></image>
+					<view
+						style="flex: 1; padding-bottom: 40rpx; display: flex; flex-direction: column; justify-content: center; border-bottom: 1rpx solid #EEF2F5;">
+						<view style="display: flex; justify-content: space-between;">
+							<view class="name">{{user.username ? user.username : user.userId}}</view>
+							<view class="time">{{formatTime(user.time)}}</view>
+						</view>
+						<view style="display: flex; justify-content: space-between; margin-top: 20rpx;">
+							<view class="msg" style="width: 480rpx;">{{user.contentType == 0 ? user.contentText : '[图片]'}}</view>
+							<uni-badge v-if="user.num > 0" :text="user.num" type="success" :is-dot="false" size="normal" :customStyle="{background: '#1ECC99'}"></uni-badge>
+						</view>
+					</view>
+				</view>
+			</navigator>
+		</view>
+		<navigator v-if="userList.length == 0" url="../common/service">
+			<view style="font-size: 30rpx; text-align: center;margin-top: 300rpx;">{{txt}}</view>
+		</navigator>
+	</view>
+</template>
+
+<script>
+	import $Time from "@/static/js/time.js"
+
+	export default {
+		data() {
+			return {
+				baseFileUrl: this.$baseFileUrl,
+				userId: '',
+				flushCnt: 0,
+				userList: [],
+				txt: '消息更新中...'
+			}
+		},
+		onLoad() {
+			uni.$on('user-list-update', (data) => {  
+				this.flushData();
+			})
+		},
+		onReady() {
+			this.hidePageNavInWechatBrowser();
+		},
+		onShow() {
+			this.flushData();
+		},
+		methods: {
+			flushData(){
+				if(getApp().globalData.g_chat){
+					this.userList = getApp().globalData.g_chat.getUserList();
+					this.flushCnt++;
+				
+					getApp().globalData.g_chat.updateReddot();
+					if (this.userList.length == 0) {
+						this.txt = "当前无聊天记录，点击联系客服";
+					}
+				}
+				else{
+					console.log("聊天初始化失败");
+				}
+			},
+			formatTime(value) {
+				return $Time.gettime(value);
+			},
+		}
+	}
+</script>
+
+<style lang="scss" scoped>
+	.userList{
+		
+		.user{
+			display: flex;
+			align-items: center;
+			padding: 32rpx 32rpx 0 32rpx;
+			
+			.head{
+				width: 96rpx;
+				height: 96rpx;
+				margin-right: 25rpx;
+				border-radius: 96rpx;
+			}
+			
+			.name{
+				font-size: 30rpx;
+				color: #03314B;
+				font-weight: bold;
+			}
+			
+			.msg{
+				font-size: 26rpx;
+				color: #80858C;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+			
+			.time{
+				font-size: 24rpx;
+				color: #A4A9B2;
+			}
+			
+		}
+	}
+</style>

@@ -1,0 +1,552 @@
+<template>
+	<view class="content">
+		<!-- 销售单 -->
+		<popwndSelect :visible.sync="bShowInventory" strTitle="请选择库存地" strName="name" :lst="inventoryList"
+			:sel="inventoryIdx" @confirm="inventoryChange">
+		</popwndSelect>
+		<popwndSelect :visible.sync="bShowBrand" strTitle="请选择品牌" :lst="brandList" :sel="brandIdx"
+			@confirm="brandChange">
+		</popwndSelect>
+		<popwndSelect :visible.sync="bShowSeries" strTitle="请选择系列" strName="seriesName" :lst="seriesList"
+			:sel="seriesIdx" @confirm="seriesChange">
+		</popwndSelect>
+
+		<view class="inventory-top" id="inventory-top">
+			<view class="inputs">
+				<view class="item" style="flex: 1">
+					<view class="item-title">库存地</view>
+					<view class="clrGray" style="flex: 1" @click="bShowInventory = true">
+						<text v-if="inventoryList.length !== 0">{{ inventoryList[inventoryIdx].name }}</text>
+						<image src="../static/imgs/mine/right.png" mode="aspectFill"></image>
+					</view>
+				</view>
+				<view class="line"></view>
+				<view class="item" style="flex: 1">
+					<view class="item-title">品牌</view>
+					<view class="clrGray" style="flex: 1" @click="bShowBrand = true">
+						<text v-if="brandList.length !== 0">{{ brandList[brandIdx] }}</text>
+						<image src="../static/imgs/mine/right.png" mode="aspectFill"></image>
+					</view>
+				</view>
+				<view class="line"></view>
+				<view class="item" style="flex: 1">
+					<view class="item-title">系列</view>
+					<view class="clrGray" style="flex: 1" @click="bShowSeries = true">
+						<text v-if="seriesList.length !== 0">{{ seriesList[seriesIdx].seriesName }}</text>
+						<image src="../static/imgs/mine/right.png" mode="aspectFill"></image>
+					</view>
+				</view>
+				<view class="line"></view>
+				<view class="export-data">
+					<view class="state-right" @click="saleWatch">
+						新增销售单
+					</view>
+				</view>
+			</view>
+		</view>
+		<view v-if="haveData == 0" class="no-data" :style="{ 'padding-top': topHeight + 30 + 'px' }">
+			<image src="../static/imgs/common/no.png" mode="aspectFill"></image>
+			<text style="font-size: 30rpx">暂无数据~</text>
+		</view>
+		<view v-else class="inventory-main" :style="{ 'padding-top': topHeight + 'px' }">
+			<view class="inventory-num">
+				<view>总数量：{{ total }}</view>
+			</view>
+			<view class="plantList">
+				<checkbox-group @change="checkChange">
+					<view class="plant" v-for="(item, index) in list" :key="index">
+						<view class="row">
+							<label class="box-check">
+								<checkbox :value="item.stockId" :checked="item.checked" color="#85dbd0"
+									style="transform: scale(0.7); border-radius: 50%" />
+							</label>
+							<view class="img" style="margin-left: 50rpx;" @click.stop="checkDetails(item)">
+								<image class="img" v-if="item.pic" :src="imgUrl + item.pic.replace('\\', '/')"
+									mode="aspectFill">
+								</image>
+							</view>
+							<view style="flex: 1" @click.stop="checkDetails(item)">
+								<view class="every-name">
+									<view class="bh">{{ item.brand + ' - ' + item.series }}</view>
+								</view>
+								<view class="every-main">
+									<view class="cs">{{item.model}}
+									</view>
+								</view>
+								<view class="every-main">
+									<view class="cs">保卡时间：{{item.buyWatchCard ? item.buyWatchCard : '暂无'}}
+									</view>
+								</view>
+								<view class="every-main">
+									<view class="cs">
+										<text>{{ getPrice(item.marketHkPrice, "HKD") }}</text>
+									</view>
+								</view>
+							</view>
+						</view>
+					</view>
+				</checkbox-group>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+	import popwndSelect from "@/components/popwnd/popwnd_select_blue.vue";
+
+	export default {
+		components: {
+			popwndSelect
+		},
+		data() {
+			return {
+				role: null,
+				imgUrl: this.$baseUrl + "/watch/api",
+				haveData: 1,
+				page: 1,
+
+				watchList: [],
+
+				bShowInventory: false,
+				inventoryIdx: 0,
+				inventoryList: [],
+
+				bShowBrand: false,
+				brandIdx: 0,
+				brandList: [],
+
+				bShowSeries: false,
+				seriesIdx: 0,
+				seriesList: [],
+
+				list: [],
+				total: 0,
+				haveMore: 0,
+
+				topHeight: 0,
+				platform: "",
+
+				selList: [],
+			};
+		},
+		mounted() {
+			const query = uni.createSelectorQuery().in(this);
+			query
+				.select("#inventory-top")
+				.boundingClientRect((data) => {
+					console.log("顶部高度");
+					console.log(data);
+					this.topHeight = data.height;
+				})
+				.exec();
+		},
+		onLoad() {
+			this.role = uni.getStorageSync('role');
+			
+
+			if (this.list.length == 0 && uni.getStorageSync("token").length > 0) {
+				console.log("重新获取数据");
+				this.getGroupList();
+				this.getWarehouseList();
+				this.getWatchSort();
+			}
+		},
+		onPullDownRefresh() {
+			uni.showLoading({
+				title: "正在刷新",
+			});
+			console.log("获取数据");
+			this.page = 1;
+			this.list = [];
+			this.haveMore = 0;
+			this.getGroupList();
+			this.getWarehouseList();
+			this.getWatchSort();
+			uni.stopPullDownRefresh();
+		},
+		onReachBottom() {
+			if (this.haveMore == 0) {
+				this.page++;
+				this.search();
+			}
+		},
+		methods: {
+			// 是否选中
+			checkChange(e) {
+				console.log("是否选中");
+				console.log(e);
+
+				let values = e.detail.value;
+				this.selList = [];
+
+				for (let i = 0; i < this.list.length; ++i) {
+					const item = this.list[i];
+					if (values.includes(item.stockId)) {
+						this.selList.push({
+							brand: item.brand,
+							model: item.model,
+							sellMoney: "",
+							cost: item.cost == 0 ? "" : item.cost,
+							stockId: item.stockId,
+							watchId: item.id
+						});
+						this.$set(item, "checked", true);
+					} else {
+						this.$set(item, "checked", false);
+					}
+				}
+			},
+			// 销售单详情，可查看销售单凭证PDF或者Excel，并分享给客户
+			// 商品出售
+			saleWatch() {
+				if (this.selList.length == 0) {
+					uni.showToast({
+						icon: "none",
+						title: "请选择出售商品"
+					})
+				} else {
+					uni.navigateTo({
+						url: "./saleProduct?selList=" + encodeURIComponent(JSON.stringify(this.selList))
+					})
+				}
+			},
+			// 查询商品
+			search() {
+				uni.showLoading({
+					title: "加载中...",
+				});
+				this.soldNum = 0;
+				this.reserveNum = 0;
+				let data = {
+					page: this.page,
+					pageNum: 10
+				};
+
+				data.warehouseId = this.inventoryList[this.inventoryIdx].id;
+				if (this.brandIdx > 0) data.brand = this.brandList[this.brandIdx];
+				if (this.seriesIdx > 0) data.series = this.seriesList[this.seriesIdx].seriesName;
+
+				uni.request({
+					url: this.$baseUrl + "/newWatch/api/watchStockSearch",
+					method: "POST",
+					header: {
+						"content-type": "application/json",
+						token: uni.getStorageSync("token"),
+					},
+					data: data,
+					complete: (res) => {
+						uni.hideLoading();
+						console.log("手表查询列表");
+						console.log(res);
+						if (this.checkBack(res) == false) return;
+
+						this.total = res.data.total;
+
+						if (res.data.data.length == 0) {
+							this.haveMore = 1;
+						} else {
+							let data = this.list.concat(res.data.data);
+							this.list = data;
+						}
+
+						if (this.list.length == 0) {
+							this.haveData = 0;
+							uni.showToast({
+								icon: "none",
+								title: "暂无数据",
+							});
+						} else {
+							this.haveData = 1;
+						}
+					},
+				});
+			},
+			// 库存地
+			inventoryChange(e) {
+				this.inventoryIdx = e.sel;
+				this.page = 1;
+				this.list = [];
+				this.haveMore = 0;
+				this.search();
+				uni.pageScrollTo({
+					scrollTop: 0,
+					duration: 300,
+				});
+			},
+			// 品牌
+			brandChange(e) {
+				this.brandIdx = e.sel;
+				this.page = 1;
+				this.list = [];
+				this.haveMore = 0;
+
+				if (this.brandIdx > 0) {
+					this.seriesList = this.watchList[this.brandIdx - 1].seriesList;
+					this.seriesList.unshift({
+						seriesName: "全部"
+					})
+				}
+
+				this.search();
+				uni.pageScrollTo({
+					scrollTop: 0,
+					duration: 300,
+				});
+			},
+			// 系列
+			seriesChange(e) {
+				this.seriesIdx = e.sel;
+				this.page = 1;
+				this.list = [];
+				this.haveMore = 0;
+
+				this.search();
+				uni.pageScrollTo({
+					scrollTop: 0,
+					duration: 300,
+				});
+			},
+
+			// 查看珠宝详情
+			checkDetails(item) {
+				uni.navigateTo({
+					url: "./detail?id=" + item.id,
+				});
+			},
+			// 获取销售员列表
+			getGroupList() {
+				uni.request({
+					url: this.$baseUrl + "/jewellery/api/groupList",
+					header: {
+						"content-type": "application/json",
+						token: uni.getStorageSync("token"),
+					},
+					complete: (ret) => {
+						console.log("销售员列表");
+						console.log(ret);
+						uni.hideLoading();
+						if (this.checkBack(ret, true) == false) return;
+						if (ret.data.length > 0) this.groupList = ret.data;
+					},
+				});
+			},
+			// 获取库存地列表
+			getWarehouseList() {
+				uni.request({
+					url: this.$baseUrl + "/newWatch/api/warehouseList",
+					header: {
+						"content-type": "application/json",
+						token: uni.getStorageSync("token"),
+					},
+					complete: (ret) => {
+						console.log("库存地列表");
+						console.log(ret);
+						uni.hideLoading();
+						if (this.checkBack(ret, true) == false) return;
+						if (ret.data.length > 0) this.inventoryList = ret.data;
+
+						this.search();
+					},
+				});
+			},
+
+			// 获取款式分类
+			getWatchSort() {
+				uni.request({
+					url: this.$baseUrl + "/newWatch/api/watchSort",
+					header: {
+						"content-type": "application/json",
+					},
+					complete: (res) => {
+						console.log('手表分类', res);
+
+						this.watchList = res.data;
+						this.brandList = ["全部"];
+						for (let item of this.watchList) {
+							this.brandList.push(item.brandName)
+						}
+					},
+				});
+			},
+		},
+	};
+</script>
+
+<style lang="scss" scoped>
+	.content {
+		min-height: 100vh;
+		padding-bottom: 30rpx;
+		background-color: #F4F8FB;
+
+		.inventory-top {
+			// padding-bottom: 26rpx;
+			position: fixed;
+			top: var(--window-top);
+			left: 0;
+			right: 0;
+			z-index: 99;
+			background-color: #fff;
+
+			.top-input,
+			.item {
+				padding: 0 30rpx;
+			}
+
+			.mine-title {
+				height: 44px;
+				padding: 0 40rpx;
+				display: flex;
+				align-items: center;
+
+				.search-input {
+					width: 400rpx;
+					padding: 10rpx 20rpx;
+					margin-left: 20rpx;
+					background-color: #f6f6f6;
+					border-radius: 30px;
+					text-align: center;
+					font-size: 24rpx;
+				}
+			}
+
+			.inputs {
+				margin-top: 40rpx;
+
+				.item {
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+
+					.item-title {
+						font-size: 28rpx;
+						color: #565656;
+						font-weight: bold;
+					}
+
+					.clrGray {
+						display: flex;
+						justify-content: flex-end;
+						align-items: center;
+
+						text {
+							font-size: 28rpx;
+							color: #c8c8c8;
+						}
+
+						image {
+							width: 13rpx;
+							height: 24rpx;
+							margin-left: 30rpx;
+						}
+					}
+				}
+
+				.line {
+					width: 100%;
+					height: 2rpx;
+					margin-top: 26rpx;
+					margin-bottom: 26rpx;
+					background-color: #F4F8FB;
+				}
+
+				.export-data {
+					padding: 0 30rpx 30rpx;
+					flex: 1;
+					display: flex;
+					justify-content: flex-end;
+					font-size: 24rpx;
+
+					.state-right {
+						margin-left: 40rpx;
+						color: #1ECC99;
+						cursor: pointer;
+					}
+				}
+			}
+		}
+
+		.inventory-main {
+			margin-top: 20rpx;
+			padding: 0 30rpx;
+
+			.inventory-num {
+				margin-bottom: 20rpx;
+				font-size: 22rpx;
+				color: #aaa;
+			}
+
+			.plantList {
+				.plant {
+					margin-bottom: 30rpx;
+					padding: 20rpx 20rpx 30rpx;
+					border-radius: 30rpx;
+					position: relative;
+					background-color: #ffffff;
+					font-size: 26rpx;
+
+					.row {
+						display: flex;
+						// justify-content: space-between;
+						align-items: center;
+						color: #999999;
+
+						.img {
+							width: 150rpx;
+							height: 250rpx;
+							margin-right: 20rpx;
+						}
+
+
+						.every-name {
+							width: 100%;
+
+							.bh {
+								width: 350rpx;
+								flex: 1;
+								overflow: hidden;
+								word-break: keep-all;
+								white-space: nowrap;
+								text-overflow: ellipsis;
+								font-size: 28rpx;
+								font-weight: bold;
+								color: #000;
+							}
+						}
+
+						.every-main {
+							width: 100%;
+						
+							.cs {
+								width: 350rpx;
+								margin-top: 10rpx;
+								font-size: 22rpx;
+								overflow: hidden;
+								word-break: keep-all;
+								white-space: nowrap;
+								text-overflow: ellipsis;
+							}
+						}
+					}
+
+					.line {
+						width: 100%;
+						height: 2rpx;
+						margin: 30rpx 0;
+						background-color: #F4F8FB;
+					}
+
+					.price {
+						display: flex;
+						justify-content: space-between;
+						flex-wrap: wrap;
+						font-size: 26rpx;
+
+						.price-every {
+							margin-top: 20rpx;
+						}
+					}
+				}
+			}
+		}
+	}
+</style>

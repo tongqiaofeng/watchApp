@@ -1,0 +1,7 @@
+@import '@/uni_modules/uni-scss/variables.scss';
+
+@font-face
+{
+	font-family: iconFont;
+	src: url('@/static/font/uni.ttf');
+}

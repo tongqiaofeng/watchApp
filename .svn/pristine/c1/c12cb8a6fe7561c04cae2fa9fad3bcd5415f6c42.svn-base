@@ -1,0 +1,377 @@
+{
+	"pages": [
+		{
+			"path": "pages/index",
+			"style": {
+				"navigationBarTitleText": "精品腕表，尽在TopTime",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#85dbd0",
+				"enablePullDownRefresh": true,
+				"navigationStyle": "custom",
+				"app-plus": {
+					"titleView": false,
+					"bounce": "none" //关闭窗口回弹效果
+				}
+			}
+		},
+		//#ifdef APP-PLUS
+		{
+			"path": "common/startPage",
+			"style": {
+				"navigationBarTitleText": "精品腕表，尽在TopTime",
+				"navigationStyle": "custom",
+				"app-plus": {
+					"titleView": false,
+					"bounce": "none" //关闭窗口回弹效果
+				}
+			}
+		},
+		//#endif
+		{
+			"path": "pages/classify",
+			"style": {
+				"navigationBarTitleText": "分类",
+				"navigationBarTextStyle": "black",
+				"navigationBarBackgroundColor": "#F4F8FB",
+				"enablePullDownRefresh": true
+			}
+		}, {
+			"path": "pages/chatList",
+			"style": {
+				"navigationBarTitleText": "消息"
+			}
+		},
+		{
+			"path": "pages/recycle",
+			"style": {
+				"navigationBarTitleText": "回收",
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path": "pages/mine",
+			"style": {
+				"navigationBarTitleText": "我的",
+				"navigationStyle": "custom",
+				"app-plus": {
+					"titleView": false
+				}
+			}
+		}, {
+			"path": "common/search",
+			"style": {
+				"navigationBarTitleText": "商品搜索",
+				"navigationBarBackgroundColor": "#fff",
+				"navigationStyle": "custom",
+				"app-plus": {
+					"titleView": false
+				},
+				"enablePullDownRefresh": true
+			}
+		}, {
+			"path": "common/login",
+			"style": {
+				"navigationBarTitleText": "登录",
+				"navigationBarTextStyle": "black",
+				"navigationBarBackgroundColor": "#F4F8FB",
+				"navigationStyle": "custom",
+				"app-plus": {
+					"titleView": false
+				}
+			}
+		},
+		{
+			"path": "common/service",
+			"style": {
+				"navigationBarTitleText": "联系客服",
+				"navigationBarTextStyle": "black",
+				"navigationBarBackgroundColor": "#F4F8FB",
+				"app-plus": {
+					"titleView": false
+				}
+			}
+		}
+	],
+	"subPackages": [{
+			"root": "my",
+			"pages": [{
+					"path": "collectGoods",
+					"style": {
+						"navigationBarTitleText": "商品收藏",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#ffffff",
+						"enablePullDownRefresh": true
+					}
+				}, {
+					"path": "footprint",
+					"style": {
+						"navigationBarTitleText": "浏览记录",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#ffffff",
+						"enablePullDownRefresh": true
+					}
+				},
+				{
+					"path": "register",
+					"style": {
+						"navigationBarTitleText": "注册",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#fff",
+						"navigationStyle": "custom",
+						"app-plus": {
+							"titleView": false
+						}
+					}
+				},
+				{
+					"path": "password",
+					"style": {
+						"navigationBarTitleText": "重置密码",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#F4F8FB",
+						"navigationStyle": "custom",
+						"app-plus": {
+							"titleView": false
+						}
+					}
+				}, {
+					"path": "updateMyMsg",
+					"style": {
+						"navigationBarTitleText": "个人信息",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#F4F8FB",
+						"app-plus": {
+							"titleView": false
+						}
+					}
+				}, {
+					"path": "updatePhone",
+					"style": {
+						"navigationBarTitleText": "修改邮箱",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#F4F8FB",
+						"app-plus": {
+							"titleView": false
+						}
+					}
+				}, {
+					"path": "share",
+					"style": {
+						"navigationBarTitleText": "邀请客户",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#F4F8FB",
+						"app-plus": {
+							"titleView": false
+						}
+					}
+				}
+			]
+		},
+		{
+			"root": "watch",
+			"pages": [{
+					"path": "newsList",
+					"style": {
+						"navigationBarTitleText": "新闻资讯",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#F4F8FB",
+						"enablePullDownRefresh": true,
+						"app-plus": {
+							"titleView": false
+						}
+					}
+				}, {
+					"path": "detail",
+					"style": {
+						"navigationBarTitleText": "详情",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#fff",
+						"enablePullDownRefresh": true,
+						"app-plus": {
+							"titleView": false
+						}
+					}
+				},
+				{
+					"path": "inventoryCheck",
+					"style": {
+						"navigationBarTitleText": "库存查询",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#fff",
+						"enablePullDownRefresh": true
+					}
+				},
+				{
+					"path": "saleReport",
+					"style": {
+						"navigationBarTitleText": "销售单管理",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#F4F8FB",
+						"enablePullDownRefresh": true,
+						"navigationStyle": "custom",
+						"app-plus": {
+							"titleView": false
+						}
+
+					}
+				},
+				{
+					"path": "saleProduct",
+					"style": {
+						"navigationBarTitleText": "出售商品",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#F4F8FB",
+						"app-plus": {
+							"titleView": false
+						}
+					}
+				}, {
+					"path": "updateSale",
+					"style": {
+						"navigationBarTitleText": "修改销售单",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#F4F8FB",
+						"app-plus": {
+							"titleView": false
+						}
+					}
+				}, {
+					"path": "checkSalesReceipts",
+					"style": {
+						"navigationBarTitleText": "销售单凭证",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#F4F8FB",
+						"app-plus": {
+							"titleNView": {
+								"buttons": [{
+									"width": "80rpx",
+									"text": "\ue66c",
+									"fontSrc": "/static/font/uni.ttf",
+									"fontSize": "44rpx",
+									"fontWeight": "bold",
+									"color": "#03314B"
+								}]
+							}
+						}
+
+					}
+				},
+				{
+					"path": "addSale",
+					"style": {
+						"navigationBarTitleText": "出售商品",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#F4F8FB",
+						"app-plus": {
+							"titleView": false
+						}
+					}
+				},
+				{
+					"path": "stockNumber",
+					"style": {
+						"navigationBarTitleText": "库存点手表数量",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#F4F8FB",
+						"app-plus": {
+							"titleView": false
+						}
+					}
+				},
+				{
+					"path": "priceHistory",
+					"style": {
+						"navigationBarTitleText": "历史行情价",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#F4F8FB",
+						"app-plus": {
+							"titleView": false
+						}
+					}
+				}, {
+					"path": "newsDetail",
+					"style": {
+						"navigationBarTitleText": "TopTime",
+						"enablePullDownRefresh": true,
+						"app-plus": {
+							// #ifdef APP-PLUS
+							"titleNView": {
+								"buttons": [{
+									"width": "80rpx",
+									"text": "\ue6f3",
+									"fontSrc": "/static/font/uni.ttf",
+									"fontSize": "44rpx",
+									"fontWeight": "bold",
+									"color": "#03314B"
+								}]
+							}
+							// #endif
+						}
+					}
+				}, {
+					"path": "newReco",
+					"style": {
+						"navigationBarTitleText": "上新推荐",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#F4F8FB",
+						"app-plus": {
+							"titleView": false
+						}
+					}
+				}
+			]
+		},
+		{
+			"root": "chat",
+			"pages": [{
+				"path": "chat",
+				"style": {
+					"navigationBarTitleText": "聊天"
+				}
+			}]
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "",
+		"navigationBarBackgroundColor": "#F4F8FB",
+		"backgroundColor": "#F4F8FB"
+	},
+	"tabBar": {
+		"color": "#9BA0A9",
+		"selectedColor": "#03314B",
+		"backgroundColor": "#FFFFFF",
+		"borderStyle": "black",
+		"list": [{
+				"pagePath": "pages/index",
+				"text": "首页",
+				"iconPath": "static/imgs/tabBar/index.png",
+				"selectedIconPath": "static/imgs/tabBar/index01.png"
+			},
+			{
+				"pagePath": "pages/classify",
+				"text": "分类",
+				"iconPath": "static/imgs/tabBar/classify.png",
+				"selectedIconPath": "static/imgs/tabBar/classify01.png"
+			},
+			{
+				"pagePath": "pages/chatList",
+				"text": "消息",
+				"iconPath": "static/imgs/tabBar/message.png",
+				"selectedIconPath": "static/imgs/tabBar/message01.png"
+			},
+			{
+				"pagePath": "pages/recycle",
+				"text": "回收",
+				"iconPath": "static/imgs/tabBar/recycle.png",
+				"selectedIconPath": "static/imgs/tabBar/recycle01.png"
+			},
+			{
+				"pagePath": "pages/mine",
+				"text": "我的",
+				"iconPath": "static/imgs/tabBar/mine.png",
+				"selectedIconPath": "static/imgs/tabBar/mine01.png"
+			}
+		]
+	}
+}

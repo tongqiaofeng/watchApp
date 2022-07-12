@@ -1,0 +1,218 @@
+{
+	"pages": [{
+			"path": "pages/index",
+			"style": {
+				"navigationBarTitleText": "手表",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#85dbd0",
+				"enablePullDownRefresh": true,
+				"navigationStyle": "custom",
+				"app-plus": {
+					"titleView": false,
+					"bounce": "none" //关闭窗口回弹效果
+				}
+			}
+		}, {
+			"path": "pages/chatList",
+			"style": {
+				"navigationBarTitleText": "消息"
+			}
+		},
+		{
+			"path": "pages/classify",
+			"style": {
+				"navigationBarTitleText": "分类",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#85dbd0",
+				"enablePullDownRefresh": true
+			}
+		}, {
+			"path": "pages/mine",
+			"style": {
+				"navigationBarTitleText": "我的",
+				"navigationStyle": "custom",
+				"app-plus": {
+					"titleView": false
+				}
+			}
+		}, {
+			"path": "common/search",
+			"style": {
+				"navigationBarTitleText": "商品搜索",
+				"navigationBarBackgroundColor": "#fff",
+				"navigationStyle": "custom",
+				"app-plus": {
+					"titleView": false
+				},
+				"enablePullDownRefresh": true
+			}
+		}, {
+			"path": "common/login",
+			"style": {
+				"navigationBarTitleText": "登录",
+				"navigationBarTextStyle": "black",
+				"navigationBarBackgroundColor": "#fbfbfb",
+				"navigationStyle": "custom",
+				"app-plus": {
+					"titleView": false
+				}
+			}
+		},
+		{
+			"path": "common/service",
+			"style": {
+				"navigationBarTitleText": "联系客服",
+				"navigationBarTextStyle": "black",
+				"navigationBarBackgroundColor": "#f9f9f9",
+				"app-plus": {
+					"titleView": false
+				}
+			}
+		}
+	],
+	"subPackages": [{
+			"root": "my",
+			"pages": [{
+					"path": "collectGoods",
+					"style": {
+						"navigationBarTitleText": "商品收藏",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f9f9f9",
+						"enablePullDownRefresh": true,
+						"app-plus": {
+							"titleView": false
+						}
+					}
+				}, {
+					"path": "footprint",
+					"style": {
+						"navigationBarTitleText": "浏览记录",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f9f9f9",
+						"enablePullDownRefresh": true,
+						"app-plus": {
+							"titleView": false
+						}
+					}
+				},
+				{
+					"path": "register",
+					"style": {
+						"navigationBarTitleText": "注册",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#fff",
+						"navigationStyle": "custom",
+						"app-plus": {
+							"titleView": false
+						}
+					}
+				},
+				{
+					"path": "password",
+					"style": {
+						"navigationBarTitleText": "重置密码",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#fbfbfb",
+						"navigationStyle": "custom",
+						"app-plus": {
+							"titleView": false
+						}
+					}
+				}, {
+					"path": "updateMyMsg",
+					"style": {
+						"navigationBarTitleText": "个人信息",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f9f9f9",
+						"app-plus": {
+							"titleView": false
+						}
+					}
+				}, {
+					"path": "updatePhone",
+					"style": {
+						"navigationBarTitleText": "修改邮箱",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f9f9f9",
+						"app-plus": {
+							"titleView": false
+						}
+					}
+				}
+			]
+		},
+		{
+			"root": "watch",
+			"pages": [{
+					"path": "detail",
+					"style": {
+						"navigationBarTitleText": "详情",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f9f9f9",
+						"enablePullDownRefresh": true,
+						"app-plus": {
+							"titleView": false
+						}
+					}
+				},
+				{
+					"path": "saleReport",
+					"style": {
+						"navigationBarTitleText": "详情",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#f9f9f9",
+						"enablePullDownRefresh": true,
+						"app-plus": {
+							"titleView": false
+						}
+					}
+				}
+			]
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "",
+		"navigationBarBackgroundColor": "#f9f9f9",
+		"backgroundColor": "#f9f9f9"
+	},
+	"tabBar": {
+		"color": "#c3c3c3",
+		"selectedColor": "#85dbd0",
+		"backgroundColor": "#FFFFFF",
+		"borderStyle": "black",
+		"list": [{
+				"pagePath": "pages/index",
+				"text": "首页",
+				"iconPath": "static/imgs/tabBar/index.png",
+				"selectedIconPath": "static/imgs/tabBar/index01.png"
+			},
+			{
+				"pagePath": "pages/classify",
+				"text": "分类",
+				"iconPath": "static/imgs/tabBar/classify.png",
+				"selectedIconPath": "static/imgs/tabBar/classify01.png"
+			},
+			{
+				"pagePath": "pages/chatList",
+				"text": "消息",
+				"iconPath": "static/imgs/tabBar/message.png",
+				"selectedIconPath": "static/imgs/tabBar/message01.png"
+			},
+			// #ifdef APP-PLUS || MP-WEIXIN
+			{
+				"pagePath": "pages/cart",
+				"text": "购物车",
+				"iconPath": "static/imgs/tabBar/cart.png",
+				"selectedIconPath": "static/imgs/tabBar/cart01.png"
+			},
+			// #endif
+			{
+				"pagePath": "pages/mine",
+				"text": "我的",
+				"iconPath": "static/imgs/tabBar/mine.png",
+				"selectedIconPath": "static/imgs/tabBar/mine01.png"
+			}
+		]
+	}
+}

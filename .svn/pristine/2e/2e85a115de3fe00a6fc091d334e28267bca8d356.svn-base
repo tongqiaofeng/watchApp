@@ -1,0 +1,225 @@
+<template>
+	<view class="commodity">
+		<view class="commodity-top" id="commodityTop">
+			<view :style="{ height: height + 'px' }"></view>
+			<view class="top-main">
+				<image src="../static/imgs/common/back_blue.png" mode="aspectFill" @click="goBack"></image>
+				<text class="title">商品收藏
+					<text style="font-size: 28rpx;">{{"(" + goodsnum + ")"}}</text>
+				</text>
+			</view>
+		</view>
+		<view v-if="haveData == 0" class="no-data" :style="{ 'padding-top': topHeight + 30 + 'px' }">
+			<image src="../static/imgs/common/no.png" mode="aspectFill"></image>
+			<text style="font-size: 30rpx">暂无收藏商品，赶紧去收藏好货吧~</text>
+		</view>
+		<view v-else :style="{ 'padding-top': topHeight + 15 + 'px'}">
+			<view class="commodity-mian-container">
+				<slide-list :list="favoriteslist" :threshold="threshold" @click="rowClick" @optionClick="optionClick"
+					:options="options">
+				</slide-list>
+				<view class="bottom">没有更多了~</view>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+	import slideList from '@/components/left-slide/left-slide-list.vue';
+	export default {
+		components: {
+			slideList
+		},
+		data() {
+			return {
+				isShow: false,
+				height: null,
+				topHeight: 0,
+				imgUrl: this.$baseUrl + "/jewellery/api",
+
+				haveData: 1,
+				goodsnum: 0,
+				page: 1,
+				favoriteslist: [],
+
+				selList: [],
+
+				options: [ //左滑的操作列表
+					{
+						color: '#ffffff', //字体颜色，非必须，默认 #ffffff
+						bgColor: '#FF4533', //背景颜色，非必须，默认 #409EFF
+						text: '删除', //展示文字
+						width: 120, //按钮宽度 默认120rpx 适合两个字的宽度 这个宽度按需调整
+					}
+				],
+				threshold: 50,
+			};
+		},
+		mounted() {
+			const query = uni.createSelectorQuery().in(this);
+			console.log(query.select("#commodityTop"));
+			query
+				.select("#commodityTop")
+				.boundingClientRect((data) => {
+					console.log("顶部高度");
+					console.log(data);
+					this.topHeight = data.height;
+				})
+				.exec();
+		},
+		onLoad() {
+			// 获取手机状态栏高度
+			uni.getSystemInfo({
+				success: (data) => {
+					// 将其赋值给this
+					this.height = data.statusBarHeight;
+				},
+			});
+
+			this.favorites();
+		},
+		onReady() {
+			this.hidePageNavInWechatBrowser();
+		},
+		onPullDownRefresh() {
+			this.favoriteslist = [];
+			this.favorites();
+			uni.stopPullDownRefresh();
+		},
+		methods: {
+			// 查看详情
+			rowClick(item) {
+				console.log('点击某一行');
+				console.log(item);
+				if (item) {
+					uni.navigateTo({
+						url: "../watch/detail?id=" + item.id,
+					});
+				}
+			},
+			// 删除
+			optionClick(item, oitem) {
+				console.log('点击某个操作按钮');
+				console.log(item, oitem)
+				if (oitem.text == '删除') {
+					this.selList = [];
+					this.selList.push(item.id);
+					console.log(this.selList);
+					this.clickclose();
+				}
+			},
+			goBack() {
+				uni.navigateBack({
+					delta: 1
+				})
+			},
+			// 获取商品收藏列表
+			favorites() {
+				uni.showLoading({
+					title: "加载中...",
+				});
+				uni.request({
+					url: this.$baseUrl + "/newWatch/api/favorites",
+					header: {
+						"content-type": "application/json",
+						token: uni.getStorageSync("token"),
+					},
+					complete: (res) => {
+						uni.hideLoading();
+
+						console.log("商品收藏列表");
+						console.log(res);
+
+						this.favoriteslist = res.data;
+						this.goodsnum = res.data.length;
+
+						if (this.favoriteslist.length == 0) {
+							this.haveData = 0;
+						} else {
+							this.haveData = 1;
+						}
+
+						this.isShow = true;
+					},
+				});
+			},
+			// 删除
+			clickclose() {
+				console.log(this.selList);
+				uni.request({
+					method: "POST",
+					url: this.$baseUrl + "/newWatch/api/favoriteSave",
+					data: {
+						watchIdList: this.selList,
+					},
+					header: {
+						"content-type": "application/json",
+						token: uni.getStorageSync("token"),
+					},
+					success: (res) => {
+						console.log(res.data);
+						this.selList = [];
+						this.favoriteslist = [];
+						uni.showToast({
+							title: "删除成功",
+							icon: "none",
+						});
+						this.favorites();
+					},
+					fail: (err) => {
+						uni.showToast({
+							title: err.data.message,
+							icon: "none",
+						});
+					},
+				});
+			},
+		},
+	};
+</script>
+
+<style lang="scss" scoped>
+	.commodity {
+		min-height: 100vh;
+		background-color: #F4F8FB;
+		position: relative;
+
+		.commodity-top {
+			position: fixed;
+			left: 0;
+			right: 0;
+			z-index: 999;
+			background-color: #fff;
+
+			.top-main {
+				padding: 101rpx 24rpx 37rpx;
+				display: flex;
+
+				image {
+					width: 20rpx;
+					height: 36rpx;
+				}
+
+				.title {
+					flex: 1;
+					text-align: center;
+					font-size: 34rpx;
+					color: #03314B;
+					font-weight: bold;
+				}
+			}
+		}
+
+		.commodity-mian-container {
+			padding: 0 24rpx;
+		}
+
+		.bottom {
+			padding-bottom: 140rpx;
+			font-size: 24rpx;
+			color: #e3e3e3;
+			text-align: center;
+			font-size: 30rpx;
+		}
+	}
+</style>

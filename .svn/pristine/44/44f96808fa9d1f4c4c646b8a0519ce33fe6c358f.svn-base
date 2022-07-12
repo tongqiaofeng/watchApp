@@ -1,0 +1,620 @@
+<template>
+	<view class="content">
+		<!-- 销售单 -->
+		<popwndSelect :visible.sync="bShowTerrace" strTitle="请选择平台" strName="name" :lst="terraceList" :sel="terraceIdx"
+			@confirm="terraceChange">
+		</popwndSelect>
+		<view class="inventory-top" id="inventory-top">
+			<view :style="{ height: height + 'px' }"></view>
+			<view class="inputs">
+				<view class="item" style="flex: 1" v-if="role == 'admin'">
+					<view class="item-title">渠道</view>
+					<view class="clrGray" style="flex: 1" @click="bShowTerrace = true">
+						<text v-if="terraceList.length !== 0">{{
+              terraceList[terraceIdx].name
+            }}</text>
+						<image src="../static/imgs/mine/right.png" mode="aspectFill"></image>
+					</view>
+				</view>
+				<view class="line" v-if="role == 'admin'"></view>
+				<view class="item" style="flex: 1">
+					<view class="item-title">出售时间</view>
+					<view class="clrGray" style="flex: 1">
+						<uni-datetime-picker v-model="sellTime"
+							style="margin-right: 40rpx;text-align: right; font-size: 28rpx; color: #c8c8c8"
+							type="daterange" @maskClick="maskDateClick" @change="maskDateClick">
+							{{createTime ? createTime : "请选择出售时间"}}
+						</uni-datetime-picker>
+						<uni-icons type="close" size="20" color="#c8c8c8" v-show="createTime" @click="clearTime">
+						</uni-icons>
+					</view>
+				</view>
+				<view class="line"></view>
+				<view class="item-state">
+					<view class="state-left">
+						<view class="state" @click="stateClick(0)" :style="{
+						    color: state == 0 ? '#1ecc99' : '#000',
+						    borderBottom: state == 0 ? '2rpx solid #1ecc99' : '#f9f9f9',
+						  }">
+							全部</view>
+						<view class="state" @click="stateClick(1)" :style="{
+				        color: state == 1 ? '#1ecc99' : '#000',
+				        borderBottom: state == 1 ? '2rpx solid #1ecc99' : '#f9f9f9',
+				      }">
+							可结算</view>
+						<view class="state" @click="stateClick(2)" :style="{
+				        color: state == 2 ? '#1ecc99' : '#000',
+				        borderBottom: state == 2 ? '2rpx solid #1ecc99' : '#f9f9f9',
+				      }">
+							不可结算</view>
+					</view>
+					<view class="export-data">
+						<navigator url="./addSale" hover-class="none" class="state-right">
+							新增销售单
+						</navigator>
+						<view class="state-right" @click="exportData">导出数据</view>
+					</view>
+				</view>
+			</view>
+		</view>
+		<view v-if="haveData == 0" class="no-data" :style="{ 'padding-top': topHeight + 30 + 'px' }">
+			<image src="../static/imgs/common/no.png" mode="aspectFill"></image>
+			<text style="font-size: 30rpx">暂无数据~</text>
+		</view>
+		<view v-else class="inventory-main" :style="{ 'padding-top': topHeight + 'px' }">
+			<view class="inventory-num">
+				<view>总数量：{{ total }}</view>
+				<view style="display: flex; justify-content: space-between" v-if="state == 1">
+					<!-- <view>销售额：{{ getPrice(allSaleMoney, "HKD") }}</view> -->
+					<view v-if="role != 'channel'">总利润：{{ getPrice(allProfit, "HKD") }}</view>
+					<view>提成：{{ getPrice(allRoyalty, "HKD") }}</view>
+				</view>
+			</view>
+			<view class="sale-list-container">
+				<view class="list-every" v-for="(item, index) in saleList" :key="index" @click="checkSaleDetail(item)">
+					<view class="every-top">
+						<view class="top-left">
+							<text>{{item.sellOrderNo}}</text>
+						</view>
+						<view class="top-right">
+							<text>{{item.sellTime}}</text>
+						</view>
+					</view>
+					<view class="every-top">
+						<view class="top-left">
+							<text>客户：</text>
+							<text>{{item.customer}}</text>
+						</view>
+					</view>
+					<view class="row" v-for="watch in item.watchList" :key="watch.stockId">
+						<view class="img">
+							<image class="img" v-if="watch.pic" :src="imgUrl + watch.pic.replace('\\', '/')"
+								mode="aspectFill">
+							</image>
+						</view>
+						<view style="flex: 1">
+							<view class="every-name">
+								<view class="bh">{{watch.brand + " - " + watch.series}}</view>
+							</view>
+							<view class="every-name">
+								<view class="bh">{{ watch.model }}</view>
+							</view>
+							<view class="every-main">
+								<view class="cs">售价：
+									<text>{{ getPrice(watch.sellMoney, watch.sellCurrency) }}</text>
+								</view>
+								<view class="cs">利润：
+									<text
+										:style="{ color: watch.profit < 0 ? 'red' : '#999' }">{{ getPrice(watch.profit, "HKD") }}</text>
+								</view>
+							</view>
+						</view>
+					</view>
+				</view>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+	import popwndSelect from "@/components/popwnd/popwnd_select_blue.vue";
+	import sofarPicker from "@/components/sofar-picker/sofar-picker.vue";
+
+	export default {
+		components: {
+			popwndSelect,
+			sofarPicker,
+		},
+		data() {
+			return {
+				role: null,
+				imgUrl: this.$baseUrl + "/watch/api",
+				haveData: 1,
+				height: null,
+				page: 1,
+
+				bShowTerrace: false,
+				terraceIdx: 0,
+				terraceList: [],
+
+				allProfit: 0,
+				allRoyalty: 0,
+				saleList: [],
+				total: 0,
+				haveMore: 0,
+
+				createTime: "",
+				startTime: "",
+				endTime: "",
+
+				topHeight: 0,
+				platform: "",
+				state: 0,
+				sellTime: [],
+			};
+		},
+		mounted() {
+			const query = uni.createSelectorQuery().in(this);
+			query
+				.select("#inventory-top")
+				.boundingClientRect((data) => {
+					console.log("顶部高度");
+					console.log(data);
+					this.topHeight = data.height;
+				})
+				.exec();
+		},
+		onLoad() {
+			this.role = uni.getStorageSync("role");
+			// 获取手机状态栏高度
+			uni.getSystemInfo({
+				success: (data) => {
+					// 将其赋值给this
+					this.height = data.statusBarHeight;
+				},
+			});
+
+			this.terraceIdx = 0;
+			if (this.saleList.length == 0 && uni.getStorageSync("token").length > 0) {
+				console.log("重新获取数据");
+
+				this.getChannelList();
+			}
+		},
+		onPullDownRefresh() {
+			uni.showLoading({
+				title: "正在刷新",
+			});
+			console.log("获取数据");
+			this.page = 1;
+			this.saleList = [];
+			this.haveMore = 0;
+
+			this.getChannelList();
+			uni.stopPullDownRefresh();
+		},
+		onReachBottom() {
+			if (this.haveMore == 0) {
+				this.page++;
+				this.saleSearch();
+			}
+		},
+		methods: {
+			// 销售单详情，可查看销售单凭证PDF或者Excel，并分享给客户
+			// 修改查看销售单
+			checkSaleDetail(item) {
+				console.log(item);
+
+				uni.navigateTo({
+					url: "./updateSale?id=" + item.id,
+				});
+			},
+			// 是否可结算
+			stateClick(num) {
+				this.state = num;
+				this.page = 1;
+				this.saleList = [];
+				this.haveMore = 0;
+				this.saleSearch();
+				uni.pageScrollTo({
+					scrollTop: 0,
+					duration: 300,
+				});
+			},
+			// 查询商品
+			saleSearch() {
+				uni.showLoading({
+					title: "加载中...",
+				});
+				this.soldNum = 0;
+				this.reserveNum = 0;
+				let data = {};
+				data = {
+					page: this.page,
+					pageNum: 10,
+					startTime: this.startTime,
+					endTime: this.endTime,
+					type: this.state,
+					sellerId: this.terraceList[this.terraceIdx].id
+				};
+
+				uni.request({
+					url: this.$baseUrl + "/newWatch/api/sellOrderList",
+					method: "POST",
+					header: {
+						"content-type": "application/json",
+						token: uni.getStorageSync("token"),
+					},
+					data: data,
+					complete: (res) => {
+						uni.hideLoading();
+						console.log("销售报表列表");
+						console.log(res);
+						if (this.checkBack(res) == false) return;
+
+						this.total = res.data.total;
+						this.allRoyalty = res.data.allComm;
+						this.allProfit = res.data.allProfit;
+
+						if (res.data.data.length == 0) {
+							this.haveMore = 1;
+						} else {
+							let data = this.saleList.concat(res.data.data);
+							this.saleList = data;
+						}
+
+						if (this.saleList.length == 0) {
+							this.haveData = 0;
+							uni.showToast({
+								icon: "none",
+								title: "暂无数据",
+							});
+						} else {
+							this.haveData = 1;
+						}
+					},
+				});
+			},
+			// 导出数据
+			exportData() {
+				uni.showLoading({
+					title: "下载中...",
+				});
+				this.soldNum = 0;
+				this.reserveNum = 0;
+				let data = {};
+				data = {
+					startTime: this.startTime,
+					endTime: this.endTime,
+				};
+
+				// if (this.groupIdx > 0) data.group = this.groupList[this.groupIdx];
+
+				uni.request({
+					url: this.$baseUrl + "/jewellery/api/salesReportExport",
+					method: "POST",
+					header: {
+						"content-type": "application/json",
+						token: uni.getStorageSync("token"),
+					},
+					data: data,
+					complete: (res) => {
+						uni.hideLoading();
+						console.log("导出销售报表");
+						console.log(res);
+						if (res.statusCode === 200) {
+							let url = this.$baseUrl + "/jewellery/api" + res.data.url;
+
+							// #ifdef APP-PLUS
+							this.platform = "APP";
+							// #endif
+							// #ifdef H5
+							this.platform = "H5";
+							// #endif
+
+							if (this.platform === "H5") {
+								//h5使用a标签下载
+								let el = document.createElement("a");
+								document.body.appendChild(el);
+								el.href = url;
+								el.target = "_blank";
+								el.click();
+								document.body.removeChild(el);
+							} else if (this.platform == "APP") {
+								//app使用原生plus下载
+								let dtask = plus.downloader.createDownload(
+									url, {
+										filename: "_downloads/" + url, //利用保存路径，实现下载文件的重命名
+									},
+									(d, status) => {
+										//d为下载的文件对象
+										if (status == 200) {
+											plus.runtime.openFile(d.filename); //选择软件打开文件
+										} else {
+											//下载失败
+											plus.downloader.clear(); //清除下载任务
+										}
+									}
+								);
+								dtask.start();
+							}
+						}
+					},
+				});
+			},
+
+			// 渠道
+			terraceChange(e) {
+				this.terraceIdx = e.sel;
+				this.page = 1;
+				this.saleList = [];
+				this.haveMore = 0;
+				this.saleSearch();
+				uni.pageScrollTo({
+					scrollTop: 0,
+					duration: 300,
+				});
+			},
+			// 销售时间
+			maskDateClick(date) {
+				console.log(date);
+				if (date) {
+					this.startTime = date[0];
+					this.endTime = date[1];
+					this.createTime = date.join(" 至 ");
+				}
+
+				this.page = 1;
+				this.saleList = [];
+				this.haveMore = 0;
+				this.saleSearch();
+				uni.pageScrollTo({
+					scrollTop: 0,
+					duration: 300,
+				});
+			},
+			// 清空时间
+			clearTime() {
+				this.sellTime = [];
+				this.startTime = "";
+				this.endTime = "";
+				this.createTime = "";
+
+				this.page = 1;
+				this.saleList = [];
+				this.haveMore = 0;
+				this.saleSearch();
+				uni.pageScrollTo({
+					scrollTop: 0,
+					duration: 300,
+				});
+			},
+			
+			// 获取渠道列表
+			getChannelList() {
+				uni.request({
+					url: this.$baseUrl + "/newWatch/api/sellSourceList",
+					header: {
+						"content-type": "application/json",
+						token: uni.getStorageSync("token"),
+					},
+					complete: (ret) => {
+						console.log("渠道列表");
+						console.log(ret);
+
+						if (this.checkBack(ret, true) == false) return;
+						if (ret.data.length > 0)
+							this.terraceList = ret.data;
+
+						this.saleSearch();
+					},
+				});
+			},
+		},
+	};
+</script>
+
+<style lang="scss" scoped>
+	.content {
+		min-height: 100vh;
+		background-color: #f9f9f9;
+
+		.inventory-top {
+			position: fixed;
+			top: var(--window-top);
+			left: 0;
+			right: 0;
+			z-index: 99;
+			background-color: #fff;
+
+			.top-input,
+			.item {
+				padding: 0 24rpx;
+			}
+
+			.mine-title {
+				height: 44px;
+				padding: 0 24rpx;
+				display: flex;
+				align-items: center;
+
+				.search-input {
+					width: 400rpx;
+					padding: 10rpx 24rpx;
+					margin-left: 20rpx;
+					background-color: #f6f6f6;
+					border-radius: 30px;
+					text-align: center;
+					font-size: 24rpx;
+				}
+			}
+
+			.inputs {
+				margin-top: 40rpx;
+
+				.item-state {
+					padding: 0 24rpx;
+					flex: 1;
+					display: flex;
+					justify-content: space-between;
+					font-size: 24rpx;
+
+					.state-left {
+						display: flex;
+						justify-content: flex-start;
+
+						.state {
+							margin-right: 30rpx;
+							padding-bottom: 20rpx;
+						}
+					}
+
+					.export-data {
+						padding-left: 24rpx;
+						flex: 1;
+						display: flex;
+						justify-content: flex-end;
+						font-size: 24rpx;
+
+						.state-right {
+							margin-left: 40rpx;
+							color: #1ecc99;
+							cursor: pointer;
+						}
+					}
+				}
+
+
+				.item {
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+
+					.item-title {
+						font-size: 28rpx;
+						color: #565656;
+						font-weight: bold;
+					}
+
+					.clrGray {
+						display: flex;
+						justify-content: flex-end;
+						align-items: center;
+
+						text {
+							font-size: 28rpx;
+							color: #c8c8c8;
+						}
+
+						image {
+							width: 44rpx;
+							height: 44rpx;
+							margin-left: 30rpx;
+						}
+					}
+				}
+
+				.line {
+					width: 100%;
+					height: 2rpx;
+					margin-top: 26rpx;
+					margin-bottom: 26rpx;
+					background-color: #f9f9f9;
+				}
+			}
+		}
+
+		.inventory-main {
+			margin-top: 20rpx;
+			padding: 0 24rpx;
+
+			.inventory-num {
+				margin-bottom: 20rpx;
+				font-size: 22rpx;
+				color: #aaa;
+			}
+
+			.sale-list-container {
+				.list-every {
+					margin-bottom: 30rpx;
+					padding: 20rpx 24rpx 30rpx;
+					border-radius: 30rpx;
+					position: relative;
+					background-color: #ffffff;
+
+					.every-top {
+						display: flex;
+						justify-content: space-between;
+						align-items: center;
+						font-size: 28rpx;
+
+						.top-left {}
+
+						.top-right {
+							font-size: 24rpx;
+							color: #1ecc99;
+						}
+					}
+
+					.row {
+						margin-top: 30rpx;
+						display: flex;
+						align-items: center;
+						color: #999999;
+						font-size: 26rpx;
+
+						.img {
+							width: 166rpx;
+							height: 168rpx;
+							margin-right: 20rpx;
+							border-radius: 20rpx;
+						}
+
+						.every-name {
+							width: 100%;
+							display: flex;
+							justify-content: space-between;
+
+							.bh {
+								width: 350rpx;
+								flex: 1;
+								overflow: hidden;
+								word-break: keep-all;
+								white-space: nowrap;
+								text-overflow: ellipsis;
+								font-size: 28rpx;
+								font-weight: bold;
+								color: #000;
+							}
+						}
+
+						.every-main {
+							.cs {
+								margin-top: 10rpx;
+								font-size: 22rpx;
+							}
+						}
+					}
+
+					.line {
+						width: 100%;
+						height: 2rpx;
+						margin: 30rpx 0;
+						background-color: #f9f9f9;
+					}
+
+					.price {
+						display: flex;
+						justify-content: space-between;
+						flex-wrap: wrap;
+						font-size: 26rpx;
+
+						.price-every {
+							margin-top: 20rpx;
+						}
+					}
+				}
+			}
+		}
+	}
+</style>

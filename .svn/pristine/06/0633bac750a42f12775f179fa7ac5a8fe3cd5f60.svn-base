@@ -1,0 +1,69 @@
+<template>
+	<view class="share-container">
+		<!-- 分享邀请 -->
+		<view class="one">
+			<text>我的邀请码：</text>
+			<text>{{inviteCode}}</text>
+			<image src="../static/imgs/common/copy.png" mode="aspectFill"
+				style="width: 40rpx;height: 40rpx;margin-left: 40rpx;" @click="copyUrl(0)"></image>
+		</view>
+		<view class="two">
+			<view class="two-left">
+				<text>网站邀请连接：</text>
+				<text>{{webUrl + inviteCode}}</text>
+			</view>
+			<image src="../static/imgs/common/copy.png" mode="aspectFill"
+				style="width: 40rpx;height: 40rpx;margin-left: 40rpx;" @click="copyUrl(1)"></image>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				webUrl: "http://192.168.0.120:8081/?",
+				inviteCode: "",
+			}
+		},
+		onLoad() {
+			this.inviteCode = uni.getStorageSync("inviteCode");
+		},
+		methods: {
+			copyUrl(code) {
+				console.log(uni.getStorageSync("inviteCode"));
+				uni.setClipboardData({
+					data: code == 0 ? this.inviteCode : this.webUrl + this.inviteCode, //要被复制的内容
+					success: () => {
+						//复制成功的回调函数
+						uni.showToast({
+							//提示
+							title: "复制成功",
+							icon: "none"
+						});
+					},
+				});
+			},
+		}
+	}
+</script>
+
+<style lang="scss" scoped>
+	.share-container{
+		padding: 24rpx;
+		
+		.two{
+			margin-bottom: 20rpx;
+			display: flex;
+			justify-content: space-between;
+			
+			.two-left{
+				display: flex;
+				flex: 1;
+				text-overflow: ellipsis;
+				overflow: hidden;
+				white-space: nowrap;
+			}
+		}
+	}
+</style>

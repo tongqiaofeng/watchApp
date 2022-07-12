@@ -1,0 +1,50 @@
+<template>
+	<view v-if="isShow">
+		<view class="start-page-container">
+			<image style="width: 264rpx;height: 271rpx;" src="../static/imgs/common/logo.png" mode="aspectFill"></image>
+			<image style="width: 378rpx;height: 65rpx;margin-top: 52rpx;" src="../static/imgs/common/title.png"
+				mode="aspectFill"></image>
+			<image style="width: 430rpx;height: 32rpx;margin-top: 30rpx;" src="../static/imgs/common/content.png"
+				mode="aspectFill"></image>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				isShow: false
+			}
+		},
+		onLoad() {
+			let first = uni.getStorageSync("isFirst");
+
+			if (first) {
+				this.isShow = false;
+
+				setTimeout(() => {
+					uni.navigateTo({
+						url: "../pages/index"
+					})
+				}, 3000)
+			} else {
+				uni.setStorageSync("isFirst", false)
+				this.isShow = true;
+				uni.navigateTo({
+					url: "../pages/index"
+				})
+			}
+		}
+	}
+</script>
+
+<style lang="scss" scoped>
+	.start-page-container {
+		padding-top: 350rpx;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		background-color: #fff;
+	}
+</style>
