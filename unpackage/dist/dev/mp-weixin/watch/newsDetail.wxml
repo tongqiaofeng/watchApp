@@ -1,0 +1,1 @@
+<view class="content data-v-6b590fd2"><view class="title data-v-6b590fd2">{{detail.title}}</view><view class="time data-v-6b590fd2">{{detail.gmtCreate}}</view><rich-text class="txt data-v-6b590fd2" nodes="{{detail.content}}"></rich-text></view>

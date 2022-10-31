@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "新闻资讯",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#F4F8FB",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "easy-loadimage": "/components/easy-loadimage/easy-loadimage"
+  }
+}

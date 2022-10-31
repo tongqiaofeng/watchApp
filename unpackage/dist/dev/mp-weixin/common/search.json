@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "商品搜索",
+  "navigationBarBackgroundColor": "#fff",
+  "navigationStyle": "custom",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "uni-icons": "/uni_modules/uni-icons/components/uni-icons/uni-icons",
+    "easy-loadimage": "/components/easy-loadimage/easy-loadimage"
+  }
+}

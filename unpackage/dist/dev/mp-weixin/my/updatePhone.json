@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "修改邮箱",
+  "navigationBarTextStyle": "black",
+  "navigationBarBackgroundColor": "#F4F8FB",
+  "usingComponents": {
+    "uni-forms": "/uni_modules/uni-forms/components/uni-forms/uni-forms",
+    "uni-forms-item": "/uni_modules/uni-forms/components/uni-forms-item/uni-forms-item"
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "pages": [
+    "pages/index",
+    "pages/classify",
+    "pages/chatList",
+    "pages/recycle",
+    "pages/mine",
+    "common/search",
+    "common/login",
+    "common/service"
+  ],
+  "subPackages": [
+    {
+      "root": "my",
+      "pages": [
+        "collectGoods",
+        "footprint",
+        "register",
+        "password",
+        "updateMyMsg",
+        "updatePhone",
+        "share"
+      ]
+    },
+    {
+      "root": "watch",
+      "pages": [
+        "newsList",
+        "detail",
+        "inventoryCheck",
+        "orderList",
+        "saleReport",
+        "saleProduct",
+        "updateSale",
+        "order",
+        "addSale",
+        "stockNumber",
+        "priceHistory",
+        "newsDetail",
+        "special"
+      ]
+    },
+    {
+      "root": "chat",
+      "pages": [
+        "chat"
+      ]
+    }
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "精品腕表，尽在TopTime",
+    "navigationBarBackgroundColor": "#F4F8FB",
+    "backgroundColor": "#F4F8FB"
+  },
+  "tabBar": {
+    "color": "#9BA0A9",
+    "selectedColor": "#03314B",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "black",
+    "spacing": "4px",
+    "list": [
+      {
+        "pagePath": "pages/index",
+        "text": "首页",
+        "iconPath": "static/imgs/tabBar/index.png",
+        "selectedIconPath": "static/imgs/tabBar/index01.png"
+      },
+      {
+        "pagePath": "pages/classify",
+        "text": "分类",
+        "iconPath": "static/imgs/tabBar/classify.png",
+        "selectedIconPath": "static/imgs/tabBar/classify01.png"
+      },
+      {
+        "pagePath": "pages/chatList",
+        "text": "消息",
+        "iconPath": "static/imgs/tabBar/message.png",
+        "selectedIconPath": "static/imgs/tabBar/message01.png"
+      },
+      {
+        "pagePath": "pages/recycle",
+        "text": "回收",
+        "iconPath": "static/imgs/tabBar/recycle.png",
+        "selectedIconPath": "static/imgs/tabBar/recycle01.png"
+      },
+      {
+        "pagePath": "pages/mine",
+        "text": "我的",
+        "iconPath": "static/imgs/tabBar/mine.png",
+        "selectedIconPath": "static/imgs/tabBar/mine01.png"
+      }
+    ]
+  },
+  "usingComponents": {}
+}
