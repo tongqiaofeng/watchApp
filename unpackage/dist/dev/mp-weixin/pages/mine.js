@@ -297,6 +297,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 var _default =
 {
   data: function data() {
@@ -351,26 +355,6 @@ var _default =
         url: "../my/share" });
 
     },
-    // 修改信息
-    updateMyMsg: function updateMyMsg() {
-      if (this.token == "" || this.token == null) {
-        this.$refs.popup.open();
-      } else {
-        uni.navigateTo({
-          url: "../my/updateMyMsg" });
-
-      }
-    },
-    // 人工客服
-    goService: function goService() {
-      if (this.token == "" || this.token == null) {
-        this.$refs.popup.open();
-      } else {
-        uni.navigateTo({
-          url: "../common/service" });
-
-      }
-    },
     // 去登录
     goLogin: function goLogin() {
       this.$refs.popup.open();
@@ -413,33 +397,13 @@ var _default =
       this.$refs.popup.close();
     },
 
-    // 销售报表
-    goSaleReport: function goSaleReport() {
+    // 页面跳转
+    goSelPage: function goSelPage(url) {
       if (this.token == "" || this.token == null) {
         this.$refs.popup.open();
       } else {
         uni.navigateTo({
-          url: "../watch/saleReport" });
-
-      }
-    },
-    // 商品收藏
-    goCollect: function goCollect() {
-      if (this.token == "" || this.token == null) {
-        this.$refs.popup.open();
-      } else {
-        uni.navigateTo({
-          url: "../my/collectGoods" });
-
-      }
-    },
-    // 浏览记录
-    goFoot: function goFoot() {
-      if (this.token == "" || this.token == null) {
-        this.$refs.popup.open();
-      } else {
-        uni.navigateTo({
-          url: "../my/footprint" });
+          url: url });
 
       }
     } } };exports.default = _default;

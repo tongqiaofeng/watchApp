@@ -128,13 +128,46 @@ var render = function() {
   var m0 = _vm.isShow ? _vm.getPrice(_vm.detail.marketHkPrice, "") : null
   var m1 = _vm.isShow ? _vm.getPrice(_vm.detail.marketUsPrice, "USD") : null
   var m2 = _vm.isShow ? _vm.getPrice(_vm.detail.publicPrice, "", "暂无") : null
+  var m3 =
+    _vm.isShow && _vm.tabSelType == 0 ? _vm.isOther(_vm.detail.brand) : null
+  var m4 =
+    _vm.isShow && _vm.tabSelType == 0 ? _vm.isOther(_vm.detail.series) : null
+  var m5 =
+    _vm.isShow && _vm.tabSelType == 0 ? _vm.isOther(_vm.detail.model) : null
+  var m6 =
+    _vm.isShow && _vm.tabSelType == 0
+      ? _vm.isOther(_vm.detail.movementType)
+      : null
+  var m7 =
+    _vm.isShow && _vm.tabSelType == 0 ? _vm.isOther(_vm.detail.dialSize) : null
+  var m8 =
+    _vm.isShow && _vm.tabSelType == 0
+      ? _vm.isOther(_vm.detail.crownMaterial)
+      : null
+  var m9 =
+    _vm.isShow && _vm.tabSelType == 0
+      ? _vm.isOther(_vm.detail.waterproof)
+      : null
+  var m10 =
+    _vm.isShow && _vm.tabSelType == 0 ? _vm.isOther(_vm.detail.func) : null
+  var m11 =
+    _vm.isShow && _vm.tabSelType == 0 ? _vm.isOther(_vm.detail.startYear) : null
   _vm.$mp.data = Object.assign(
     {},
     {
       $root: {
         m0: m0,
         m1: m1,
-        m2: m2
+        m2: m2,
+        m3: m3,
+        m4: m4,
+        m5: m5,
+        m6: m6,
+        m7: m7,
+        m8: m8,
+        m9: m9,
+        m10: m10,
+        m11: m11
       }
     }
   )
@@ -172,8 +205,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _regenerator = _interopRequireDefault(__webpack_require__(/*! ./node_modules/@babel/runtime/regenerator */ 159));function _interopRequireDefault(obj) {return obj && obj.__esModule ? obj : { default: obj };}function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {try {var info = gen[key](arg);var value = info.value;} catch (error) {reject(error);return;}if (info.done) {resolve(value);} else {Promise.resolve(value).then(_next, _throw);}}function _asyncToGenerator(fn) {return function () {var self = this,args = arguments;return new Promise(function (resolve, reject) {var gen = fn.apply(self, args);function _next(value) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);}function _throw(err) {asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);}_next(undefined);});};} //
-//
-//
 //
 //
 //
@@ -390,6 +421,32 @@ var _default =
 
   },
   methods: {
+    // 长按复制品牌
+    getCopyContent: function getCopyContent(info) {
+      uni.setClipboardData({
+        data: info, //要被复制的内容
+        success: function success() {
+          //复制成功的回调函数
+          uni.showToast({
+            //提示
+            title: "复制成功",
+            icon: "none" });
+
+        } });
+
+    },
+    // 判断参数是否为其他，是 则不显示
+    isOther: function isOther(text) {
+      if (text) {
+        if (text == "其他" || text == "其它") {
+          return false;
+        } else {
+          return true;
+        }
+      } else {
+        return false;
+      }
+    },
     // 查看行情价历史
     checkPrice: function checkPrice() {
       if (this.role == 'admin' || this.role == 'seller') {

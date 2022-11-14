@@ -1,0 +1,17 @@
+{
+    "id": "action-sheet",
+    "displayName": "action-sheet 动作面板",
+    "version": "1.0.2",
+    "description": "ActionSheet 动作面板 底部弹起的模态面板，包含与当前情境相关的多个选项。 ",
+    "keywords": [
+        "action-sheet",
+        "ActionSheet",
+        "动作面板"
+    ],
+    "dcloudext": {
+        "category": [
+            "前端组件",
+            "通用组件"
+        ]
+    }
+}

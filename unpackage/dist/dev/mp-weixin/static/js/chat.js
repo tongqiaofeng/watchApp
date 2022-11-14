@@ -1,6 +1,5 @@
 export default class Chat {
 
-
 	constructor(chatServerUrl, appID, userListRoute, userChatRoute, chatTabIdx) {
 		//帐号信息
 		this.userId = '';
