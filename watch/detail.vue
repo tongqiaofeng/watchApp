@@ -34,9 +34,10 @@
 				</view>
 			</view>
 			<view class="info">
-				<view class="flag">
-				  <text  v-if="detail.marketHkPrice">此报价仅适用于香港地区</text>
-				  <text v-if="detail.marketPriceList && detail.marketPriceList[0]">，报价时间：{{detail.marketPriceList[0]['time']}}</text> 
+				<view class="flag" v-if="detail.marketHkPrice">
+					<text>此报价仅适用于香港地区</text>
+					<text
+						v-if="detail.marketPriceList && detail.marketPriceList[0]">，报价时间：{{detail.marketPriceList[0]['time']}}</text>
 				</view>
 
 				<view class="price-right" @click="checkStockNum"
@@ -77,7 +78,8 @@
 				</view>
 				<view class="parameter-every" v-if="detail.limited == '是'">
 					<text class="title">限量版</text>
-					<text class="container">{{ detail.limitedNum > 0 ? '限量个数(' + detail.limitedNum + ')' : '限量版' }}</text>
+					<text
+						class="container">{{ detail.limitedNum > 0 ? '限量个数(' + detail.limitedNum + ')' : '限量版' }}</text>
 				</view>
 				<view class="parameter-every" v-if="detail.special.length > 1">
 					<text class="title">特别版</text>

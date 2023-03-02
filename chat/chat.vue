@@ -3,7 +3,7 @@
 		<!-- <view class="">{{flushCnt}}</view> -->
 		<view v-if="role == 'admin' || role == 'seller'" class="action">
 			<view class="note" @click="showUserNote">{{userNote ? '推荐人:' + userNote : '无推荐人'}}</view>
-      <view class="history" @click="goFootprint">浏览记录</view>
+			<view class="history" @click="goFootprint">浏览记录</view>
 			<navigator class="sale" :url="'../watch/addSale?code='+userNote+'&cusid=' + userId">添加销售单</navigator>
 		</view>
 
@@ -12,11 +12,12 @@
 			<!-- <view v-if="loadMore && msgList.length > 0" class="loadMore" @click="loadMoreMsg()">
 				查看更多消息
 			</view> -->
-			
+
 			<view v-if="serviceTag && msgList.length == 0" class="item">
 				<view class="tip">
 					<view class="msg" style="width: 500rpx">
-						<view style=" text-align: center; font-weight: bold; padding-bottom: 20rpx; margin-bottom: 20rpx; color: #333333; border-bottom: 1rpx solid #85dbd0; ">
+						<view
+							style=" text-align: center; font-weight: bold; padding-bottom: 20rpx; margin-bottom: 20rpx; color: #333333; border-bottom: 1rpx solid #85dbd0; ">
 							{{ serviceTagTitle }}
 						</view>
 						<text>{{ serviceTag }}</text>
@@ -34,14 +35,17 @@
 					<!-- 消息 -->
 					<view v-if="isSelf(msg.sender)" style="display: flex">
 						<view style="flex: 1"></view>
-						<text @longpress="showActionSheet(msg, true)" v-if="msg.contentType == 0" class="msg" style="background-color: #1ECC99;">
+						<text @longpress="showActionSheet(msg, true)" v-if="msg.contentType == 0" class="msg"
+							style="background-color: #1ECC99;">
 							<text v-for="(src, index2) in msg.contentTexts" :key="index2">
 								<uni-link v-if="src.isUrl" :href="src.url" :text="src.text" color="#0D1171"></uni-link>
 								<text v-else>{{src.text}}</text>
 							</text>
 						</text>
-						<image v-else-if="msg.contentType == 1" class="msgPic" :src="msg.contentPic" mode="widthFix" @click="previewImage(msg.contentPic)"></image>
-						<view v-else-if="msg.contentType == 11" class="detail"  @click="gotoDetail(msg.contentText.type, msg.contentText.id)">
+						<image v-else-if="msg.contentType == 1" class="msgPic" :src="msg.contentPic" mode="widthFix"
+							@click="previewImage(msg.contentPic)"></image>
+						<view v-else-if="msg.contentType == 11" class="detail"
+							@click="gotoDetail(msg.contentText.type, msg.contentText.id)">
 							<view style="display: flex;">
 								<image :src="msg.contentText.pic" mode="aspectFill" class="img"></image>
 								<view style="display: flex; flex-direction: column;justify-content: space-around;">
@@ -51,22 +55,26 @@
 							</view>
 						</view>
 						<!-- <image v-if="msg.contentType == 0" src="../static/imgs/chat/r.png" mode="aspectFill" style="width: 30rpx; height: 30rpx; margin-left: -8rpx; margin-top: 20rpx;"></image> -->
-						<image class="head" style="margin-left: 20rpx" :src="getUserHead(msg.sender)" mode="aspectFill"></image>
+						<image class="head" style="margin-left: 20rpx" :src="getUserHead(msg.sender)" mode="aspectFill">
+						</image>
 
 						<!-- <view v-if="msg.readStatus == -1">发送中</view> -->
 						<!-- <view @click="chat_deleteMsgCmd(msg.receiver, msg.id)">撤销</view> -->
 					</view>
 					<view v-else style="display: flex">
-						<image class="head" :src="getUserHead(msg.sender)" mode="aspectFill" @click="showUserNote()"></image>
+						<image class="head" :src="getUserHead(msg.sender)" mode="aspectFill" @click="showUserNote()">
+						</image>
 						<!-- <image v-if="msg.contentType == 0" src="../static/imgs/chat/l.png" mode="aspectFill" style="width: 30rpx; height: 30rpx; margin-right: -8rpx; margin-top: 20rpx;"></image> -->
 						<text @longpress="showActionSheet(msg, false)" v-if="msg.contentType == 0" class="msg">
-							<text v-for="(src, index3) in msg.contentTexts" :key="index3"> 
+							<text v-for="(src, index3) in msg.contentTexts" :key="index3">
 								<uni-link v-if="src.isUrl" :href="src.url" :text="src.text" color="#0D1171"></uni-link>
 								<text v-else>{{src.text}}</text>
 							</text>
 						</text>
-						<image v-else-if="msg.contentType == 1" class="msgPic" :src="msg.contentPic" mode="widthFix" @click="previewImage(msg.contentPic)"></image>
-						<view v-else-if="msg.contentType == 11" class="detail"  @click="gotoDetail(msg.contentText.type, msg.contentText.id)">
+						<image v-else-if="msg.contentType == 1" class="msgPic" :src="msg.contentPic" mode="widthFix"
+							@click="previewImage(msg.contentPic)"></image>
+						<view v-else-if="msg.contentType == 11" class="detail"
+							@click="gotoDetail(msg.contentText.type, msg.contentText.id)">
 							<view style="display: flex;">
 								<image :src="msg.contentText.pic" mode="aspectFill" class="img"></image>
 								<view style="display: flex; flex-direction: column;justify-content: space-around;">
@@ -80,7 +88,7 @@
 
 				</view>
 			</view>
-			
+
 			<view v-if="detail" style="display: flex; flex-direction: column; align-items: center;padding-top: 20rpx;">
 				<view class="detail" @click="gotoDetail(detail.type, detail.id)">
 					<view style="display: flex;border-bottom: 1rpx solid #cccccc;padding-bottom: 15rpx;">
@@ -93,7 +101,7 @@
 					<view class="button" @click="sendDetail">发送链接</view>
 				</view>
 			</view>
- 
+
 			<view style="height: 20rpx"></view>
 		</scroll-view>
 
@@ -129,27 +137,27 @@
 				content: "",
 				flushCnt: 0,
 				msgList: [],
-				serviceTagTitle:'',
-				serviceTag:'',
+				serviceTagTitle: '',
+				serviceTag: '',
 				serviceMsgId: -1,
 				scrollHeight: 100,
 				scrollIntoView: "",
 				mode: 0,
 				loadMore: true,
-				
-				detail:null,
-				
-				userNote:'',
-				role:'',
-				userName:'',
+
+				detail: null,
+
+				userNote: '',
+				role: '',
+				userName: '',
 			};
 		},
 		async onLoad(e) {
-			
+
 			await this.$onLaunched;
-			
+
 			this.userId = e.id;
-			
+
 
 			if (e.name) {
 				uni.setNavigationBarTitle({
@@ -162,39 +170,39 @@
 				this.flushData();
 				//alert('user-msg-update');
 			});
-			
-			
+
+
 			getApp().globalData.g_chat.setCurChatUserId(this.userId);
 			getApp().globalData.g_chat.updateUserMsg(this.userId);
 			this.userNote = getApp().globalData.g_chat.getUserNote(this.userId);
 			this.role = uni.getStorageSync("role");
-			
-			if(getApp().globalData.pageInItem){
+
+			if (getApp().globalData.pageInItem) {
 				this.detail = getApp().globalData.pageInItem;
 				getApp().globalData.pageInItem = '';
 			}
-			
+
 			let serviceTag = uni.getStorageSync('service_tag');
-			if(serviceTag){
+			if (serviceTag) {
 				serviceTag = serviceTag.split("|");
-				if(serviceTag.length == 2){
-					
+				if (serviceTag.length == 2) {
+
 					uni.setStorageSync('service_tag', '');
-					
+
 					setTimeout(() => {
 						this.serviceTagTitle = serviceTag[0];
 						this.serviceTag = serviceTag[1];
 					}, 1000);
-					
+
 				}
 			}
-			
+
 			setTimeout(() => {
 				this.calcHeight();
 			}, 500);
 		},
 		onShow() {
-			if (getApp().globalData.g_chat){
+			if (getApp().globalData.g_chat) {
 				getApp().globalData.g_chat.updateUserMsg(this.userId);
 			}
 		},
@@ -211,8 +219,8 @@
 					this.detail = '';
 				}
 			},
-			sendDetail(){
-				if(this.detail){
+			sendDetail() {
+				if (this.detail) {
 					if (getApp().globalData.g_chat) {
 						getApp().globalData.g_chat.sendMsgToUserCmd(this.userId, JSON.stringify(this.detail), 11);
 						this.detail = '';
@@ -225,7 +233,7 @@
 				let userIdx = getApp().globalData.g_chat.findUser(this.userId);
 				let userName = '';
 				if (userIdx > -1) {
-					
+
 					let oldStartMsgId = 0;
 					let oldEndMsgId = 0;
 					if (this.msgList.length > 0) {
@@ -236,19 +244,17 @@
 					this.msgPicList = [];
 					let temp = {};
 					let userList = getApp().globalData.g_chat.getUserList();
-					for ( let i = 0; i < userList[userIdx].msgList.length; ++i ) {
+					for (let i = 0; i < userList[userIdx].msgList.length; ++i) {
 						temp = this.deepClone(userList[userIdx].msgList[i]);
-						
+
 						if (temp.contentType == 1) {
 							//处理图片
 							temp.contentPic = this.baseFileUrl + "/file/" + temp.contentText;
 							this.msgPicList.push(temp.contentPic);
-						}
-						else if(temp.contentType == 11){
+						} else if (temp.contentType == 11) {
 							//处理商品详情信息
 							temp.contentText = JSON.parse(temp.contentText);
-						}
-						else{
+						} else {
 							//处理消息中的url
 							temp.contentTexts = this.getHref(temp.contentText);
 						}
@@ -257,7 +263,7 @@
 						//处理时间
 						this.msgList[i].showTime = this.getMsgTime(i);
 					}
-	
+
 
 					if (this.msgList.length > 0) {
 						let newStartMsgId = this.msgList[0].id;
@@ -382,10 +388,10 @@
 								url: this.$baseFileUrl + "/upload",
 								fileType: "image",
 								filePath: tempFilePaths[i],
-                name: "files",
-                formData: {
-                  type: 3
-                },
+								name: "files",
+								formData: {
+									type: 3
+								},
 								success: (res) => {
 									console.log("上传成功", res);
 									if (res.statusCode === 200) {
@@ -422,25 +428,46 @@
 					indicator: "default",
 				});
 			},
-			showActionSheet(msg, isSelf){
+			showActionSheet(msg, isSelf) {
 				let itemList = [];
-				if(msg.contentType == 0) itemList.push('复制');
-				if(isSelf) itemList.push('撤回');
+				if (msg.contentType == 0) itemList.push('复制');
+				if (isSelf) {
+					let d1 = new Date(msg.time).getTime();
+					let d2 = this.get_time_diff(d1);
+					if (d2 < 6) {
+						itemList.push('撤回')
+					}
+				};
 				console.log(msg);
-				if(itemList.length > 0){
+				if (itemList.length > 0) {
 					uni.showActionSheet({
 						itemList: itemList,
 						success: (e) => {
-							if(itemList[e.tapIndex] == '复制')
+							if (itemList[e.tapIndex] == '复制')
 								this.copyItem(msg.contentText);
-							else if(itemList[e.tapIndex] == '撤回')
+							else if (itemList[e.tapIndex] == '撤回')
 								this.deleteMsg(msg);
 						}
 					})
 				}
-				
+
 			},
-			copyItem(src){
+			/**
+			 * JS获取距当前时间差
+			 * 
+			 * @param int time JS毫秒时间戳
+			 *
+			 */
+			get_time_diff(time) {
+				let time_diff = new Date().getTime() - time;
+				console.log(new Date().getTime());
+
+				let minutes = Math.floor(time_diff / (60 * 1000));
+				console.log('分钟', minutes);
+
+				return minutes;
+			},
+			copyItem(src) {
 				uni.setClipboardData({
 					data: src, //要被复制的内容
 					success: () => {
@@ -453,8 +480,8 @@
 					},
 				});
 			},
-			deleteMsg(msg){
-				if (getApp().globalData.g_chat){
+			deleteMsg(msg) {
+				if (getApp().globalData.g_chat) {
 					let myUserId = getApp().globalData.userInfo.userId;
 					getApp().globalData.g_chat.deleteMsgCmd(msg.receiver, msg.id);
 				}
@@ -465,26 +492,33 @@
 				}
 				let urlPattern = /(https?:\/\/|www\.)[a-zA-Z_0-9\-@]+(\.\w[a-zA-Z_0-9\-:]+)+(\/[\(\)~#&\-=?\+\%/\.\w]+)?/g;
 				content = content.replace(urlPattern, function(match) {
-					
-					return "b6b675fZ-fc22-4947-b0e2-887adX93d23e" + "" + match + "b6b675fZ-fc22-4947-b0e2-887adX93d23e";
+
+					return "b6b675fZ-fc22-4947-b0e2-887adX93d23e" + "" + match +
+						"b6b675fZ-fc22-4947-b0e2-887adX93d23e";
 				});
 				content = content.split("b6b675fZ-fc22-4947-b0e2-887adX93d23e");
 				let ret = [];
-				for(let i = 0; i < content.length; ++i){
-					if(content[i].length > 0){
-						if(content[i].search(urlPattern) == -1){
-							ret.push({isUrl: false, text: content[i]});
-						}
-						else{
+				for (let i = 0; i < content.length; ++i) {
+					if (content[i].length > 0) {
+						if (content[i].search(urlPattern) == -1) {
+							ret.push({
+								isUrl: false,
+								text: content[i]
+							});
+						} else {
 							let url = content[i];
 							if (url.indexOf("http") == -1) url = "http://" + url;
-							ret.push({isUrl: true, text: content[i], url:url});
+							ret.push({
+								isUrl: true,
+								text: content[i],
+								url: url
+							});
 						}
 					}
 				}
 				return ret;
 			},
-			gotoDetail(type, id){
+			gotoDetail(type, id) {
 				if (type == "jewelry") {
 					uni.navigateTo({
 						url: "../jewelry/jewelryDetails?id=" + id,
@@ -499,8 +533,8 @@
 					});
 				}
 			},
-			showUserNote(){
-				if(this.userNote){
+			showUserNote() {
+				if (this.userNote) {
 					uni.setClipboardData({
 						data: this.userNote, //要被复制的内容
 						success: () => {
@@ -513,37 +547,35 @@
 						},
 					});
 				}
-      },
-      goFootprint () {
-        if (this.userId.indexOf("tempChat") != -1) {
-          uni.showToast({
-            title: "用户暂未注册",
-            icon: "none",
-          });
-        } else {
-          uni.navigateTo({url: './footprint?userId=' + this.userId.split('_')[1]})
-        }
-      }
+			},
+			goFootprint() {
+				if (this.userId.indexOf("tempChat") != -1) {
+					uni.showToast({
+						title: "用户暂未注册",
+						icon: "none",
+					});
+				} else {
+					uni.navigateTo({
+						url: './footprint?userId=' + this.userId.split('_')[1]
+					})
+				}
+			}
 		},
 	};
 </script>
 
 <style lang="scss" scoped>
-	.action{
+	.action {
 		display: flex;
 		justify-content: space-between;
 		padding: 20rpx;
 		font-size: 26rpx;
-		
-		.note{
-			
-		}
-		
-		.sale{
-			
-		}
+
+		.note {}
+
+		.sale {}
 	}
-	
+
 	.msgLst {
 		background-color: #ededed;
 
@@ -595,31 +627,31 @@
 				margin-bottom: 40rpx;
 			}
 		}
-		
-		.detail{
+
+		.detail {
 			background-color: #ffffff;
 			padding: 15rpx;
 			border-radius: 10rpx;
 			width: 500rpx;
 			font-size: 28rpx;
-			display: flex; 
-			flex-direction: column; 
+			display: flex;
+			flex-direction: column;
 			align-items: center;
-			
-			.img{
+
+			.img {
 				width: 100rpx;
 				height: 100rpx;
 				margin-right: 20rpx;
 			}
-			
-			.text{
+
+			.text {
 				width: 380rpx;
 				overflow: hidden;
 				text-overflow: ellipsis;
 				white-space: nowrap;
 			}
-			
-			.button{
+
+			.button {
 				background-color: #1ECC99;
 				line-height: 70rpx;
 				width: 200rpx;
@@ -627,7 +659,7 @@
 				color: #ffffff;
 				text-align: center;
 				margin-top: 15rpx;
-				
+
 			}
 		}
 	}
