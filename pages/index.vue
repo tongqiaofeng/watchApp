@@ -111,8 +111,7 @@
 							<easy-loadimage class="img" :image-src="item.pic" :scroll-top="scrollTop"
 								border-radius="30rpx" mode="aspectFit"></easy-loadimage>
 						</view>
-						<image class="specialImg"  :src="getSpecialImg(item)"
-							mode="aspectFit"></image>
+						<image class="specialImg" :src="getSpecialImg(item)" mode="aspectFit"></image>
 						<view class="title">{{ getShowTitle(item) }}</view>
 						<view class="title" style="margin-top: 10rpx;">{{ item.model }}</view>
 						<view v-if="item.marketHkPrice != 0" class="price">
@@ -426,17 +425,17 @@
 						if (res.data.data.length == 0) {
 							this.isLoadMore = false;
 						} else {
-              let list = res.data.data;
+							let list = res.data.data;
 							for (let i = 0; i < list.length; ++i) {
+								if (!list[i].pic) list[i].pic = '';
 								if (list[i].pic.length == 0) {
 									list[i].pic = '~@/static/imgs/common/nopic.jpg';
 								} else {
-									list[i].pic = this.$baseUrl + "/api/watch/stock" + list[i].pic.replace('\\',
-										'/');
+									list[i].pic = this.$baseUrl + "/api/watch/stock" + list[i].pic.replace( '\\', '/');
 								}
 							}
-              list = this.watchsList.concat(list);
-              console.log(list)
+							list = this.watchsList.concat(list);
+							console.log(list)
 							this.watchsList = list;
 						}
 					},

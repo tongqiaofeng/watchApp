@@ -19,7 +19,7 @@
 		<view :style="{ 'margin-top': topConHeight + 'px' }">
 			<view v-if="list.length == 0 && curPage == 2" class="no-data" style="padding-top: 300rpx">
 				<image src="../static/imgs/common/no.png" mode="aspectFill"></image>
-				<text style="font-size: 30rpx">暂无商品哦~</text>
+				<text style="font-size: 28rpx">暂无商品哦~</text>
 			</view>
 			<view v-else>
 				<view class="product-list">
@@ -140,6 +140,7 @@
 						let list = res.data.data;
 						let total = res.data.total;
 						for (let i = 0; i < list.length; ++i) {
+							if(!list[i].pic) list[i].pic = '';
 							if (list[i].pic.length == 0) {
 								list[i].pic = '~@/static/imgs/common/nopic.jpg';
 							} else {

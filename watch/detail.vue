@@ -257,6 +257,7 @@
 			// 判断参数是否为其他，是 则不显示
 			isOther(text) {
 				if (text) {
+				text = text.replace('|', '');
 					if (text == '其他' || text == '其它') {
 						return false;
 					} else {
@@ -340,6 +341,7 @@
 
 						this.imgSrc = [];
 						if (this.detail.pics != '' && this.detail.pics != null) {
+							this.detail.pics += '|';
 							let p = this.detail.pics.split('|');
 							for (let i = 0; i < p.length - 1; i++) {
 								if (p[i].trim().length > 0) {

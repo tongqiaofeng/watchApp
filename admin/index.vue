@@ -2,7 +2,7 @@
 	<view class="mine-container">
 		<view class="mine-main">
 			<view class="main-top">
-				<navigator url="../watch/inventoryCheck" hover-class="none" v-if="role == 'admin' || role == 'seller'">
+				<navigator url="./stockList" hover-class="none" v-if="role == 'admin' || role == 'seller'">
 					<view class="top-one">
 						<view class="one-font">
 							<image style="width: 46rpx;height: 46rpx;margin-right: 26rpx;"
@@ -14,7 +14,7 @@
 						</view>
 					</view>
 				</navigator>
-				<navigator url="../watch/saleReport" hover-class="none" v-if="role && role != 'indi'">
+				<navigator url="./saleList" hover-class="none" v-if="role == 'admin' || role == 'seller'">
 					<view class="top-one">
 						<view class="one-font">
 							<image style="width: 46rpx;height: 46rpx;margin-right: 26rpx;"
@@ -26,15 +26,63 @@
 						</view>
 					</view>
 				</navigator>
+				<navigator url="./bill" hover-class="none" v-if="role == 'admin'">
+					<view class="top-one">
+						<view class="one-font">
+							<image style="width: 46rpx;height: 46rpx;margin-right: 26rpx;"
+								src="../static/imgs/mine/002.png" mode="aspectFill"></image>
+							<text>账单查看</text>
+						</view>
+						<view class="one-img">
+							<image src="../static/imgs/mine/right.png" mode="aspectFill"></image>
+						</view>
+					</view>
+				</navigator>
 			</view>
 			
-			<view class="main-top main-center">
+			<view v-if="role == 'admin'" class="main-top main-center">
 				<navigator url="./purchaseReport" hover-class="none">
 					<view class="top-one">
 						<view class="one-font">
 							<image style="width: 46rpx;height: 46rpx;margin-right: 26rpx;"
 								src="../static/imgs/mine/002.png" mode="aspectFill"></image>
 							<text>采购报表</text>
+						</view>
+						<view class="one-img">
+							<image src="../static/imgs/mine/right.png" mode="aspectFill"></image>
+						</view>
+					</view>
+				</navigator>
+				<navigator url="./stockReport" hover-class="none">
+					<view class="top-one">
+						<view class="one-font">
+							<image style="width: 46rpx;height: 46rpx;margin-right: 26rpx;"
+								src="../static/imgs/mine/002.png" mode="aspectFill"></image>
+							<text>仓库报表</text>
+						</view>
+						<view class="one-img">
+							<image src="../static/imgs/mine/right.png" mode="aspectFill"></image>
+						</view>
+					</view>
+				</navigator>
+				<navigator url="./saleReport" hover-class="none">
+					<view class="top-one">
+						<view class="one-font">
+							<image style="width: 46rpx;height: 46rpx;margin-right: 26rpx;"
+								src="../static/imgs/mine/002.png" mode="aspectFill"></image>
+							<text>销售报表</text>
+						</view>
+						<view class="one-img">
+							<image src="../static/imgs/mine/right.png" mode="aspectFill"></image>
+						</view>
+					</view>
+				</navigator>
+				<navigator url="./watchList" hover-class="none">
+					<view class="top-one">
+						<view class="one-font">
+							<image style="width: 46rpx;height: 46rpx;margin-right: 26rpx;"
+								src="../static/imgs/mine/002.png" mode="aspectFill"></image>
+							<text>手表列表</text>
 						</view>
 						<view class="one-img">
 							<image src="../static/imgs/mine/right.png" mode="aspectFill"></image>

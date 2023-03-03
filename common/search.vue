@@ -40,13 +40,12 @@
 						</view>
 					</view>
 					<view class="filter-every" @click="filterSel04">
-						<view class="every-main">
+						<view class="every-main vCenter">
 							<text class="every-font" :style="{
 					        color: select == 3 || select == 4 ? '#03314B' : '#737C81',
 					      }">筛选</text>
 							<view class="every-img">
-								<image :src="select == 3  || select == 4 ? imgFilter1 : imgFilter2" mode="aspectFit">
-								</image>
+								<image :src="select == 3  || select == 4 ? imgFilter1 : imgFilter2" mode="aspectFit"></image>
 							</view>
 						</view>
 					</view>
@@ -71,7 +70,7 @@
 		<view :style="{ 'margin-top': topConHeight + 'px' }">
 			<view v-if="haveData == 0" class="no-data" style="padding-top: 300rpx">
 				<image src="../static/imgs/common/no.png" mode="aspectFill"></image>
-				<text style="font-size: 30rpx">暂无商品哦~</text>
+				<text style="font-size: 28rpx">暂无商品哦~</text>
 			</view> 
 			<view v-else>
 				<view class="product-list">
@@ -152,7 +151,7 @@
 
 			this.brand = option.brand === undefined ? "" : JSON.parse(decodeURIComponent(option.brand));
 			this.series = option.series === undefined ? "" : JSON.parse(decodeURIComponent(option.series));
-			console.log(this.brand, this.series);
+			this.keyword = option.keyword === undefined ? "" : JSON.parse(decodeURIComponent(option.keyword));
 
 			this.getList();
 
@@ -214,6 +213,7 @@
 						} else {
 							let list = res.data.data;
 							for (let i = 0; i < list.length; ++i) {
+								if(!list[i].pic) list[i].pic = '';
 								if (list[i].pic.length == 0) {
 									list[i].pic = '~@/static/imgs/common/nopic.jpg';
 								} else {

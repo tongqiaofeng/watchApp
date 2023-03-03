@@ -2,7 +2,7 @@
 	<view class="content">
 		<popwndSelect :visible.sync="bShowYear" strTitle="请选择时间" :lst="yearList" :sel="yearIdx" @confirm="yearChange"/>
 			
-		<view class="select">
+		<view class="select sticky" :style="{ top: windowTop + 'px' }">
 			<view class="name" @click="bShowYear = true">{{yearList[yearIdx]}}</view>
 			<view :class="['item', {'noneSel':index != curSel}]" v-for="(item, index) in selValue" :key="index" @click="selChange(index)">
 				{{item}}
@@ -12,8 +12,10 @@
 		<view class="chart">
 			
 			<view class="mainTitle">
-				<view class="img"></view>
-				<view class="name">采购概况{{ yearIdx == 1 ? '（环比）' : ''}}</view>
+				<view class="row vCenter">
+					<view class="img"></view>
+					<view class="name">采购概况{{ yearIdx == 1 ? '（环比）' : ''}}</view>
+				</view>
 			</view>
 			
 			<view style="display: flex; justify-content: space-around;">
@@ -33,8 +35,15 @@
 		
 		<view class="chart">
 			<view class="mainTitle">
-				<view class="img"></view>
-				<view class="name">采购组分布</view>
+				<view class="row vCenter">
+					<view class="img"></view>
+					<view class="name">采购组分布</view>
+				</view>
+				
+				<view class="row vCenter" @click="gotoTable(0)">
+					<view class="more">详情</view>
+					<image src="../static/imgs/common/right.png" mode="aspectFit" style="width: 35rpx; height: 35rpx;"></image>
+				</view>
 			</view>
 			
 			<canvas canvas-id="pie1" id="pie1" style="width: 700rpx; height: 500rpx;" />
@@ -42,8 +51,15 @@
 		
 		<view class="chart">
 			<view class="mainTitle">
-				<view class="img"></view>
-				<view class="name">采购点分布</view>
+				<view class="row vCenter">
+					<view class="img"></view>
+					<view class="name">采购点分布</view>
+				</view>
+				
+				<view class="row vCenter" @click="gotoTable(1)">
+					<view class="more">详情</view>
+					<image src="../static/imgs/common/right.png" mode="aspectFit" style="width: 35rpx; height: 35rpx;"></image>
+				</view>
 			</view>
 			
 			<canvas canvas-id="pie2" id="pie2" style="width: 700rpx; height: 500rpx;" />
@@ -51,8 +67,15 @@
 		
 		<view class="chart">
 			<view class="mainTitle">
-				<view class="img"></view>
-				<view class="name">采购品牌分布</view>
+				<view class="row vCenter">
+					<view class="img"></view>
+					<view class="name">采购品牌分布</view>
+				</view>
+				
+				<view class="row vCenter" @click="gotoTable(2)">
+					<view class="more">详情</view>
+					<image src="../static/imgs/common/right.png" mode="aspectFit" style="width: 35rpx; height: 35rpx;"></image>
+				</view>
 			</view>
 			
 			<canvas canvas-id="pie3" id="pie3" style="width: 700rpx; height: 500rpx;" />
@@ -60,8 +83,15 @@
 		
 		<view class="chart">
 			<view class="mainTitle">
-				<view class="img"></view>
-				<view class="name">采购型号分布</view>
+				<view class="row vCenter">
+					<view class="img"></view>
+					<view class="name">采购型号分布</view>
+				</view>
+				
+				<view class="row vCenter" @click="gotoTable(3)">
+					<view class="more">详情</view>
+					<image src="../static/imgs/common/right.png" mode="aspectFit" style="width: 35rpx; height: 35rpx;"></image>
+				</view>
 			</view>
 			
 			<canvas canvas-id="pie4" id="pie4" style="width: 700rpx; height: 500rpx;" />
@@ -69,8 +99,15 @@
 		
 		<view class="chart">
 			<view class="mainTitle">
-				<view class="img"></view>
-				<view class="name">采购金额、数量图表</view>
+				<view class="row vCenter">
+					<view class="img"></view>
+					<view class="name">金额、数量图表</view>
+				</view>
+				
+				<view class="row vCenter" @click="gotoTable(4)">
+					<view class="more">详情</view>
+					<image src="../static/imgs/common/right.png" mode="aspectFit" style="width: 35rpx; height: 35rpx;"></image>
+				</view>
 			</view>
 			
 			<view class="title">
@@ -92,7 +129,7 @@
 				<view class="title2">数量</view>
 				<canvas canvas-id="chart3" id="chart3" class="main2" @touchstart="touchColumn($event, 'chart3')"
 					@touchmove="moveColumn($event, 'chart3')" @touchend="touchEndColumn($event, 'chart3')"
-					@tap="tapColumn($event, 'chart1')" />
+					@tap="tapColumn($event, 'chart3')" />
 			</view>
 		</view>
 		
@@ -111,12 +148,13 @@
 		},
 		data() {
 			return {
+				windowTop:44,
 				data:{},
 				bShowYear: false,
 				yearIdx: 0,
 				yearList: ['2018~至今'],
 				
-				selValue: ['采购金额', '采购数量'],
+				selValue: ['金额', '数量'],
 				curSel: 0,
 				
 				arcbar1_value:'',
@@ -131,13 +169,14 @@
 					series: [{
 							name: "",
 							type: "column",
-							color: '#7bdcca',
+							color: '#1ECC99',
 							data: [],
 				
 						}, {
 							name: "",
 							type: "area",
 							style: "curve",
+							color: '#1ECC99',
 							data: [],
 				
 						}
@@ -156,6 +195,7 @@
 							name: "",
 							type: "area",
 							style: "curve",
+							color: '#5A82F5',
 							data: []
 						},
 					]
@@ -163,14 +203,30 @@
 			}
 		},
 		onLoad(){
-			this.initYear();
+			this.initYear(2015);
 			
 			this.getInfo();
 		},
+		onReady() {
+			if(this.hidePageNavInWechatBrowser()){
+				this.windowTop = 0;
+			}
+			else{
+				uni.getSystemInfo({
+					success: (data) => {
+						this.windowTop = data.windowTop;
+					},
+				});
+			}	
+		},
+		onPullDownRefresh(){
+			this.getInfo();
+			uni.stopPullDownRefresh();
+		},
 		methods: {
-			initYear(){
-				this.yearList = ['2018~至今'];
-				for(let i = new Date().getFullYear(); i >= 2018; --i){
+			initYear(start){
+				this.yearList = [ start + '~至今'];
+				for(let i = new Date().getFullYear(); i >= start; --i){
 					this.yearList.push(i + '年');
 				} 
 			},
@@ -195,13 +251,26 @@
 					},
 					success: (res) => {
 						uni.hideLoading();
+						
+						if(this.checkBack(res) == false) return;
+						
 						this.data = res.data.data;
 						
+						this.data.distributionOverviewMsg.deptDistributionDetail.typeAmountDetailList = this.findArrValue(this.data.distributionOverviewMsg.deptDistributionDetail.typeAmountDetailList, '业务');
+						this.data.distributionOverviewMsg.deptDistributionDetail.typeNumDetailList = this.findArrValue(this.data.distributionOverviewMsg.deptDistributionDetail.typeNumDetailList, '业务');
 						
+						if(this.data.year){
+							this.initYear(this.data.year);
+						}
 						this.initChart();
 					},
 					fail: (err) => {
 						uni.hideLoading();
+						uni.showToast({
+							title:'加载超时，请下拉重试',
+							icon: 'none',
+							duration:2500
+						})
 					},
 				});
 				
@@ -217,14 +286,6 @@
 			selChange1(idx) {
 				this.curSel1 = idx;
 				this.initChart();
-			},
-			onClickTabItem(e){
-				if (this.tabCurrent != e.currentIndex) {
-				    this.tabCurrent = e.currentIndex;
-					if(this.tabCurrent == 0){
-						
-					}
-				}
 			},
 			initChart()
 			{
@@ -244,8 +305,8 @@
 					this.drawArcbar("arcbar1", 250, 1, "#1890FF", this.yearList[this.yearIdx], this.selValue[this.curSel]);
 				}
 				else{
-					this.drawArcbar("arcbar1", 250, arcbar1_percent/100, "#1890FF", arcbar1_percent + '%', '年度目标');
-					this.drawArcbar("arcbar2", 250, arcbar2_percent/100, "#91CB74", arcbar2_percent + '%', '季度目标');
+					this.drawArcbar("arcbar1", 250, arcbar1_percent/100, "#1890FF", arcbar1_percent + '%', '与去年比');
+					this.drawArcbar("arcbar2", 250, arcbar2_percent/100, "#91CB74", arcbar2_percent + '%', '与上季度比');
 				}
 					
 				
@@ -255,6 +316,7 @@
 				
 				//采购点分布
 				let pie2_Data =  this.curSel == 0 ? this.data.distributionOverviewMsg.sourceDistributionDetail.typeAmountDetailList : this.data.distributionOverviewMsg.sourceDistributionDetail.typeNumDetailList;
+				pie2_Data = this.changeData(pie2_Data, 8);
 				this.drawPie("pie2", [{ data : pie2_Data }]);
 				
 				//采购品牌分布
@@ -267,7 +329,7 @@
 				pie4_Data = this.changeData(pie4_Data, 8);
 				this.drawPie("pie4", [{ data : pie4_Data }]);
 				
-				//采购金额、数量图表
+				//金额、数量图表
 				//chart1
 				let chartData1 = this.deepClone(this.chartData1);
 				let chartData3 = this.deepClone(this.chartData3);
@@ -365,7 +427,14 @@
 					}
 				});
 			},
-			drawPie(id, series) {
+			drawPie(id, seriesEx) {
+				let series = this.deepClone(seriesEx);
+				for(let i = 0; i < series[0].data.length; ++i){
+					if(series[0].data[i].value < 0) series[0].data[i].value = 0;
+					if(series[0].data[i].name.length > 10) series[0].data[i].name = series[0].data[i].name.substring(0, 10);
+				}
+				
+				
 				const ctx = uni.createCanvasContext(id, this);
 				uChartsInstance[id] = new uCharts({
 					type: "pie",
@@ -487,6 +556,133 @@
 				// 	}
 				// });
 			},
+			gotoTable(type){
+				let tableData = {};
+				
+				let total = 0;
+				
+				if(type == 0){
+					tableData.title = '采购组分布详情';
+					tableData.tableHead = [ {width:20, name:'采购组'}, {width:20, name:'金额', sort:true}, {width:20, name:'数量', sort:true} ];
+					
+					tableData.datas = [];
+					let datas = this.data.distributionOverviewMsg.deptDistributionDetail;
+					for(let i = 0; i < datas.typeAmountDetailList.length; ++i){
+						let rowCells = [];
+						rowCells.push({value: datas.typeAmountDetailList[i].name});
+						rowCells.push({value: this.getPrice(datas.typeAmountDetailList[i].value, 'HKD', '-', 0), num: datas.typeAmountDetailList[i].value });
+						let num = this.getNumValue(datas.typeNumDetailList, datas.typeAmountDetailList[i].name);
+						rowCells.push({value: this.getPrice(num, '', '', 0), num: num });
+						
+						tableData.datas.push({cells: rowCells});
+					
+						total += datas.typeAmountDetailList[i].value;
+					}
+					console.log(total);
+				}
+				else if(type == 1){
+					tableData.title = '采购点分布详情';
+					tableData.tableHead = [ {width:20, name:'采购点'}, {width:20, name:'金额', sort:true}, {width:20, name:'数量', sort:true} ];
+					
+					tableData.datas = [];
+					let datas = this.data.distributionOverviewMsg.sourceDistributionDetail;
+					for(let i = 0; i < datas.typeAmountDetailList.length; ++i){
+						let rowCells = [];
+						rowCells.push({value: datas.typeAmountDetailList[i].name});
+						rowCells.push({value: this.getPrice(datas.typeAmountDetailList[i].value, 'HKD', '-', 0), num: datas.typeAmountDetailList[i].value });
+						let num = this.getNumValue(datas.typeNumDetailList, datas.typeAmountDetailList[i].name);
+						rowCells.push({value: this.getPrice(num, '', '', 0), num: num });
+						
+						tableData.datas.push({cells: rowCells});
+					
+						total += datas.typeAmountDetailList[i].value;
+					}
+					console.log(total);
+				}
+				else if(type == 2){
+					tableData.title = '采购品牌分布详情';
+					tableData.tableHead = [ {width:20, name:'采购品牌'}, {width:20, name:'金额', sort:true}, {width:20, name:'数量', sort:true} ];
+					
+					tableData.datas = [];
+					let datas = this.data.distributionOverviewMsg.brandDistributionDetail;
+					for(let i = 0; i < datas.typeAmountDetailList.length; ++i){
+						let rowCells = [];
+						rowCells.push({value: datas.typeAmountDetailList[i].name});
+						rowCells.push({value: this.getPrice(datas.typeAmountDetailList[i].value, 'HKD', '-', 0), num: datas.typeAmountDetailList[i].value });
+						let num = this.getNumValue(datas.typeNumDetailList, datas.typeAmountDetailList[i].name);
+						rowCells.push({value: this.getPrice(num, '', '', 0), num: num });
+						
+						tableData.datas.push({cells: rowCells});
+					
+						total += datas.typeAmountDetailList[i].value;
+					}
+					console.log(total);
+				}
+				else if(type == 3){
+					tableData.title = '采购型号分布详情';
+					tableData.tableHead = [ {width:20, name:'采购型号'}, {width:20, name:'金额', sort:true}, {width:20, name:'数量', sort:true} ];
+					
+					tableData.datas = [];
+					let datas = this.data.distributionOverviewMsg.modelDistributionDetail;
+					for(let i = 0; i < datas.typeAmountDetailList.length; ++i){
+						let rowCells = [];
+						rowCells.push({value: datas.typeAmountDetailList[i].name});
+						rowCells.push({value: this.getPrice(datas.typeAmountDetailList[i].value, 'HKD', '-', 0), num: datas.typeAmountDetailList[i].value });
+						let num = this.getNumValue(datas.typeNumDetailList, datas.typeAmountDetailList[i].name);
+						rowCells.push({value: this.getPrice(num, '', '', 0), num: num });
+						
+						tableData.datas.push({cells: rowCells});
+					
+						total += datas.typeAmountDetailList[i].value;
+					}
+					console.log(total);
+				}
+				else if(type == 4){
+					tableData.title = '金额、数量详情';
+					tableData.tableHead = [ {width:20, name:'时间', sort:true}, {width:20, name:'金额', sort:true}, {width:20, name:'数量', sort:true} ];
+					
+					tableData.datas = [];
+					let datas = {};
+					if(this.curSel1 == 0) datas = this.data.chartMsg.chartYearMsg;
+					else if(this.curSel1 == 1) datas = this.data.chartMsg.chartQuarterMsg;
+					else if(this.curSel1 == 2) datas = this.data.chartMsg.chartMonthMsg;
+					
+					for(let i = 0; i < datas.purchaseAmountList.length; ++i){
+						let rowCells = [];
+						rowCells.push({value: datas.purchaseAmountList[i].time});
+						rowCells.push({value: this.getPrice(datas.purchaseAmountList[i].purchaseAmount, 'HKD', '-', 0), num: datas.purchaseAmountList[i].purchaseAmount });
+						let num = this.getNumValue(datas.purchaseQuantityList, datas.purchaseAmountList[i].time);
+						rowCells.push({value: this.getPrice(num, '', '', 0), num: num });
+						
+						tableData.datas.push({cells: rowCells});
+					}
+				}
+				
+				
+				getApp().globalData.pageInItem = tableData;
+				uni.navigateTo({ url:'table' })
+			},
+			getNumValue(arr, name){
+				for(let i = 0; i < arr.length; ++i){
+					if(arr[i].name == name || arr[i].time == name){
+						if(arr[i].value)
+							return arr[i].value;
+						else if(arr[i].purchaseQuantity)
+							return arr[i].purchaseQuantity;
+					}
+				}
+				return 0;
+			},
+			findArrValue(arr, find){
+				let ret = [];
+				for(let i =0; i < arr.length; ++i){
+					if(arr[i].name.indexOf(find) != -1){
+						ret.push(arr[i]);
+					}
+				}
+				
+				return ret;
+			}
 		}
 	}
 </script>
@@ -511,7 +707,7 @@
 			}
 			
 			.item {
-				background-color: #85dbd0;
+				background-color: #1ECC99;
 				border-radius: 20rpx;
 				font-size: 24rpx;
 				color: #FFFFFF;
@@ -524,22 +720,33 @@
 				color: #999999;
 			}
 		}
+		
+		.sticky{
+			position: sticky;
+			z-index: 980;
+		}
 
 		.mainTitle {
 			background-color: #FFFFFF;
-			margin: 10rpx 0 40rpx 20rpx;
+			margin: 10rpx 20rpx 40rpx 20rpx;
 			font-size: 30rpx;
 			font-weight: bold;
 			border-radius: 20rpx;
 			display: flex;
+			justify-content: space-between;
 			align-items: center;
 		
 			.img {
 				width: 10rpx;
 				height: 30rpx;
-				background-color: #85dbd0;
+				background-color: #1ECC99;
 				border-radius: 5rpx;
 				margin-right: 20rpx;
+			}
+			
+			.more{
+				font-size: 22rpx;
+				font-weight: normal;
 			}
 		
 		}

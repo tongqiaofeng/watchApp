@@ -27,13 +27,9 @@
       "pages": [
         "newsList",
         "detail",
-        "inventoryCheck",
         "orderList",
-        "saleReport",
-        "saleProduct",
         "updateSale",
         "order",
-        "addSale",
         "stockNumber",
         "priceHistory",
         "newsDetail",
@@ -43,7 +39,28 @@
     {
       "root": "chat",
       "pages": [
-        "chat"
+        "chat",
+        "chatSet",
+        "footprint"
+      ]
+    },
+    {
+      "root": "admin",
+      "pages": [
+        "inventoryCheck",
+        "saleList",
+        "saleProduct",
+        "addSale",
+        "purchaseReport",
+        "index",
+        "table",
+        "saleReport",
+        "stockReport",
+        "stockList",
+        "stockDetail",
+        "bill",
+        "billDetail",
+        "watchList"
       ]
     }
   ],

@@ -265,7 +265,7 @@
 
 								if (res.statusCode == 200) {
 									uni.navigateTo({
-										url: "./saleReport",
+										url: "../admin/saleList",
 									});
 								} else {
 									uni.showToast({
@@ -307,7 +307,7 @@
 
 									if (res.statusCode == 200) {
 										uni.navigateTo({
-											url: "./saleReport",
+											url: "../admin/saleList",
 										});
 									} else {
 										uni.showToast({

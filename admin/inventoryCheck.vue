@@ -28,8 +28,8 @@
 						<image src="../static/imgs/mine/right.png" mode="aspectFill"></image>
 					</view>
 				</view>
-				<view class="line"></view>
-				<view class="item" style="flex: 1">
+				<view v-if="brandIdx > 0" class="line"></view>
+				<view v-if="brandIdx > 0" class="item" style="flex: 1">
 					<view class="item-title">系列</view>
 					<view class="clrGray" style="flex: 1" @click="bShowSeries = true">
 						<text v-if="seriesList.length !== 0">{{ seriesList[seriesIdx].seriesName }}</text>
@@ -44,11 +44,11 @@
 				</view>
 			</view>
 		</view>
-		<view v-if="haveData == 0" class="no-data" :style="{ 'padding-top': topHeight + 30 + 'px' }">
+		<view v-if="haveData == 0" class="no-data">
 			<image src="../static/imgs/common/no.png" mode="aspectFill"></image>
 			<text style="font-size: 30rpx">暂无数据~</text>
 		</view>
-		<view v-else class="inventory-main" :style="{ 'padding-top': topHeight + 'px' }">
+		<view v-else class="inventory-main">
 			<view class="inventory-num">
 				<view>总数量：{{ total }}</view>
 			</view>
@@ -123,22 +123,10 @@
 				total: 0,
 				haveMore: 0,
 
-				topHeight: 0,
 				platform: "",
 
 				selList: [],
 			};
-		},
-		mounted() {
-			const query = uni.createSelectorQuery().in(this);
-			query
-				.select("#inventory-top")
-				.boundingClientRect((data) => {
-					console.log("顶部高度");
-					console.log(data);
-					this.topHeight = data.height;
-				})
-				.exec();
 		},
 		onLoad() {
 			this.role = uni.getStorageSync('role');
@@ -380,10 +368,12 @@
 
 		.inventory-top {
 			// padding-bottom: 26rpx;
-			position: fixed;
+			
+			position: sticky;
 			top: var(--window-top);
-			left: 0;
-			right: 0;
+			
+			background-color: rebeccapurple;
+			
 			z-index: 99;
 			background-color: #fff;
 
@@ -410,7 +400,7 @@
 			}
 
 			.inputs {
-				margin-top: 40rpx;
+				margin-top: 0rpx;
 
 				.item {
 					display: flex;

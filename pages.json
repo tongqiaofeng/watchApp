@@ -189,46 +189,12 @@
 					}
 				},
 				{
-					"path": "inventoryCheck",
-					"style": {
-						"navigationBarTitleText": "库存查询",
-						"navigationBarTextStyle": "black",
-						"navigationBarBackgroundColor": "#fff",
-						"enablePullDownRefresh": true
-					}
-				},
-				{
 					"path": "orderList",
 					"style": {
 						"navigationBarTitleText": "我的订单",
 						"navigationBarTextStyle": "black",
 						"navigationBarBackgroundColor": "#F4F8FB",
 						"enablePullDownRefresh": true
-					}
-				},
-				{
-					"path": "saleReport",
-					"style": {
-						"navigationBarTitleText": "销售单管理",
-						"navigationBarTextStyle": "black",
-						"navigationBarBackgroundColor": "#F4F8FB",
-						"enablePullDownRefresh": true,
-						"navigationStyle": "custom",
-						"app-plus": {
-							"titleView": false
-						}
-
-					}
-				},
-				{
-					"path": "saleProduct",
-					"style": {
-						"navigationBarTitleText": "出售商品",
-						"navigationBarTextStyle": "black",
-						"navigationBarBackgroundColor": "#F4F8FB",
-						"app-plus": {
-							"titleView": false
-						}
 					}
 				}, {
 					"path": "updateSale",
@@ -270,17 +236,6 @@
 							}
 						}
 
-					}
-				},
-				{
-					"path": "addSale",
-					"style": {
-						"navigationBarTitleText": "出售商品",
-						"navigationBarTextStyle": "black",
-						"navigationBarBackgroundColor": "#F4F8FB",
-						"app-plus": {
-							"titleView": false
-						}
 					}
 				},
 				{
@@ -358,26 +313,147 @@
 					"style": {
 						"navigationBarTitleText": "浏览记录"
 					}
-				} 
+				}
 			]
 		},
 		{
 			"root": "admin",
-			"pages": [{
+			"pages": [
+				{
+					"path": "inventoryCheck",
+					"style": {
+						"navigationBarTitleText": "库存查询",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#fff",
+						"enablePullDownRefresh": true
+					}
+				},
+				{
+					"path": "saleList",
+					"style": {
+						"navigationBarTitleText": "销售单管理",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#F4F8FB",
+						"enablePullDownRefresh": true,
+						"navigationStyle": "custom",
+						"app-plus": {
+							"titleView": false
+						}
+
+					}
+				},
+				{
+					"path": "saleProduct",
+					"style": {
+						"navigationBarTitleText": "出售商品",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#F4F8FB",
+						"app-plus": {
+							"titleView": false
+						}
+					}
+				},
+				{
+					"path": "addSale",
+					"style": {
+						"navigationBarTitleText": "出售商品",
+						"navigationBarTextStyle": "black",
+						"navigationBarBackgroundColor": "#F4F8FB",
+						"app-plus": {
+							"titleView": false
+						}
+					}
+				},{
 				"path": "purchaseReport",
 				"style": {
 					"navigationBarTitleText": "采购报表",
-					"enablePullDownRefresh": false
+					"enablePullDownRefresh": true
 				}
 
 			}, {
 				"path": "index",
 				"style": {
-					"navigationBarTitleText": "",
+					"navigationBarTitleText": "管理模块",
 					"enablePullDownRefresh": false
 				}
 
-			}]
+			}, {
+				"path": "table",
+				"style": {
+					"navigationBarTitleText": "详情",
+					"enablePullDownRefresh": false
+					// "navigationStyle": "custom",
+					// "app-plus": {
+					// 	"titleView": false
+					// }
+				}
+
+			}, {
+				"path": "saleReport",
+				"style": {
+					"navigationBarTitleText": "销售报表",
+					"enablePullDownRefresh": true
+				}
+
+			}    ,{
+                    "path" : "stockReport",
+                    "style" :                                                                                    
+                {
+                    "navigationBarTitleText": "仓库报表",
+                    "enablePullDownRefresh": true
+                }
+                
+                }
+                ,{
+                    "path" : "stockList",
+                    "style" :                                                                                    
+                {
+                    "navigationBarTitleText": "库存查询",
+                    "enablePullDownRefresh": true
+                }
+                
+                }
+                ,{
+                    "path" : "stockDetail",
+                    "style" :                                                                                    
+                {
+                    "navigationBarTitleText": "库存详情",
+                    "enablePullDownRefresh": true,
+					//"navigationStyle": "custom",
+					"app-plus": {
+						"titleView": false
+					}
+                }
+                
+                }
+                ,{
+                    "path" : "bill",
+                    "style" :                                                                                    
+                {
+                    "navigationBarTitleText": "账单",
+                    "enablePullDownRefresh": true
+                }
+                
+                }
+                ,{
+                    "path" : "billDetail",
+                    "style" :                                                                                    
+                {
+                    "navigationBarTitleText": "帐单详情",
+                    "enablePullDownRefresh": true
+                }
+                
+                }
+                ,{
+                    "path" : "watchList",
+                    "style" :                                                                                    
+                {
+                    "navigationBarTitleText": "手表销售列表",
+                    "enablePullDownRefresh": true
+                }
+                
+                }
+            ]
 		}
 	],
 	"globalStyle": {

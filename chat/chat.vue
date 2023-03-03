@@ -4,7 +4,7 @@
 		<view v-if="role == 'admin' || role == 'seller'" class="action">
 			<view class="note" @click="showUserNote">{{userNote ? '推荐人:' + userNote : '无推荐人'}}</view>
 			<view class="history" @click="goFootprint">浏览记录</view>
-			<navigator class="sale" :url="'../watch/addSale?code='+userNote+'&cusid=' + userId">添加销售单</navigator>
+			<navigator class="sale" :url="'../admin/addSale?code='+userNote+'&cusid=' + userId">添加销售单</navigator>
 		</view>
 
 		<scroll-view scroll-y="true" class="msgLst" :style="{ height: scrollHeight + 'px' }"

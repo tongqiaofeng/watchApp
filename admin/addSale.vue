@@ -10,13 +10,13 @@
 			<view style="margin-top: 40rpx">
 				<uni-table border emptyText="暂无数据">
 					<uni-tr>
-						<uni-th width="100" align="center">型号</uni-th>
-						<uni-th width="200" align="center">出售金额</uni-th>
-						<uni-th width="150" align="center">成本(HKD)</uni-th>
-						<uni-th align="center">操作</uni-th>
+						<uni-th style="font-size: 24rpx;" width="100" align="center">型号</uni-th>
+						<uni-th style="font-size: 24rpx;" width="200" align="center">出售金额</uni-th>
+						<uni-th style="font-size: 24rpx;" width="150" align="center">成本(HKD)</uni-th>
+						<uni-th style="font-size: 24rpx;" align="center">操作</uni-th>
 					</uni-tr>
 					<uni-tr v-for="(item, index) in sellOrderDetailList" :key="index">
-						<uni-td>
+						<uni-td style="font-size: 22rpx;">
 							<text>{{ item.brand }}</text>
 							<view class="model">
 								{{ item.model }}
@@ -45,7 +45,7 @@
 								<uni-easyinput class="uni-input" type="number" placeholder="请输入" v-model="item.cost" />
 							</view>
 						</uni-td>
-						<uni-td align="center">
+						<uni-td style="font-size: 22rpx;" align="center">
 							<text @click="delWatch(index)">删除</text>
 						</uni-td>
 					</uni-tr>
@@ -107,14 +107,16 @@
 					<uni-datetime-picker type="date" v-model="saleWatchData.sellTime" />
 				</uni-forms-item>
 				<uni-forms-item v-if="role == 'admin'" label="渠道" name="channelId">
-					<picker mode="selector" :range="channelList" :value="channelIdx" range-key="name" @change="terraceChange">
+					<picker mode="selector" :range="channelList" :value="channelIdx" range-key="name"
+						@change="terraceChange">
 						<view class="currency-sel" :style="{ color: channelIdx > -1 ? '#000' : '#999' }">
 							{{ channelIdx > -1 ? channelList[channelIdx].name : "请选择" }}
 						</view>
 					</picker>
 				</uni-forms-item>
 				<uni-forms-item label="顾客账号" name="customerId">
-					<picker mode="selector" :range="customerList" :value="customerIdx" range-key="username" @change="customerChange">
+					<picker mode="selector" :range="customerList" :value="customerIdx" range-key="username"
+						@change="customerChange">
 						<view class="currency-sel" :style="{ color: channelIdx > -1 ? '#000' : '#999' }">
 							{{ customerIdx > -1 ? customerList[customerIdx].username : "请选择" }}
 						</view>
@@ -126,16 +128,16 @@
 				<uni-forms-item label="收货地址" name="address">
 					<uni-easyinput type="text" placeholder="请输入" v-model="saleWatchData.address" />
 				</uni-forms-item>
-				
+
 				<view class="title"> 付款信息 </view>
 				<view style="margin-bottom: 40rpx">
 					<uni-table border>
 						<uni-tr>
-							<uni-th width="150" align="center">付款日期</uni-th>
-							<uni-th width="200" align="center">付款金额</uni-th>
-							<uni-th width="200" align="center">外币金额</uni-th>
-							<uni-th width="150" align="center">付款备注</uni-th>
-							<uni-th width="100" align="center">操作</uni-th>
+							<uni-th style="font-size: 24rpx;" width="150" align="center">付款日期</uni-th>
+							<uni-th style="font-size: 24rpx;" width="200" align="center">付款金额</uni-th>
+							<uni-th style="font-size: 24rpx;" width="200" align="center">外币金额</uni-th>
+							<uni-th style="font-size: 24rpx;" width="150" align="center">付款备注</uni-th>
+							<uni-th style="font-size: 24rpx;" width="100" align="center">操作</uni-th>
 						</uni-tr>
 						<uni-tr v-for="(pay, index2) in saleWatchData.paymentList" :key="index2">
 							<uni-td>
@@ -143,33 +145,20 @@
 							</uni-td>
 							<uni-td>
 								<view style="display: flex">
-									<uni-easyinput class="uni-input" type="number" placeholder="请输入金额"
-										v-model="pay.payMoney" />
-									<picker mode="selector" :range="priceCurrencys" range-key="text"
-										@change="currencyChange">
-										<view class="currency-sel" :style="{
-                        color: saleWatchData.sellCurrency ? '#000' : '#999',
-                      }">
-											{{
-                        saleWatchData.sellCurrency
-                          ? saleWatchData.sellCurrency
-                          : "选择币种"
-                      }}
+									<uni-easyinput class="uni-input3" type="number" placeholder="请输入金额" v-model="pay.payMoney" />
+									<picker mode="selector" :range="priceCurrencys" range-key="text" @change="currencyChange">
+										<view class="currency-sel" :style="{ color: saleWatchData.sellCurrency ? '#000' : '#999', }">
+											{{ saleWatchData.sellCurrency ? saleWatchData.sellCurrency : "选择币种" }}
 										</view>
 									</picker>
 								</view>
 							</uni-td>
 							<uni-td>
 								<view style="display: flex">
-									<uni-easyinput class="uni-input" type="number" placeholder="请输入金额"
-										v-model="pay.foreignMoney" />
-									<picker mode="selector" :range="priceCurrencys" range-key="text"
-										@change="currencyChange2">
-										<view class="currency-sel" @click="currencyClick(index2)"
-											:style="{ color: pay.foreignCurrency ? '#000' : '#999' }">
-											{{
-                        pay.foreignCurrency ? pay.foreignCurrency : "外币币种"
-                      }}
+									<uni-easyinput class="uni-input" type="number" placeholder="请输入金额" v-model="pay.foreignMoney" />
+									<picker mode="selector" :range="priceCurrencys" range-key="text" @change="currencyChange2">
+										<view class="currency-sel" @click="currencyClick(index2)" :style="{ color: pay.foreignCurrency ? '#000' : '#999' }">
+											{{ pay.foreignCurrency ? pay.foreignCurrency : "外币币种" }}
 										</view>
 									</picker>
 								</view>
@@ -203,9 +192,9 @@
 				keyword: "",
 				checkWatchList: [],
 				channelList: [],
-				channelIdx:-1,
+				channelIdx: -1,
 				customerList: [],
-				customerIdx:-1,
+				customerIdx: -1,
 
 				payIndex: null,
 				sellOrderDetailList: [],
@@ -251,7 +240,7 @@
 				priceCurrencys: [{
 						value: 7,
 						text: "USDT",
-					},{
+					}, {
 						value: 1,
 						text: "CNY",
 					},
@@ -276,19 +265,19 @@
 						text: "AUD",
 					},
 				],
-				role:'',
-				code:'',
-				curCustomerId:'',
-				
+				role: '',
+				code: '',
+				curCustomerId: '',
+
 			};
 		},
 		async onLoad(e) {
 			await this.$onLaunched;
-			if(e.code) this.code = e.code;
-			if(e.cusid) this.curCustomerId = e.cusid.replace('TopTime_', '');
+			if (e.code) this.code = e.code;
+			if (e.cusid) this.curCustomerId = e.cusid.replace('TopTime_', '');
 			console.log(this.curCustomerId);
-			
-			
+
+
 			this.getChannelList();
 			this.getCustomerList();
 			this.role = uni.getStorageSync("role");
@@ -312,12 +301,13 @@
 								title: "提交中......",
 							});
 
-							if(this.saleWatchData.paymentList.length > 0){
-								if (!this.saleWatchData.paymentList[0].payTime && !this.saleWatchData.paymentList[0].payMoney) {
+							if (this.saleWatchData.paymentList.length > 0) {
+								if (!this.saleWatchData.paymentList[0].payTime && !this.saleWatchData.paymentList[0]
+									.payMoney) {
 									this.saleWatchData.paymentList = [];
 								}
 							}
-							
+
 
 							uni.request({
 								method: "POST",
@@ -345,7 +335,7 @@
 
 									if (res.statusCode == 200) {
 										uni.navigateTo({
-											url: "./saleReport",
+											url: "../admin/saleList",
 										});
 									} else {
 										uni.showToast({
@@ -428,15 +418,15 @@
 			},
 			// 选择平台
 			terraceChange(val) {
-				if(val.detail.value){
+				if (val.detail.value) {
 					this.channelIdx = val.detail.value;
 					this.saleWatchData.channelId = this.channelList[this.channelIdx].id;
 				}
-				
+
 			},
 			// 选择顾客
 			customerChange(val) {
-				if(val.detail.value){
+				if (val.detail.value) {
 					this.customerIdx = val.detail.value;
 					this.saleWatchData.customerId = this.customerList[this.customerIdx].id;
 				}
@@ -469,8 +459,8 @@
 
 						if (this.checkBack(ret, true) == false) return;
 						if (ret.data.length > 0) this.channelList = ret.data;
-						
-						
+
+
 					},
 				});
 			},
@@ -483,13 +473,13 @@
 						token: uni.getStorageSync("token"),
 					},
 					complete: (ret) => {
-					
+
 						if (this.checkBack(ret, true) == false) return;
-						if (ret.data.length > 0){
+						if (ret.data.length > 0) {
 							this.customerList = ret.data;
-							if(this.curCustomerId){
-								for(let i = 0; i < this.customerList.length; ++i){
-									if(this.curCustomerId == this.customerList[i].id){
+							if (this.curCustomerId) {
+								for (let i = 0; i < this.customerList.length; ++i) {
+									if (this.curCustomerId == this.customerList[i].id) {
 										this.customerIdx = i;
 										this.saleWatchData.customerId = this.customerList[this.customerIdx].id;
 										break;
@@ -497,8 +487,8 @@
 								}
 							}
 						}
-						
-						
+
+
 					},
 				});
 			},
@@ -654,8 +644,8 @@
 
 		.currency-sel {
 			padding: 0 20rpx;
-			line-height: 68rpx;
-			font-size: 24rpx;
+			line-height: 62rpx;
+			font-size: 22rpx;
 			font-weight: 200;
 			border: 2rpx solid #f0f0f0;
 			box-sizing: border-box;

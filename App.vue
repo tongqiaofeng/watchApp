@@ -235,4 +235,30 @@
 			padding-bottom: 0 !important;
 		}
 	}
+	
+	.row{
+		display: flex;
+	}
+	
+	.vCenter{
+		align-items: center;
+	}
+	
+	//、、、、、、、、、、、、、、、、、、、、、、、、、、、、、、、、、、、、、
+	.uni-date-editor::v-deep .uni-date-x{
+		height: 62rpx !important;
+	}
+	.uni-date-editor::v-deep .uni-input-placeholder {
+		font-size: 22rpx !important;
+	}
+	.uni-date-editor::v-deep .uni-input-input {
+		font-size: 22rpx !important;
+	}
+	.uni-easyinput::v-deep .uni-input-input {
+		font-size: 22rpx !important;
+	}
+	.uni-easyinput::v-deep .uni-textarea-textarea {
+		font-size: 22rpx !important;
+	}
+	//、、、、、、、、、、、、、、、、、、、、、、、、、、、、、、、、、、、、、
 </style>

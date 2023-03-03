@@ -126,7 +126,7 @@
 			line-height: 108upx;
 			font-size: 32upx;
 			text-align: center;
-			background-color: #85dbd0;
+			background-color: #1ECC99;
 			color: #FFFFFF;
 		}
 	}
@@ -156,7 +156,7 @@
 
 		&-active {
 			background-color: #f2faf9;
-			color: #85dbd0;
+			color: #1ECC99;
 		}
 	}
 
@@ -174,7 +174,7 @@
 		&-ok {
 			width: 300upx;
 			text-align: center;
-			background-color: #85dbd0;
+			background-color: #1ECC99;
 			color: #ffffff;
 		}
 	}

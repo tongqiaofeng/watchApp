@@ -5,8 +5,12 @@ import Chat from "@/static/js/chat.js";
 
 Vue.config.productionTip = false
 
-//Vue.prototype.$baseUrl = 'http://192.168.0.164:8088';
-//Vue.prototype.$baseFileUrl = 'http://192.168.0.164:8088/api/watch/stock';
+// Vue.prototype.$baseUrl = 'http://hexx.natapp1.cc';
+// Vue.prototype.$baseFileUrl = 'https://hk.wistechx.cn/WatchExApi/api/watch/stock';
+// Vue.prototype.$chatServerUrl = 'wss://cn.api.wistechx.cn:8099/chat';
+
+// Vue.prototype.$baseUrl = 'http://192.168.0.164';
+// Vue.prototype.$baseFileUrl = 'http://192.168.0.164/api/watch/stock';
 // Vue.prototype.$chatServerUrl = 'wss://cn.api.wistechx.cn:8099/chat';
 
 Vue.prototype.$baseUrl = 'https://hk.wistechx.cn/WatchExApi';
@@ -14,16 +18,22 @@ Vue.prototype.$baseFileUrl = 'https://hk.wistechx.cn/WatchExApi/api/watch/stock'
 Vue.prototype.$chatServerUrl = 'wss://cn.api.wistechx.cn:8099/chat';
 
 Vue.prototype.checkBack = function(ret, bShwoTip = 1) {
-	if (ret.statusCode == 200) {
+	let code = ret.statusCode;
+	if (ret.data.code) {
+		code = ret.data.code;
+	}
+	if (code == 200) {
 		return true;
-	} else if (bShwoTip == 1) {
-		if (ret.statusCode == 400)
+	}
+	if (bShwoTip == 1) {
+
+		if (code == 400)
 			uni.showToast({
 				icon: 'none',
 				title: ret.data.status,
 				duration: 2000
 			});
-		else if (ret.statusCode == 300)
+		else if (code == 300)
 			uni.showToast({
 				icon: 'none',
 				title: '请登录后再操作',
@@ -189,6 +199,7 @@ Vue.prototype.hidePageNavInWechatBrowser = () => {
 		return true
 	}
 	//#endif
+	return false;
 };
 
 Vue.prototype.getClientUUID = () => {
@@ -213,7 +224,22 @@ Vue.prototype.getSum = function(arr) {
 	return ret;
 }
 
-App.mpType = 'app'
+Vue.prototype.setCopyData = function(text) {
+		uni.setClipboardData({
+			data: text, //要被复制的内容
+			success: () => {
+				//复制成功的回调函数
+				uni.showToast({
+					//提示
+					title: '复制成功',
+					icon: 'none',
+				});
+			},
+		});
+},
+
+
+	App.mpType = 'app'
 
 const app = new Vue({
 	...App

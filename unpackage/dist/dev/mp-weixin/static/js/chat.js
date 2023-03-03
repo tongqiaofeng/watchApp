@@ -1,5 +1,6 @@
 export default class Chat {
 
+
 	constructor(chatServerUrl, appID, userListRoute, userChatRoute, chatTabIdx) {
 		//帐号信息
 		this.userId = '';
@@ -27,6 +28,8 @@ export default class Chat {
 		this.userList = [];
 		this.adminList = [];
 		this.curChatUserId = '';
+		
+		this.UserChatSetting = { offLineMsg:'' };
 
 		//#ifdef APP-PLUS
 		let pinf = plus.push.getClientInfo();
@@ -100,7 +103,7 @@ export default class Chat {
 
 		this.recvFromServer();
 
-		uni.onSocketOpen((res) => {
+		uni.onSocketOpen(function(res) {
 			console.log('WebSocket连接成功！', res);
 			this.g_socketLiveTime = new Date().getTime();
 			that.checkinServer();
@@ -166,6 +169,7 @@ export default class Chat {
 	updateUserInfo() {
 		if (this.isUpdateUserInfo == false) {
 
+
 			let note = uni.getStorageSync("superiorInviteCode");
 
 			if (!note) note = '';
@@ -183,12 +187,20 @@ export default class Chat {
 			this.sendToServer(msg);
 		}
 	}
+	
+	//更新用户名和头像
+	updateUserSetting(offLineMsg) {
+		let msg = {
+			type: "updateUserSetting",
+			offLineMsg:offLineMsg,
+		}
+		this.sendToServer(msg);
+	}
 
 	//处理接收到的消息
 	recvFromServer() {
 
 		uni.onSocketMessage((res) => {
-			console.log('处理---------', new Date().getTime());
 			this.g_socketLiveTime = new Date().getTime();
 			console.log('收到消息' + JSON.parse(res.data).type);
 			var data = JSON.parse(res.data);
@@ -243,10 +255,15 @@ export default class Chat {
 				this.updatePage('list');
 				this.updatePage('chat');
 
+			} else if (data.type == 'delete-fail') {
+				uni.showToast({ title: data.cause, icon: "none", duration:3000});
 			} else if (data.type == 'deleteAdmin-success') {
 				this.updateMsgState(data);
 			} else if (data.type == 'updateUserInfo-success') {
 				this.isUpdateUserInfo = true;
+				this.UserChatSetting.offLineMsg = data.off_line_msg;
+			} else if (data.type == 'updateUserSetting-success') {
+				uni.showToast({ title: "更新设置成功", icon: "none", duration:3000});
 			}
 		})
 	}

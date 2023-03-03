@@ -1,9 +1,0 @@
-{
-  "navigationBarTitleText": "库存查询",
-  "navigationBarTextStyle": "black",
-  "navigationBarBackgroundColor": "#fff",
-  "enablePullDownRefresh": true,
-  "usingComponents": {
-    "popwnd-select": "/components/popwnd/popwnd_select_blue"
-  }
-}
