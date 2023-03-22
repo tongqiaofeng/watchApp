@@ -1,6 +1,6 @@
 <template>
 	<view class="easy-loadimage" :id="uid" :style="{'width': width, 'height': height}">
-		<image class="origin-img" :src="imageSrc" :mode="mode" v-if="loadImg && !isLoadError" v-show="showImg"
+    <image class="origin-img" :src="imageSrc" :mode="mode" v-if="loadImg && !isLoadError" v-show="showImg"
 			:class="{'no-transition': !openTransition,'show-transition': showTransition&&openTransition}"
 			:style="{'border-radius': borderRadius}" @load="handleImgLoad" @error="handleImgError">
 		</image>
@@ -58,7 +58,7 @@
 		watch: {
 			scrollTop(val) {
 				this.onScroll(val)
-			}
+      }
 		},
 		data() {
 			return {

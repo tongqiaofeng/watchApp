@@ -39,7 +39,7 @@
 			uni.request({
 				url: this.$baseUrl + "/wechat/api/versionGet",
 				data: req,
-				success: (res) => {
+				success: (res) => { 
 					console.log("APP升级更新信息获取成功");
 					console.log(res);
 					if (res.data.version > version) {
@@ -61,7 +61,6 @@
 			plus.push.addEventListener("receive", (message) => {
 				console.log("透传消息");
 				console.log(message);
-
 				// 判断不在app内，应用后台运行，创建本地消息并添加到系统通知栏
 				if (getApp().globalData.isWithinProgram == false) {
 					// let platform = uni.getSystemInfoSync().platform;
@@ -131,10 +130,18 @@
 						},
 						complete: (ret) => {
 							console.log("获取用户信息", ret);
-							if (this.checkBack(ret, true) == true) {
+							if (this.checkBack(ret, false) == true) {
 								this.setUserInfo(ret);
 								this.$isResolve();
 							} else {
+								uni.setStorageSync("userId", '');
+								uni.setStorageSync("token", '');
+								uni.setStorageSync("role", '');
+								uni.setStorageSync("nick", '');
+								uni.setStorageSync("headPic", '');
+								uni.setStorageSync("phoneNumber", '');
+								uni.setStorageSync("inviteCode", '');
+								uni.setStorageSync("superiorInviteCode", '');
 								this.createTempChat();
 								this.$isResolve();
 							}

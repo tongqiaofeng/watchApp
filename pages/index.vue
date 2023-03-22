@@ -4,129 +4,241 @@
 			<view :style="{ height: height + 'px' }"></view>
 			<view id="topWnd" class="index-top">
 				<navigator class="search" url="../common/search" hover-class="none">
-					<image src="../static/imgs/index/new/search.png" mode="aspectFit"
-						style="width: 26rpx; height: 27rpx">
+					<image
+						class="search-icon"
+						src="../static/imgs/index/new/search1_icon.png"
+						mode="aspectFit"
+					>
 					</image>
 					<view class="font">搜索商品</view>
 				</navigator>
 
-				<swiper style="height: 320rpx;margin: 32rpx 24rpx 20rpx;" circular autoplay :duration="500">
-					<swiper-item style="text-align: center;" v-for="(banner,index) in bannerList" :key="index">
-						<navigator :url="banner.url" hover-class="none" class="banner-every">
-							<image class="every-img" :src="imgUrl + '/img' + banner.name" mode="aspectFill">
+				<view class="content-wrapper">
+					<!-- 轮播 -->
+					<view class="swiper-box">
+						<swiper
+							class="swiper-list"
+							style="height: 320rpx"
+							:indicator-dots="false"
+							indicator-active-color="#b0edd5"
+							circular
+							autoplay
+							:duration="500"
+						>
+							<swiper-item
+								style="text-align: center"
+								v-for="(banner, index) in bannerList"
+								:key="index"
+							>
+								<image
+									class="every-img"
+									:src="fileUrl + '/file/' + banner.imgUrl"
+									mode="widthFix"
+									@click="goJumpUrl(banner.jumpUrl)"
+								>
+								</image>
+							</swiper-item>
+						</swiper>
+					</view>
+
+					<!-- 品牌 -->
+					<view class="brand-box">
+						<view
+							class="classify-every"
+							v-for="(item, index) in allClassifyList"
+							:key="index"
+							@click="goBrandSearch(item)"
+						>
+							<image
+								class="img"
+								v-if="item.pic"
+								:src="imgUrl + '/img' + item.pic"
+								mode="aspectFill"
+							>
 							</image>
-						</navigator>
-					</swiper-item>
-				</swiper>
-
-				<view class="classify-container" v-if="allClassifyList.length > 0">
-					<view class="classify-every" v-for="(item, index) in allClassifyList" :key="index"
-						@click="goSearch(item)">
-						<image class="img" v-if="item.pic" :src="imgUrl + '/img' + item.pic" mode="aspectFill">
-						</image>
-						<view class="text">{{item.brand}}</view>
-					</view>
-					<view class="classify-every" @click="goClassify">
-						<view class="circle">
-							<view class="circle01"></view>
-							<view class="circle02"></view>
-							<view class="circle01"></view>
+							<view class="text">{{ item.brand }}</view>
 						</view>
-
-						<view class="text">更多</view>
-					</view>
-				</view>
-
-				<!-- <scroll-view class="scrollContainer" scroll-x @touchmove.stop>
-					<view class="scrollitem" v-for="(item, index) in allClassifyList" :key="index"
-						@click="goSearch(item)">
-						<image class="scrollimage" v-if="item.pic" :src="imgUrl + '/img' + item.pic" mode="aspectFill">
-						</image>
-						<view class="recommandItemText">{{item.brand}}</view>
-					</view>
-					<view class="scrollitem" @click="goSearch(item)">
-						<view class="recommandItemText">更多...</view>
-					</view>
-				</scroll-view> -->
-
-				<view class="today-news">
-					<view class="news-left">
-						<view class="left-top">
-							<text class="top-font">腕表</text>
-							<image class="top-img" src="../static/imgs/index/new/fire.png" mode="aspectFill"></image>
-						</view>
-						<view class="left-bottom">
-							资讯
-						</view>
-					</view>
-					<view class="news-line"></view>
-					<swiper circular autoplay vertical :interval="3500" style="height: 80rpx;flex: 1;"
-						@click="goNewsList">
-						<swiper-item v-for="(item, index) in articles" :key="index">
-							<view class="news-right">{{item.title}}</view>
-						</swiper-item>
-					</swiper>
-				</view>
-			</view>
-
-			<view class="discounts-product-container">
-				<view class="discounts-top">
-					<text class="title">珍藏精品</text>
-					<navigator class="viewMore" url="../watch/special?type=0">
-						<view class="">查看更多</view>
-						<image src="../static/imgs/index/right.png" mode="aspectFit"></image>
-					</navigator>
-				</view>
-				<scroll-view class="scrollDiscountsContainer" scroll-x>
-					<view class="scroll-item" v-for="(item, index) in discountsProdoctList" :key="index">
-						<navigator :url="'../watch/detail?id=' + item.id" hover-class="none">
-							<view v-if="item.pic" class="item-img">
-								<easy-loadimage :image-src="watchImgUrl + item.pic.replace('\\', '/')"
-									:scroll-top="scrollTop" border-radius="30rpx" mode="aspectFit"></easy-loadimage>
+						<view class="classify-every" @click="goClassify">
+							<view class="circle">
+								<view class="circle01"></view>
+								<view class="circle02"></view>
+								<view class="circle01"></view>
 							</view>
-							<view class="item-name">{{item.brand + ' - ' + item.model}}</view>
-							<!-- <view class="item-bottom">
-								<view class="bottom-left">
-									<text v-if="item.marketHkPrice > 0"> {{ "HKD" }}
-										<text
-											style="font-size: 28rpx">{{ " " + formatNumberRgx(item.marketHkPrice) }}</text>
-									</text>
+							<view class="text">更多</view>
+						</view>
+					</view>
+
+					<!-- 新闻 -->
+					<view class="news-box">
+						<view class="news-left">
+							<image
+								class="news-left-icon"
+								mode="aspectFit"
+								src="../static/imgs/index/news_icon.png"
+							></image>
+						</view>
+						<swiper
+							circular
+							autoplay
+							vertical
+							:interval="3500"
+							style="height: 80rpx; flex: 1"
+							@click="goNewsList"
+						>
+							<swiper-item v-for="(item, index) in articles" :key="index">
+								<view class="news-right">{{ item.title }}</view>
+							</swiper-item>
+						</swiper>
+					</view>
+					<view v-for="(ele, eleIndex) in indexData" :key="eleIndex">
+						<!-- 轮播 -->
+						<view
+							class="swiper-box"
+							v-if="eleIndex > 0 && renderType(ele) == 'swiper'"
+						>
+							<swiper
+								class="swiper-list"
+								:indicator-dots="false"
+								indicator-active-color="#b0edd5"
+								circular
+								autoplay
+								:duration="500"
+							>
+								<swiper-item
+									style="text-align: center"
+									v-for="(banner, index) in ele.dataStr"
+									:key="index"
+								>
+									<image
+										class="every-img"
+										:src="fileUrl + '/file/' + banner.imgUrl"
+										mode="widthFix"
+										@click="goJumpUrl(banner.jumpUrl)"
+									>
+									</image>
+								</swiper-item>
+							</swiper>
+						</view>
+
+						<!-- 珍藏精品 -->
+						<view class="discounts-box" v-if="renderType(ele) == 'isTop'">
+							<image
+								class="bg-img"
+								v-if="ele.backgroundImg"
+								:src="fileUrl + '/file/' + ele.backgroundImg"
+								mode="widthFix"
+							></image>
+							<view class="discounts-top">
+								<image
+									class="title-img"
+									v-if="ele.titleImg"
+									:src="fileUrl + '/file/' + ele.titleImg"
+									mode="widthFix"
+								></image>
+								<image
+									v-if="ele.viewMore"
+									class="more-img"
+									src="../static/imgs/index/more-icon.png"
+									mode="aspectFit"
+									@click="goSearch(ele.viewMore)"
+								></image>
+							</view>
+							<scroll-view class="discounts-scroll-box" scroll-x>
+								<view
+									class="scroll-item"
+									v-for="(item, index) in ele.productList"
+									:key="index"
+								>
+									<navigator
+										:url="'../watch/detail?id=' + item.id"
+										hover-class="none"
+										class="item-info"
+									>
+										<view class="item-img">
+											<easy-loadimage
+												:image-src="fileUrl + imgSrc(item.pic)"
+												:scroll-top="scrollTop"
+												border-radius="20rpx"
+												mode="aspectFit"
+											></easy-loadimage>
+										</view>
+										<view class="item-name">{{
+											item.brand + ' - ' + item.model
+										}}</view>
+									</navigator>
+									<view
+										class="info-bg"
+										:style="{
+											backgroundColor: index % 2 == 0 ? '#e9edf0' : '#F0ECE9',
+										}"
+									></view>
 								</view>
-							</view> -->
-						</navigator>
-					</view>
-				</scroll-view>
-			</view>
+							</scroll-view>
+						</view>
 
-			<view class="index-module">
-				<view v-for="(jump,index) in jumpList" :key="index" class="module-left" @click="goRecycle(jump)">
-					<image :src="imgUrl + '/img' + jump.name" mode="aspectFill"></image>
+						<!-- 商品 -->
+						<view class="goods-box" v-if="renderType(ele) == 'product'">
+							<view class="title-cover-img">
+								<image
+									class="title-img"
+									v-if="ele.titleImg"
+									:src="fileUrl + '/file/' + ele.titleImg"
+									mode="heightFix"
+								></image>
+							</view>
+							<view class="goods-list">
+								<view
+									v-if="ele.productList && ele.productList.length"
+									v-for="item in ele.productList"
+									:key="item.id"
+									class="goods-item"
+									@click="checkDetails(item)"
+								>
+									<view v-if="item.pic" class="img">
+										<easy-loadimage
+											class="img"
+											:image-src="fileUrl + imgSrc(item.pic)"
+											:scroll-top="scrollTop"
+											mode="heightFix"
+										></easy-loadimage>
+									</view>
+									<view class="info-card">
+										<view class="title">{{ getShowTitle(item) }}</view>
+										<view class="title" style="margin-top: 10rpx">{{
+											item.model
+										}}</view>
+										<view v-if="item.marketHkPrice != 0" class="price">
+											<text>
+												HKD
+												<text style="font-size: 36rpx">{{
+													' ' + formatNumberRgx(item.marketHkPrice)
+												}}</text>
+											</text>
+										</view>
+										<view v-else class="price">价格请咨询客服</view>
+									</view>
+								</view>
+							</view>
+
+							<view
+								class="more-btn"
+								v-if="ele.viewMore"
+								@click="goSearch(ele.viewMore)"
+								>查看更多</view
+							>
+						</view>
+					</view>
 				</view>
 			</view>
 
-			<view class="list">
-				<view v-for="item in watchsList" :key="item.id">
-					<view class="item" @click="checkDetails(item)">
-						<view v-if="item.pic" class="img">
-							<easy-loadimage class="img" :image-src="item.pic" :scroll-top="scrollTop"
-								border-radius="30rpx" mode="aspectFit"></easy-loadimage>
-						</view>
-						<image class="specialImg" :src="getSpecialImg(item)" mode="aspectFit"></image>
-						<view class="title">{{ getShowTitle(item) }}</view>
-						<view class="title" style="margin-top: 10rpx;">{{ item.model }}</view>
-						<view v-if="item.marketHkPrice != 0" class="price">
-							<text> HKD <text
-									style="font-size: 36rpx">{{ " " + formatNumberRgx(item.marketHkPrice) }}</text>
-							</text>
-						</view>
-						<view v-else class="price">价格请咨询客服</view>
-					</view>
-				</view>
-			</view>
-
+			<!-- 下载app -->
 			<view>
 				<view class="downloadApp" v-if="isMobile" @click="downloadApk">
-					<image class="downloadApp-img" src="../static/imgs/common/logo.png" mode="aspectFill"></image>
+					<image
+						class="downloadApp-img"
+						src="../static/imgs/common/logo.png"
+						mode="aspectFill"
+					></image>
 					<view class="downloadApp-font"> 下载APP </view>
 				</view>
 				<view class="jump" v-if="isJump == 1" @click="cancelJump">
@@ -142,12 +254,22 @@
 				</view>
 				<view class="downloadSel" v-if="isJump == 2">
 					<view class="sel-bottom">
-						<image src="../static/imgs/index/iphone.png" mode="aspectFill"></image>
-						<image src="../static/imgs/index/android.png" mode="aspectFill"></image>
+						<image
+							src="../static/imgs/index/iphone.png"
+							mode="aspectFill"
+						></image>
+						<image
+							src="../static/imgs/index/android.png"
+							mode="aspectFill"
+						></image>
 						<text @click="downloadClick">点击下载APP</text>
 					</view>
 					<view class="sel-close">
-						<image src="../static/imgs/index/close.png" mode="aspectFill" @click="cancelJump"></image>
+						<image
+							src="../static/imgs/index/close.png"
+							mode="aspectFill"
+							@click="cancelJump"
+						></image>
 					</view>
 				</view>
 			</view>
@@ -156,616 +278,635 @@
 </template>
 
 <script>
-	export default {
-		data() {
-			return {
-				scrollTop: 0,
-				isShow: true,
+export default {
+	data() {
+		return {
+			scrollTop: 0,
+			isShow: true,
+			imgUrl: this.$baseUrl + '/wechat/api',
+			watchImgUrl: this.$baseUrl + '/api/watch/stock',
+			watchsList: [],
+			page: 1,
 
-				imgUrl: this.$baseUrl + "/wechat/api",
-				watchImgUrl: this.$baseUrl + "/api/watch/stock",
+			//设置默认的分享参数
+			share: {
+				title: '精品腕表，尽在TopTime',
+				path: '/pages/index',
+				imageUrl: '',
+				desc: '',
+				content: '',
+			},
+			isMobile: false,
+			isWechat: false,
+			isJump: 0,
 
-				watchsList: [],
-				page: 1,
+			isLoadMore: true,
 
-				//设置默认的分享参数
-				share: {
-					title: "精品腕表，尽在TopTime",
-					path: "/pages/index",
-					imageUrl: "",
-					desc: "",
-					content: "",
-				},
-				isMobile: false,
-				isWechat: false,
-				isJump: 0,
+			discountsProdoctList: [],
+			allClassifyList: [],
+			articles: [],
+			height: 40,
+			jumpList: [],
 
-				isLoadMore: true,
+			fileUrl: this.$baseFileUrl,
+			indexData: [], // 首页数据
+			bannerList: [], // 轮播数据
+		};
+	},
+	onShow() {
+		if (window) {
+			this.isMobile = true;
+			let ua = window.navigator.userAgent.toLowerCase();
+			if (
+				ua.match(/MicroMessenger/i) == 'micromessenger' ||
+				ua.match(/_SQ_/i) == '_sq_'
+			) {
+				this.isWechat = true;
+			} else {
+				this.isWechat = true;
+			}
+		} else {
+			this.isMobile = false;
+		}
+		if (getApp().globalData.g_chat) getApp().globalData.g_chat.updateReddot();
+	},
+	onLoad(option) {
+		uni.getSystemInfo({
+			success: (data) => {
+				this.height = data.statusBarHeight;
+			},
+		});
+		if (option.code) uni.setStorageSync('superiorInviteCode', option.code);
 
-				discountsProdoctList: [],
-				allClassifyList: [],
-				articles: [],
-				height: 40,
+		this.getInfo();
 
-				newRecommendationsList: [],
-				bannerList: [],
-				jumpList: [],
+		this.getIndexOrSortDataGet();
+	},
+	onPullDownRefresh() {
+		this.getInfo();
+		this.getIndexOrSortDataGet();
+		setTimeout(() => {
+			uni.showToast({ title: '刷新成功', icon: 'none' });
+			uni.stopPullDownRefresh();
+		}, 500);
+	},
+	onPageScroll(e) {
+		this.scrollTop = e.scrollTop;
+	},
+	onReachBottom() {},
+	onReady() {
+		this.hidePageNavInWechatBrowser();
+	},
+	// 分享好友
+	onShareAppMessage(res) {
+		return {
+			title: this.share.title,
+			path: this.share.path,
+			imageUrl: this.share.imageUrl,
+			desc: this.share.desc,
+			content: this.share.content,
+			success: (res) => {
+				uni.showToast({
+					title: '分享成功',
+					icon: 'none',
+				});
+			},
+			fail: (res) => {
+				uni.showToast({
+					title: '分享失败',
+					icon: 'none',
+				});
+			},
+		};
+	},
+	// 分享朋友圈
+	onShareTimeline(res) {
+		return {
+			title: this.share.title,
+			path: this.share.path,
+			imageUrl: this.share.imageUrl,
+			desc: this.share.desc,
+			content: this.share.content,
+			success: (res) => {
+				uni.showToast({
+					title: '分享成功',
+					icon: 'none',
+				});
+			},
+			fail: (res) => {
+				uni.showToast({
+					title: '分享失败',
+					icon: 'none',
+				});
+			},
+		};
+	},
+
+	computed: {
+		/**
+		 * 获取渲染类型
+		 * swiper 轮播 viewType 1 relationType 2 dataStr存在
+		 * brand 品牌
+		 * news 新闻资讯
+		 * retrieve 回收
+		 * product 精品 新货 热卖 特价 viewType 1 relationType 0 dataStr存在
+		 *
+		 */
+		renderType() {
+			return (item = {}) => {
+				if (
+					item.viewType == 1 &&
+					item.relationType == 2 &&
+					item.dataStr != '[]'
+				) {
+					// 轮播图
+					return 'swiper';
+				} else if (
+					item.viewType == 1 &&
+					item.relationType == 0 &&
+					item.productList &&
+					item.productList.length &&
+					!item.backgroundImg
+				) {
+					// 新货 热卖 特价
+					return 'product';
+				} else if (
+					item.viewType == 1 &&
+					item.relationType == 0 &&
+					item.productList &&
+					item.productList.length &&
+					item.backgroundImg
+				) {
+					// 精品
+					return 'isTop';
+				}
+
+				return '';
 			};
 		},
-		onShow() {
-			if (window) {
-				console.log("平台");
-
-				this.isMobile = true;
-				let ua = window.navigator.userAgent.toLowerCase();
-				if (
-					ua.match(/MicroMessenger/i) == "micromessenger" ||
-					ua.match(/_SQ_/i) == "_sq_"
-				) {
-					this.isWechat = true;
-				} else {
-					this.isWechat = true;
-				}
-			} else {
-				this.isMobile = false;
-			}
-			if (getApp().globalData.g_chat)
-				getApp().globalData.g_chat.updateReddot();
+		imgSrc() {
+			return (value) => {
+				value = value.replace('\\', '/');
+				return value;
+			};
 		},
-		onLoad(option) {
-			uni.getSystemInfo({
-				success: (data) => {
-					this.height = data.statusBarHeight;
+	},
+	methods: {
+		// 首页数据
+		getIndexOrSortDataGet() {
+			uni.request({
+				url: this.$baseUrl + '/newWatch/api/indexOrSortDataGet?manageType=0',
+				method: 'GET',
+				success: (res) => {
+					if (res.data) {
+						let data = res.data.map((item) => {
+							if (item.dataStr != '[]') {
+								item.dataStr = JSON.parse(item.dataStr);
+							}
+							return item;
+						});
+						if (data && data.length) {
+							this.bannerList = data[0]['dataStr'];
+							this.indexData = data;
+						}
+						setTimeout(() => {
+							this.scrollTop++;
+						}, 500);
+					}
 				},
 			});
-
-			console.log('首页参数', option.code);
-			if (option.code) uni.setStorageSync("superiorInviteCode", option.code)
-
-			this.getInfo();
-			this.getWatchList(false);
 		},
-		onPullDownRefresh() {
-			this.discountsProdoctList = [];
-			this.allClassifyList = [];
-			this.watchsList = [];
-			this.articles = [];
 
-			this.page = 1;
-			this.getInfo();
-			this.getWatchList(true);
-			uni.stopPullDownRefresh();
+		// 轮播图跳转
+		bannerClick() {
+			uni.navigateTo({
+				url: '../common/search',
+			});
 		},
-		onPageScroll(e) {
-			this.scrollTop = e.scrollTop;
-		},
-		onReachBottom() {
-			this.loadMore()
-		},
-		onReady() {
-			this.hidePageNavInWechatBrowser();
-		},
-		// 分享好友
-		onShareAppMessage(res) {
-			return {
-				title: this.share.title,
-				path: this.share.path,
-				imageUrl: this.share.imageUrl,
-				desc: this.share.desc,
-				content: this.share.content,
-				success: (res) => {
-					uni.showToast({
-						title: "分享成功",
-						icon: "none",
-					});
-				},
-				fail: (res) => {
-					uni.showToast({
-						title: "分享失败",
-						icon: "none",
-					});
-				},
-			};
-		},
-		// 分享朋友圈
-		onShareTimeline(res) {
-			return {
-				title: this.share.title,
-				path: this.share.path,
-				imageUrl: this.share.imageUrl,
-				desc: this.share.desc,
-				content: this.share.content,
-				success: (res) => {
-					uni.showToast({
-						title: "分享成功",
-						icon: "none",
-					});
-				},
-				fail: (res) => {
-					uni.showToast({
-						title: "分享失败",
-						icon: "none",
-					});
-				},
-			};
-		},
-		methods: {
-			// 轮播图跳转
-			bannerClick() {
-				uni.navigateTo({
-					url: '../common/search'
-				})
-			},
-			// 二手
-			goRecycle(item) {
-				if (item.jumpType == 1) {
-					uni.switchTab({
-						url: item.url
-					})
-				} else {
-					uni.navigateTo({
-						url: item.url
-					})
-				}
-			},
-			// 新闻
-			goNewsList() {
-				uni.navigateTo({
-					url: "../watch/newsList"
-				})
-			},
-
-			// 点击下载
-			downloadApk() {
-				if (window) {
-					let ua = window.navigator.userAgent.toLowerCase();
-					if (
-						ua.match(/MicroMessenger/i) == "micromessenger" ||
-						ua.match(/_SQ_/i) == "_sq_"
-					) {
-						this.isJump = 1;
-					} else {
-						this.isJump = 2;
-					}
-				}
-			},
-			// 下载app
-			downloadClick() {
-				this.isJump = 0;
-				uni.showLoading({
-					title: "APP后台下载中...",
-				});
-				setInterval(() => {
-					uni.hideLoading();
-				}, 1500);
-
-				let type = uni.getSystemInfoSync().platform;
-				let req = {
-					type: type,
-					appType: 2
-				};
-				uni.request({
-					url: this.$baseUrl + "/wechat/api/versionGet",
-					data: req,
-					complete: (res) => {
-						console.log("下载");
-						console.log(res);
-
-						let list = res.data.url.split("/");
-						let name = list[list.length - 1];
-						console.log(name);
-
-						if (this.browserIsIe()) {
-							//假如是ie浏览器
-							let elemIF = document.createElement("iframe");
-							elemIF.src = res.data.url;
-							elemIF.style.display = "none";
-							document.body.appendChild(elemIF);
-						} else {
-							const a = document.createElement("a");
-							// a.setAttribute('target', '_blank');
-							a.setAttribute("href", res.data.url);
-							a.setAttribute("download", name);
-							a.click();
-						}
-					},
-				});
-			},
-			//判断是否为ie浏览器
-			browserIsIe() {
-				if (!!window.ActiveXObject || "ActiveXObject" in window) return true;
-				else return false;
-			},
-			// 取消在浏览器打开
-			cancelJump() {
-				this.isJump = 0;
-			},
-			// 查看该品牌下的手表
-			goSearch(item) {
-				uni.navigateTo({
-					url: "../common/search?brand=" +
-						encodeURIComponent(JSON.stringify(item.brand)),
-				});
-			},
-			// 查看更多分类
-			goClassify() {
+		// 二手
+		goRecycle(item) {
+			if (item.jumpType == 1) {
 				uni.switchTab({
-					url: "./classify"
-				})
-			},
-			// 查看手表详情
-			checkDetails(item) {
+					url: item.url,
+				});
+			} else {
 				uni.navigateTo({
-					url: "../watch/detail?id=" + item.id,
+					url: item.url,
 				});
-			},
-
-			// 获取手表列表
-			getWatchList(showLoad) {
-				if (showLoad) {
-					uni.showLoading({
-						title: "加载中......",
-					});
-				}
-
-				uni.request({
-					method: "POST",
-					url: this.$baseUrl + "/newWatch/api/watchSearch",
-					data: {
-						page: this.page,
-						pageNum: 10
-					},
-					header: {
-						"content-type": "application/json",
-					},
-					complete: (res) => {
-						console.log('手表列表');
-						console.log(res.data);
-						uni.hideLoading();
-						if (res.data.data.length == 0) {
-							this.isLoadMore = false;
-						} else {
-							let list = res.data.data;
-							for (let i = 0; i < list.length; ++i) {
-								if (!list[i].pic) list[i].pic = '';
-								if (list[i].pic.length == 0) {
-									list[i].pic = '~@/static/imgs/common/nopic.jpg';
-								} else {
-									list[i].pic = this.$baseUrl + "/api/watch/stock" + list[i].pic.replace( '\\', '/');
-								}
-							}
-							list = this.watchsList.concat(list);
-							console.log(list)
-							this.watchsList = list;
-						}
-					},
-				});
-			},
-			// 获取首页数据
-			getInfo() {
-				uni.request({
-					url: this.$baseUrl + "/newWatch/api/indexMsGet?page=" + this.page + "&pageNum=10",
-					header: {
-						"content-type": "application/json",
-					},
-					complete: (res) => {
-						console.log("首页数据");
-						console.log(res);
-
-						this.allClassifyList = res.data.brandList.splice(0, 4);
-						this.discountsProdoctList = res.data.auctionWatchList;
-						this.articles = res.data.articleRes;
-						this.newRecommendationsList = res.data.newStyleWatchList;
-						this.bannerList = res.data.rotationMap;
-						this.jumpList = res.data.recycleWithNewStylePicMsg;
-					},
-				});
-			},
-			loadMore() {
-				if (this.isLoadMore) {
-					++this.page;
-					this.getWatchList(true);
-				}
-			},
-			getShowTitle(item) {
-				if (item.series && item.series != '其他') {
-					return item.brand + ' - ' + item.series;
-				} else {
-					return item.brand;
-				}
-			},
-			getSpecialImg(item) {
-				if (item.isTop == 1) {
-					return '../static/imgs/index/new/top.png';
-				} else if (item.isDiscount == 1) {
-					return '../static/imgs/index/new/discout.png';
-				} else if (item.isAuction == 1) {
-					return '../static/imgs/index/new/auction.png';
-				}
-			},
+			}
 		},
-	};
+		// 新闻
+		goNewsList() {
+			uni.navigateTo({
+				url: '../watch/newsList',
+			});
+		},
+
+		// 点击下载
+		downloadApk() {
+			if (window) {
+				let ua = window.navigator.userAgent.toLowerCase();
+				if (
+					ua.match(/MicroMessenger/i) == 'micromessenger' ||
+					ua.match(/_SQ_/i) == '_sq_'
+				) {
+					this.isJump = 1;
+				} else {
+					this.isJump = 2;
+				}
+			}
+		},
+		// 下载app
+		downloadClick() {
+			this.isJump = 0;
+			uni.showLoading({
+				title: 'APP后台下载中...',
+			});
+			setInterval(() => {
+				uni.hideLoading();
+			}, 1500);
+
+			let type = uni.getSystemInfoSync().platform;
+			let req = {
+				type: type,
+				appType: 2,
+			};
+			uni.request({
+				url: this.$baseUrl + '/wechat/api/versionGet',
+				data: req,
+				complete: (res) => {
+					let list = res.data.url.split('/');
+					let name = list[list.length - 1];
+					if (this.browserIsIe()) {
+						//假如是ie浏览器
+						let elemIF = document.createElement('iframe');
+						elemIF.src = res.data.url;
+						elemIF.style.display = 'none';
+						document.body.appendChild(elemIF);
+					} else {
+						const a = document.createElement('a');
+						// a.setAttribute('target', '_blank');
+						a.setAttribute('href', res.data.url);
+						a.setAttribute('download', name);
+						a.click();
+					}
+				},
+			});
+		},
+		//判断是否为ie浏览器
+		browserIsIe() {
+			if (!!window.ActiveXObject || 'ActiveXObject' in window) return true;
+			else return false;
+		},
+		// 取消在浏览器打开
+		cancelJump() {
+			this.isJump = 0;
+		},
+
+		// 查看该品牌下的手表
+		goSearch(url) {
+			if (url) {
+				uni.navigateTo({ url: url });
+			}
+		},
+
+		goBrandSearch(item) {
+			uni.navigateTo({
+				url:
+					'../common/search?brand=' +
+					encodeURIComponent(JSON.stringify(item.brand)),
+			});
+		},
+		// 查看更多分类
+		goClassify() {
+			uni.switchTab({
+				url: './classify',
+			});
+		},
+		// 查看手表详情
+		checkDetails(item) {
+			uni.navigateTo({
+				url: '../watch/detail?id=' + item.id,
+			});
+		},
+
+		// 获取品牌 新闻数据
+		getInfo() {
+			uni.request({
+				url:
+					this.$baseUrl +
+					'/newWatch/api/indexMsGet?page=' +
+					this.page +
+					'&pageNum=10',
+				header: {
+					'content-type': 'application/json',
+				},
+				complete: (res) => {
+					this.allClassifyList = res.data.brandList.slice(0, 4);
+					this.articles = res.data.articleRes;
+				},
+			});
+		},
+		getShowTitle(item) {
+			if (item.series && item.series != '其他') {
+				return item.brand + ' - ' + item.series;
+			} else {
+				return item.brand;
+			}
+		},
+		getSpecialImg(item) {
+			if (item.isTop == 1) {
+				return '../static/imgs/index/new/top.png';
+			} else if (item.isDiscount == 1) {
+				return '../static/imgs/index/new/discout.png';
+			} else if (item.isAuction == 1) {
+				return '../static/imgs/index/new/auction.png';
+			}
+		},
+		goJumpUrl(url) {
+			if (url) {
+				if (url == '/pages/recycle') {
+					uni.switchTab({ url: url });
+				} else {
+					uni.navigateTo({ url: url });
+				}
+			}
+		},
+	},
+};
 </script>
 
 <style lang="scss" scoped>
-	.main {
-		.index-main-container {
-			background-color: #F4F8FB;
+.main {
+	.index-main-container {
+		background-color: #f4f8fb;
+		.index-top {
+			padding-top: 60rpx;
+			background-color: #fff;
 
-			.index-top {
-				padding-top: 60rpx;
-				padding-bottom: 23rpx;
-				background-color: #fff;
+			.search {
+				margin: 0 24rpx 30rpx 24rpx;
+				padding: 0 30rpx;
+				display: flex;
+				justify-content: left;
+				align-items: center;
+				height: 66rpx;
+				line-height: 66rpx;
+				background-color: #f4f7fc;
+				border-radius: 20rpx;
+				font-size: 24rpx;
+				color: #c0c5ce;
 
-				.search {
-					margin: 0 24rpx 60rpx 24rpx;
-					padding: 0 30rpx;
-					display: flex;
-					justify-content: left;
-					align-items: center;
-					height: 66rpx;
-					line-height: 66rpx;
-					background-color: #F4F7FC;
-					border-radius: 20rpx;
-					font-size: 24rpx;
-					color: #C0C5CE;
+				.search-icon {
+					width: 38rpx;
+					height: 38rpx;
+				}
 
-					.font {
-						margin-left: 9rpx;
+				.font {
+					margin-left: 9rpx;
+					color: #888a8c;
+				}
+			}
+
+			// 容器
+			::-webkit-scrollbar {
+				width: 0;
+				height: 0;
+				color: transparent;
+			}
+
+			@-webkit-keyframes free_download {
+				0% {
+					-webkit-transform: scale(0.9);
+				}
+
+				100% {
+					-webkit-transform: scale(1);
+				}
+			}
+
+			@keyframes free_download {
+				0% {
+					transform: scale(0.9);
+				}
+
+				100% {
+					transform: scale(1);
+				}
+			}
+		}
+
+		.content-wrapper {
+			.swiper-box {
+				margin: 20rpx 24rpx 30rpx;
+
+				.swiper-list {
+					height: 100%;
+					height: 280rpx;
+				}
+				.every-img {
+					width: 702rpx;
+				}
+			}
+
+			.news-box {
+				margin: 39rpx 24rpx 0;
+				padding: 16rpx 24rpx;
+				display: flex;
+				align-items: center;
+				border-radius: 12rpx;
+				background-color: #f4f8fb;
+				.news-left {
+					.news-left-icon {
+						width: 74rpx;
+						height: 64rpx;
 					}
 				}
 
-				.banner-every {
-					width: 703rpx;
-					height: 320rpx;
-
-					.every-img {
-						width: 703rpx;
-						height: 320rpx;
-					}
-				}
-
-				.classify-container {
-					height: fit-content;
-					padding: 0 40rpx;
-					display: flex;
-					justify-content: space-between;
-
-					// 容器项
-					.classify-every {
-						height: fit-content;
-						display: flex;
-						flex-direction: column;
-						justify-content: space-between;
-
-						.img {
-							width: 96rpx;
-							height: 96rpx;
-							border-radius: 50%;
-						}
-
-						.text {
-							width: 96rpx;
-							margin-top: 10rpx;
-							font-size: 24rpx;
-							color: #03314B;
-							text-align: center;
-							text-overflow: ellipsis;
-							overflow: hidden;
-							white-space: nowrap;
-						}
-
-						.circle {
-							height: 96rpx;
-							display: flex;
-							justify-content: center;
-							align-items: center;
-
-							.circle01 {
-								width: 6rpx;
-								height: 6rpx;
-								background-color: #03314B;
-								border-radius: 50%;
-							}
-
-							.circle02 {
-								width: 9rpx;
-								height: 9rpx;
-								margin: 0 10rpx;
-								background-color: #03314B;
-								border-radius: 50%;
-							}
-						}
-					}
-				}
-
-				// 容器
-				::-webkit-scrollbar {
-					width: 0;
-					height: 0;
-					color: transparent;
-				}
-
-				.scrollContainer {
-					width: 100%;
-					//margin-left: 40rpx;
-					height: fit-content;
+				.news-right {
+					margin-left: 34rpx;
+					font-size: 28rpx;
+					color: #03314b;
+					line-height: 80rpx;
+					text-overflow: ellipsis;
+					overflow: hidden;
 					white-space: nowrap;
-					touch-action: none;
-
-					// 容器项
-					.scrollitem {
-						display: inline-block;
-						margin-left: 40rpx;
-						height: fit-content;
-
-						.scrollimage {
-							width: 96rpx;
-							height: 96rpx;
-							border-radius: 50%;
-						}
-
-						.recommandItemText {
-							width: 96rpx;
-							font-size: 24rpx;
-							color: #4F4F4F;
-							text-align: center;
-							text-overflow: ellipsis;
-							overflow: hidden;
-							white-space: nowrap;
-						}
-					}
-
+					flex: 1;
 				}
+			}
 
-				/* 按钮动画效果 */
-				.animate-button {
-					width: 250rpx;
-					margin: 0 auto;
-					padding: 20rpx 30rpx;
-					background-color: #FE7722;
-					color: #fff;
-					font-size: 26rpx;
-					font-weight: bold;
-					letter-spacing: 2rpx;
-					border-radius: 60rpx;
-					text-align: center;
-					-webkit-animation: free_download 0.5s linear alternate infinite;
-					animation: free_download 0.5s linear alternate infinite;
-				}
+			.goods-box {
+				width: 100%;
+				padding: 0 24rpx 20rpx;
+				box-sizing: border-box;
+				background: #f4f8fb;
 
-				@-webkit-keyframes free_download {
-					0% {
-						-webkit-transform: scale(0.9);
-					}
-
-					100% {
-						-webkit-transform: scale(1);
+				.title-cover-img {
+					.title-img {
+						height: 35rpx;
+						margin: 45rpx 0;
 					}
 				}
-
-				@keyframes free_download {
-					0% {
-						transform: scale(0.9);
-					}
-
-					100% {
-						transform: scale(1);
-					}
-				}
-
-				.classify-big-container {
-					padding: 0 24rpx;
+				.goods-list {
 					display: flex;
+					flex-wrap: wrap;
 					justify-content: space-between;
 
-					.classify-big-every {
-						width: 220rpx;
-						height: 270rpx;
-						padding-top: 34rpx;
+					.goods-item {
+						width: 340rpx;
+						padding: 20rpx 0 30rpx;
+						border-radius: 20rpx;
 						background-color: #fff;
-						border-radius: 30rpx;
-						text-align: center;
+						position: relative;
+						margin-bottom: 20rpx;
+						overflow: hidden;
 
-						.title {
-							color: #000;
-							font-weight: bold;
-							font-size: 28rpx;
+						.specialImg {
+							position: absolute;
+							top: 10rpx;
+							right: 0;
+							width: 100rpx;
+							height: 113rpx;
 						}
 
-						.desc {
-							margin-top: 20rpx;
-							color: #666666;
-							font-size: 20rpx;
+						/deep/ .easy-loadimage {
+							width: 100%;
+							text-align: center;
 						}
 
 						.img {
-							margin-top: 17rpx;
+							// width: 200rpx;
+							height: 300rpx;
+							margin: 0 auto;
+							border-radius: 20rpx;
 						}
-					}
-				}
 
-				.today-news {
-					margin: 39rpx 24rpx 0;
-					padding: 16rpx 30rpx;
-					display: flex;
-					align-items: center;
-					border-radius: 30rpx;
-					background-color: #F4F7FC;
+						.info-card {
+							padding: 0 15rpx;
+							box-sizing: border-box;
+							.title {
+								margin-top: 20rpx;
+								font-size: 28rpx;
+								overflow: hidden;
+								text-overflow: ellipsis;
+								white-space: nowrap;
+								color: #03314b;
+							}
 
-					.news-left {
-						width: 100rpx;
-
-						.left-top {
-
-							.top-font {
-								color: #1ECC99;
-								font-size: 24rpx;
+							.price {
+								margin-top: 12rpx;
+								font-size: 22rpx;
+								color: #1ecc99;
 								font-weight: bold;
 							}
-
-							.top-img {
-								width: 18rpx;
-								height: 20rpx;
-								margin-left: 4RPX;
-							}
-						}
-
-						.left-bottom {
-							font-size: 32rpx;
-							color: #03314B;
-							font-weight: bold;
 						}
 					}
+				}
 
-					.news-line {
-						margin-left: 26rpx;
-						width: 2rpx;
-						height: 50rpx;
-						background-color: #E6EBF3;
+				.more-btn {
+					width: 214rpx;
+					height: 80rpx;
+					border-radius: 75rpx;
+					border: 2rpx solid #a9aeb2;
+					text-align: center;
+					line-height: 80rpx;
+					font-size: 28rpx;
+					font-family: PingFang SC-Bold, PingFang SC;
+					font-weight: bold;
+					color: #03314b;
+					margin: 40rpx auto 0;
+				}
+			}
+
+			.brand-box {
+				height: fit-content;
+				padding: 0 40rpx;
+				display: flex;
+				justify-content: space-between;
+				margin-top: 40rpx;
+
+				// 容器项
+				.classify-every {
+					height: fit-content;
+					display: flex;
+					flex-direction: column;
+					justify-content: space-between;
+
+					.img {
+						width: 96rpx;
+						height: 96rpx;
+						border-radius: 50%;
 					}
 
-					.news-right {
-						margin-left: 34rpx;
-						font-size: 28rpx;
-						color: #03314B;
-						line-height: 80rpx;
+					.text {
+						width: 96rpx;
+						margin-top: 10rpx;
+						font-size: 24rpx;
+						color: #03314b;
+						text-align: center;
 						text-overflow: ellipsis;
 						overflow: hidden;
 						white-space: nowrap;
 					}
+
+					.circle {
+						height: 96rpx;
+						display: flex;
+						justify-content: center;
+						align-items: center;
+
+						.circle01 {
+							width: 6rpx;
+							height: 6rpx;
+							background-color: #03314b;
+							border-radius: 50%;
+						}
+
+						.circle02 {
+							width: 9rpx;
+							height: 9rpx;
+							margin: 0 10rpx;
+							background-color: #03314b;
+							border-radius: 50%;
+						}
+					}
 				}
 			}
 
-			.discounts-product-container {
-				margin: 20rpx 24rpx 0;
-				padding: 39rpx 0 30rpx 31rpx;
-				background-color: #fff;
-				border-radius: 20rpx;
+			// 精品
+			.discounts-box {
+				width: calc(100% - 48rpx);
+				height: 518rpx;
+
+				box-sizing: border-box;
+				position: relative;
+				margin: 40rpx 24rpx 30rpx;
+				text-align: center;
+				box-sizing: border-box;
+				.bg-img {
+					width: 100%;
+					height: 100%;
+					position: absolute;
+					top: 0;
+					right: 0;
+					bottom: 0;
+					left: 0;
+				}
 
 				.discounts-top {
-					padding-right: 26rpx;
+					width: 100%;
+					padding: 35rpx 24rpx 0;
+					box-sizing: border-box;
 					display: flex;
 					justify-content: space-between;
 					align-items: center;
-
-					.title {
-						font-size: 32rpx;
-						font-weight: bold;
-						color: #000;
+					position: relative;
+					.title-img {
+						width: 136rpx;
 					}
-
-					.viewMore {
-						display: flex;
-						color: #9BA0A9;
-						font-size: 26rpx;
-						align-items: center;
-
-						image {
-							width: 19rpx;
-							height: 19rpx;
-							margin-left: 8rpx;
-						}
+					.more-img {
+						width: 122rpx;
+						height: 25rpx;
 					}
 
 					.top-time {
@@ -788,24 +929,27 @@
 					}
 				}
 
-				.scrollDiscountsContainer {
+				.discounts-scroll-box {
 					width: 100%;
 					height: fit-content;
-					margin-top: 40rpx;
+					margin-top: 35rpx;
 					white-space: nowrap;
 
 					.scroll-item {
-						width: 236rpx;
-						height: fit-content;
-						margin-right: 40rpx;
+						width: 272rpx;
+						// height: fit-content;
+						height: 370rpx;
+						margin-right: 35rpx;
 						display: inline-block;
-
+						position: relative;
 						.item-img {
+							// width: 179rpx;
+							width: 236rpx;
 							height: 264rpx;
-							// padding: 15rpx 0;
-							//border: 4rpx #E4E4E4 solid;
 							border-radius: 30rpx;
-
+							z-index: 9;
+							position: relative;
+							margin: 0 auto;
 							image {
 								width: 100%;
 								height: 100%;
@@ -813,221 +957,153 @@
 						}
 
 						.item-name {
-							margin-top: 34rpx;
-							color: #000;
 							font-size: 26rpx;
 							text-overflow: ellipsis;
 							overflow: hidden;
 							white-space: nowrap;
+							z-index: 9;
+							position: relative;
+							padding: 0 20rpx;
+							box-sizing: border-box;
+							margin-top: 30rpx;
+							color: #03314b;
 						}
 
-						.item-bottom {
-							padding-right: 10rpx;
-							display: flex;
-							justify-content: space-between;
-							align-items: center;
-
-							.bottom-left {
-								min-height: 30rpx;
-								font-size: 22rpx;
-								font-weight: bold;
-								color: #FF7821;
-							}
+						.info-bg {
+							width: 100%;
+							height: 320rpx;
+							// background: #e9edf0;
+							border-radius: 20rpx 20rpx 20rpx 20rpx;
+							position: absolute;
+							bottom: 0;
 						}
-					}
-				}
-			}
-
-			.index-module {
-				padding: 0 20rpx;
-				margin-top: 20rpx;
-				display: grid;
-				justify-content: space-between;
-				grid-template-columns: repeat(auto-fill, 350rpx);
-				grid-gap: 10rpx;
-
-				.module-left {
-					width: 350rpx;
-					height: 210rpx;
-
-					image {
-						width: 350rpx;
-						height: 210rpx;
-					}
-				}
-			}
-
-			.list {
-				padding: 0 20rpx;
-				margin-top: 20rpx;
-				display: grid;
-				justify-content: space-between;
-				grid-template-columns: repeat(auto-fill, 344rpx);
-				grid-gap: 20rpx;
-				border-top-left-radius: 30rpx;
-				border-top-right-radius: 30rpx;
-
-				.item {
-					padding: 20rpx;
-					border-radius: 40rpx;
-					background-color: #fff;
-					position: relative;
-
-					.specialImg {
-						position: absolute;
-						top: 10rpx;
-						right: 0;
-						width: 100rpx;
-						height: 113rpx;
-					}
-
-					.img {
-						width: 300rpx;
-						height: 300rpx;
-						margin: 0 auto;
-					}
-
-					.title {
-						margin-top: 28rpx;
-						font-size: 28rpx;
-						overflow: hidden;
-						text-overflow: ellipsis;
-						white-space: nowrap;
-						color: #03314B;
-					}
-
-					.price {
-						margin-top: 39rpx;
-						font-size: 22rpx;
-						color: #1ECC99;
-						font-weight: bold;
-					}
-				}
-			}
-
-			.downloadApp {
-				position: fixed;
-				bottom: 120px;
-				right: 40rpx;
-				text-align: center;
-				z-index: 990;
-
-				.downloadApp-img {
-					width: 80rpx;
-					height: 80rpx;
-					//border-radius: 50%;
-				}
-
-				.downloadApp-font {
-					padding: 8rpx 10rpx;
-					display: flex;
-					justify-content: center;
-					align-items: center;
-					font-size: 24rpx;
-					background-color: #1ECC99;
-					border-radius: 30px;
-					color: #fff;
-				}
-			}
-
-			.jump {
-				width: 100%;
-				height: 100vh;
-				background-color: rgba($color: #000000, $alpha: 0.7);
-				position: fixed;
-				top: 0;
-				left: 0;
-				z-index: 99;
-				display: flex;
-				flex-direction: column;
-				justify-content: flex-start;
-				text-align: center;
-
-				image {
-					width: 481rpx;
-					height: 352rpx;
-					margin: 0 auto;
-					margin-top: 150rpx;
-					margin-right: 50rpx;
-				}
-
-				.jump-top {
-					display: flex;
-					justify-content: center;
-					align-items: center;
-					margin-top: 40rpx;
-					font-size: 26rpx;
-					color: #fff;
-
-					.jump-circle {
-						width: 5px;
-						height: 5px;
-						margin: 0 2px;
-						border-radius: 50%;
-						background-color: #fff;
-					}
-				}
-
-				.jump-bottom {
-					margin-top: 5px;
-					font-size: 26rpx;
-					color: #fff;
-				}
-			}
-
-			.downloadSel {
-				width: 100%;
-				height: 100vh;
-				background-color: rgba($color: #000000, $alpha: 0.7);
-				position: fixed;
-				top: 0;
-				left: 0;
-				z-index: 999;
-				display: flex;
-				flex-direction: column;
-				justify-content: center;
-				text-align: center;
-
-				.sel-bottom {
-					width: 462rpx;
-					height: 232rpx;
-					margin: 0 auto;
-					margin-top: 18rpx;
-					display: flex;
-					justify-content: center;
-					align-items: center;
-					background: url(../static/imgs/index/back02.png) no-repeat;
-					background-size: 100%;
-
-					image {
-						width: 58rpx;
-						height: 57rpx;
-						margin-right: 20rpx;
-					}
-
-					text {
-						font-weight: bold;
-						font-size: 30rpx;
-						color: #1ECC99;
-						border-bottom: 4rpx solid #1ECC99;
-					}
-				}
-
-				.sel-close {
-					margin-top: 100rpx;
-
-					image {
-						width: 50rpx;
-						height: 50rpx;
 					}
 				}
 			}
 		}
+
+		.downloadApp {
+			position: fixed;
+			bottom: 120px;
+			right: 40rpx;
+			text-align: center;
+			z-index: 990;
+
+			.downloadApp-img {
+				width: 80rpx;
+				height: 80rpx;
+			}
+
+			.downloadApp-font {
+				padding: 8rpx 10rpx;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				font-size: 24rpx;
+				background-color: #1ecc99;
+				border-radius: 30px;
+				color: #fff;
+			}
+		}
+
+		.jump {
+			width: 100%;
+			height: 100vh;
+			background-color: rgba($color: #000000, $alpha: 0.7);
+			position: fixed;
+			top: 0;
+			left: 0;
+			z-index: 99;
+			display: flex;
+			flex-direction: column;
+			justify-content: flex-start;
+			text-align: center;
+
+			image {
+				width: 481rpx;
+				height: 352rpx;
+				margin: 0 auto;
+				margin-top: 150rpx;
+				margin-right: 50rpx;
+			}
+
+			.jump-top {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				margin-top: 40rpx;
+				font-size: 26rpx;
+				color: #fff;
+
+				.jump-circle {
+					width: 5px;
+					height: 5px;
+					margin: 0 2px;
+					border-radius: 50%;
+					background-color: #fff;
+				}
+			}
+
+			.jump-bottom {
+				margin-top: 5px;
+				font-size: 26rpx;
+				color: #fff;
+			}
+		}
+
+		.downloadSel {
+			width: 100%;
+			height: 100vh;
+			background-color: rgba($color: #000000, $alpha: 0.7);
+			position: fixed;
+			top: 0;
+			left: 0;
+			z-index: 999;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			text-align: center;
+
+			.sel-bottom {
+				width: 462rpx;
+				height: 232rpx;
+				margin: 0 auto;
+				margin-top: 18rpx;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				background: url(../static/imgs/index/back02.png) no-repeat;
+				background-size: 100%;
+
+				image {
+					width: 58rpx;
+					height: 57rpx;
+					margin-right: 20rpx;
+				}
+
+				text {
+					font-weight: bold;
+					font-size: 30rpx;
+					color: #1ecc99;
+					border-bottom: 4rpx solid #1ecc99;
+				}
+			}
+
+			.sel-close {
+				margin-top: 100rpx;
+
+				image {
+					width: 50rpx;
+					height: 50rpx;
+				}
+			}
+		}
 	}
+}
 </style>
 <style>
-	.uni-noticebar {
-		padding: 0;
-		margin-bottom: 0;
-	}
+.uni-noticebar {
+	padding: 0;
+	margin-bottom: 0;
+}
 </style>

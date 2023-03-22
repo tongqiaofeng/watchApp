@@ -1,200 +1,229 @@
 <template>
-	<view class="content" @touchend="onPressLeave" @mouseup="onPressLeave" @mouseleave="onPressLeave">
+	<view
+		class="content"
+		@touchend="onPressLeave"
+		@mouseup="onPressLeave"
+		@mouseleave="onPressLeave"
+	>
 		<view class="list" v-if="pressIdx > -2">
-			<view v-for="(item, index) in list" :key="index"
-				style="perspective:500;-webkit-perspective:500;">
-				<view class="item" :id="'item'+index" @touchstart="onPress($event, index)" :style="{'transform': styleRotate(item)}"
-					@click="gotoDetail(item.id)">
+			<view
+				v-for="(item, index) in list"
+				:key="index"
+				style="perspective: 500; -webkit-perspective: 500"
+			>
+				<view
+					class="item"
+					:id="'item' + index"
+					@touchstart="onPress($event, index)"
+					:style="{ transform: styleRotate(item) }"
+					@click="gotoDetail(item.id)"
+				>
 					<view class="img">
-						<easy-loadimage :image-src="imgUrl + item.pics" :scroll-top="scrollTop" border-radius="8rpx" mode="aspectFill"></easy-loadimage>
+						<easy-loadimage
+							:image-src="imgUrl + item.pics"
+							:scroll-top="scrollTop"
+							border-radius="8rpx"
+							mode="aspectFill"
+						></easy-loadimage>
 					</view>
-					
-					<view style="display: flex;flex-direction: column;justify-content: space-between;">
+
+					<view
+						style="
+							display: flex;
+							flex-direction: column;
+							justify-content: space-between;
+						"
+					>
 						<view>
-							<view class="title">{{item.title}}</view>
-							<view class="txt">{{item.txt}}</view>
+							<view class="title">{{ item.title }}</view>
+							<view class="txt">{{ item.txt }}</view>
 						</view>
-						<view class="time">{{item.gmtCreate}}</view>
+						<view class="time">{{ item.gmtCreate }}</view>
 					</view>
 				</view>
-
 			</view>
 		</view>
-		<view v-if="haveMore == false" style="text-align: center;font-size: 24rpx;color: #bbbbbb;">没有更多内容了</view>
+		<view
+			v-if="haveMore == false"
+			style="text-align: center; font-size: 24rpx; color: #bbbbbb"
+			>没有更多内容了</view
+		>
 	</view>
 </template>
 
 <script>
-	export default {
-		data() {
-			return {
-				scrollTop: 0,
-				haveMore: true,
-				curPage: 1,
-				pageNum: 10,
-				list: [],
-				pressIdx: -1,
-				imgUrl: this.$baseFileUrl + "/file/",
-			};
-		},
-		onLoad() {
+export default {
+	data() {
+		return {
+			scrollTop: 0,
+			haveMore: true,
+			curPage: 1,
+			pageNum: 10,
+			list: [],
+			pressIdx: -1,
+			imgUrl: this.$baseFileUrl + '/file/',
+		};
+	},
+	onLoad() {
+		this.getList();
+	},
+	onShow() {},
+	onReady() {
+		this.hidePageNavInWechatBrowser();
+	},
+	onPageScroll(e) {
+		this.scrollTop = e.scrollTop;
+	},
+	onPullDownRefresh() {
+		this.haveMore = true;
+		this.curPage = 1;
+		this.list = [];
+		this.getList();
+		uni.stopPullDownRefresh();
+	},
+	onReachBottom() {
+		if (this.haveMore && this.list.length > 0) {
 			this.getList();
+		}
+	},
+	methods: {
+		getList() {
+			uni.showLoading({
+				title: '数据加载中...',
+			});
+			uni.request({
+				url: this.$baseUrl + '/article/api/articleList',
+				method: 'POST',
+				header: {
+					'content-type': 'application/json',
+					token: uni.getStorageSync('token'),
+				},
+				data: {
+					page: this.curPage,
+					pageNum: this.pageNum,
+				},
+				complete: (res) => {
+					let data = res.data;
+					console.log('news', data);
+					let list = data.data.list;
+					let total = data.data.total;
+					for (let i = 0; i < list.length; ++i) {
+						list[i].txt = list[i].content.replace(/<\/?.+?\/?>/g, '');
+						list[i].x = 0;
+						list[i].y = 0;
+					}
+
+					this.list = this.list.concat(list);
+					this.curPage++;
+					if (this.list.length >= total) this.haveMore = false;
+
+					uni.hideLoading();
+				},
+			});
 		},
-		onShow() {},
-		onReady() {
-			this.hidePageNavInWechatBrowser();
-		},
-		onPageScroll(e) {
-			this.scrollTop = e.scrollTop;
-		},
-		onPullDownRefresh() {
-			this.haveMore = true;
-			this.curPage = 1;
-			this.list = [];
-			this.getList();
-			uni.stopPullDownRefresh();
-		},
-		onReachBottom() {
-			if (this.haveMore && this.list.length > 0) {
-				this.getList();
+		onPressLeave() {
+			let i = this.pressIdx;
+			this.pressIdx = -1;
+			if (i > -1 && i < this.list.length) {
+				this.list[i].x = 0;
+				this.list[i].y = 0;
 			}
 		},
-		methods: {
-			getList() {
-				uni.showLoading({
-					title: "数据加载中...",
-				});
-				uni.request({
-					url: this.$baseUrl + "/article/api/articleList",
-					method: "POST",
-					header: {
-						"content-type": "application/json",
-						token: uni.getStorageSync("token"),
-					},
-					data: {
-						page: this.curPage,
-						pageNum: this.pageNum,
-					},
-					complete: (res) => {
-						let list = res.data.data;
-						let total = res.data.total;
-						for (let i = 0; i < list.length; ++i) {
-							list[i].txt = list[i].content.replace(/<\/?.+?\/?>/g, '');
-							list[i].x = 0;
-							list[i].y = 0;
-						}
+		onPress(e, i) {
+			e.preventDefault();
+			this.pressIdx = i;
+			if (i < this.list.length) {
+				let r = 4;
+				let x = e.mp.touches[0].clientX;
+				let y = e.mp.touches[0].clientY;
 
-						this.list = this.list.concat(list);
-						this.curPage++;
-						if (this.list.length >= total)
-							this.haveMore = false;
+				let that = this;
 
-						uni.hideLoading();
-					},
-				});
-			},
-			onPressLeave() {
-				let i = this.pressIdx;
-				this.pressIdx = -1;
-				if (i > -1 && i < this.list.length) {
-					this.list[i].x = 0;
-					this.list[i].y = 0;
-				}
-			},
-			onPress(e, i) {
-				e.preventDefault();
-				this.pressIdx = i;
-				if (i < this.list.length) {
-					let r = 4;
-					let x = e.mp.touches[0].clientX;
-					let y = e.mp.touches[0].clientY;
-
-					let that = this;
-
-					uni.createSelectorQuery().select('#item' + i).boundingClientRect().exec((ret) => {
+				uni
+					.createSelectorQuery()
+					.select('#item' + i)
+					.boundingClientRect()
+					.exec((ret) => {
 						x = x - ret[0].left;
 						y = y - ret[0].top;
 
 						let x2 = x - ret[0].width / 2;
 						let y2 = -(y - ret[0].height / 2);
 
-						this.list[i].x = y2 / (ret[0].height / 2) * r;
-						this.list[i].y = x2 / (ret[0].width / 2) * r;
-
+						this.list[i].x = (y2 / (ret[0].height / 2)) * r;
+						this.list[i].y = (x2 / (ret[0].width / 2)) * r;
 					});
-				}
-			},
-			styleRotate(item) {
-				if (item.x == 0 && item.y == 0) {
-					return null;
-				} else {
-					return 'rotateX(' + item.x + 'deg) rotateY(' + item.y + 'deg)'
-					// return {
-					// 	'transform': 'rotateX(' + item.x + 'deg) rotateY(' + item.y + 'deg)'
-					// };
-				}
-			},
-			gotoDetail(id) {
-				uni.navigateTo({
-					url: "newsDetail?id=" + id,
-				});
 			}
 		},
-	};
+		styleRotate(item) {
+			if (item.x == 0 && item.y == 0) {
+				return null;
+			} else {
+				return 'rotateX(' + item.x + 'deg) rotateY(' + item.y + 'deg)';
+				// return {
+				// 	'transform': 'rotateX(' + item.x + 'deg) rotateY(' + item.y + 'deg)'
+				// };
+			}
+		},
+		gotoDetail(id) {
+			uni.navigateTo({
+				url: 'newsDetail?id=' + id,
+			});
+		},
+	},
+};
 </script>
 
 <style lang="scss" scoped>
-	.content {
+.content {
+	.list {
+		padding: 20rpx 0rpx;
 
-		.list {
-			padding: 20rpx 0rpx;
+		.item {
+			display: flex;
+			margin: 0rpx 20rpx 40rpx 20rpx;
+			color: #505050;
 
-			.item {
-				display: flex;
-				margin: 0rpx 20rpx 40rpx 20rpx;
-				color: #505050;
+			-webkit-transition: all 0.2s;
 
-				-webkit-transition: all 0.2s;
+			.img {
+				width: 180rpx;
+				height: 180rpx;
+				border-radius: 4rpx;
+				margin-right: 20rpx;
+			}
 
-				.img {
-					width: 180rpx;
-					height: 180rpx;
-					border-radius: 4rpx;
-					margin-right: 20rpx;
-				}
+			.title {
+				width: 500rpx;
+				font-size: 32rpx;
+				color: #03314b;
+				text-overflow: ellipsis;
+				overflow: hidden;
+				white-space: nowrap;
+			}
 
-				.title {
-					width: 500rpx;
-					font-size: 32rpx;
-					color: #03314B;
-					text-overflow: ellipsis;
-					overflow: hidden;
-					white-space: nowrap;
-				}
+			.txt {
+				font-size: 28rpx;
+				margin-top: 20rpx;
+				width: 500rpx;
+				color: #a5a5a5;
 
-				.txt {
-					font-size: 28rpx;
-					margin-top: 20rpx;
-					width: 500rpx;
-					color: #A5A5A5;
+				word-wrap: break-word;
+				display: -webkit-box;
+				overflow: hidden;
+				/*超出隐藏*/
+				text-overflow: ellipsis;
+				/*隐藏后添加省略号*/
+				-webkit-box-orient: vertical;
+				-webkit-line-clamp: 2; //想显示多少行
+			}
 
-					word-wrap: break-word;
-					display: -webkit-box;
-					overflow: hidden;
-					/*超出隐藏*/
-					text-overflow: ellipsis;
-					/*隐藏后添加省略号*/
-					-webkit-box-orient: vertical;
-					-webkit-line-clamp: 2; //想显示多少行
-
-				}
-
-				.time {
-					font-size: 24rpx;
-					color: #bbbbbb;
-					text-align: right;
-				}
+			.time {
+				font-size: 24rpx;
+				color: #bbbbbb;
+				text-align: right;
 			}
 		}
 	}
+}
 </style>

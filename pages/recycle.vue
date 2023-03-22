@@ -1,279 +1,296 @@
 <template>
 	<view class="recycle-container">
-		<image class="image-bg" src="../static/imgs/recycle/back.png" mode="aspectFill"></image>
+		<image
+			class="image-bg"
+			src="../static/imgs/recycle/back.png"
+			mode="aspectFill"
+		></image>
 		<view class="recycle-top">
-			<view class="top-title">
-				出售您的手表
-			</view>
+			<view class="top-title"> 出售您的手表 </view>
 			<view class="top-num">
-				<text>{{num}}</text>
+				<text>{{ num }}</text>
 				<text class="wei">块</text>
 			</view>
-			<view class="top-font01">
-				腕表在此平台出售
-			</view>
-			<view class="top-font01" style="margin-top: 40rpx;line-height: 50rpx;">
-				全球腕表爱好者都在<br>期待您的发布
+			<view class="top-font01"> 腕表在此平台出售 </view>
+			<view class="top-font01" style="margin-top: 40rpx; line-height: 50rpx">
+				全球腕表爱好者都在<br />期待您的发布
 			</view>
 		</view>
 		<view class="recycle-two">
 			<view class="two-every">
-				<image class="sel-img" src="../static/imgs/recycle/img01.png" mode="aspectFill"></image>
+				<image
+					class="sel-img"
+					src="../static/imgs/recycle/img01.png"
+					mode="aspectFill"
+				></image>
 				<text>专业团队</text>
 				<text>科学估价</text>
 			</view>
 			<view class="two-every">
-				<image class="sel-img" src="../static/imgs/recycle/img02.png" mode="aspectFill"></image>
+				<image
+					class="sel-img"
+					src="../static/imgs/recycle/img02.png"
+					mode="aspectFill"
+				></image>
 				<text>无中间商</text>
 				<text>赚差价</text>
 			</view>
 			<view class="two-every">
-				<image class="sel-img" src="../static/imgs/recycle/img03.png" mode="aspectFill"></image>
+				<image
+					class="sel-img"
+					src="../static/imgs/recycle/img03.png"
+					mode="aspectFill"
+				></image>
 				<text>正规平台</text>
 				<text>安全放心</text>
 			</view>
 		</view>
 		<view class="recycle-three">
 			<view class="three-title">
-				<image src="../static/imgs/recycle/vector.png" mode="aspectFill"></image>
+				<image
+					src="../static/imgs/recycle/vector.png"
+					mode="aspectFill"
+				></image>
 				<text class="title">售卖流程</text>
-				<image src="../static/imgs/recycle/vector.png" mode="aspectFill"></image>
+				<image
+					src="../static/imgs/recycle/vector.png"
+					mode="aspectFill"
+				></image>
 			</view>
 			<view class="three-main">
 				<view class="main-every">
 					<image src="../static/imgs/recycle/001.png" mode="aspectFill"></image>
-					<view class="font">
-						联系客服
-					</view>
+					<view class="font"> 联系客服 </view>
 				</view>
 				<view class="main-right">
-					<image src="../static/imgs/recycle/right.png" mode="aspectFill"></image>
+					<image
+						src="../static/imgs/recycle/right.png"
+						mode="aspectFill"
+					></image>
 				</view>
 				<view class="main-every">
 					<image src="../static/imgs/recycle/002.png" mode="aspectFill"></image>
-					<view class="font">
-						商品鉴定
-					</view>
+					<view class="font"> 商品鉴定 </view>
 				</view>
 				<view class="main-right">
-					<image src="../static/imgs/recycle/right.png" mode="aspectFill"></image>
+					<image
+						src="../static/imgs/recycle/right.png"
+						mode="aspectFill"
+					></image>
 				</view>
 				<view class="main-every">
 					<image src="../static/imgs/recycle/003.png" mode="aspectFill"></image>
-					<view class="font">
-						线下交易
-					</view>
+					<view class="font"> 线下交易 </view>
 				</view>
 				<view class="main-right">
-					<image src="../static/imgs/recycle/right.png" mode="aspectFill"></image>
+					<image
+						src="../static/imgs/recycle/right.png"
+						mode="aspectFill"
+					></image>
 				</view>
 				<view class="main-every">
 					<image src="../static/imgs/recycle/004.png" mode="aspectFill"></image>
-					<view class="font">
-						当面拿钱
-					</view>
+					<view class="font"> 当面拿钱 </view>
 				</view>
 			</view>
 		</view>
-		<view class="recycle-button" @click="getService">
-			联系客服
-		</view>
+		<view class="recycle-button" @click="getService"> 联系客服 </view>
 	</view>
 </template>
 
 <script>
-	export default {
-		data() {
-			return {
-				num: 8888,
-			}
+export default {
+	data() {
+		return {
+			num: 8888,
+		};
+	},
+	onShow() {
+		this.getCount();
+	},
+	methods: {
+		//
+		getCount() {
+			uni.request({
+				url: this.$baseUrl + '/newWatch/api/stockNumGet',
+				header: {
+					'content-type': 'application/json',
+				},
+				complete: (res) => {
+					this.num = res.data + 12045;
+				},
+			});
 		},
-		onShow() {
-			this.getCount();
+		// 获取回收客服联系方式
+		getService() {
+			uni.request({
+				url: this.$baseUrl + '/newWatch/api/contactGet?type=2',
+				header: {
+					'content-type': 'application/json',
+					token: uni.getStorageSync('token'),
+				},
+				complete: (res) => {
+					console.log('回收客服联系方式');
+					console.log(res);
+
+					let data = res.data[0];
+					console.log(data);
+
+					uni.navigateTo({
+						url: '../chat/chat?id=TopTime_' + data.id + '&name=' + data.nick,
+					});
+				},
+			});
 		},
-		methods: {
-			//
-			getCount() {
-				uni.request({
-					url: this.$baseUrl + "/newWatch/api/stockNumGet",
-					header: {
-						"content-type": "application/json",
-					},
-					complete: (res) => {
-						this.num = res.data + 12045;
-					},
-				});
-			},
-			// 获取回收客服联系方式
-			getService() {
-				uni.request({
-					url: this.$baseUrl + "/newWatch/api/contactGet?type=2",
-					header: {
-						"content-type": "application/json",
-						token: uni.getStorageSync("token"),
-					},
-					complete: (res) => {
-						console.log("回收客服联系方式");
-						console.log(res);
-
-						let data = res.data[0];
-						console.log(data);
-
-						uni.navigateTo({
-							url: "../chat/chat?id=TopTime_" + data.id + '&name=' + data.nick,
-						});
-					},
-				});
-			},
-		}
-	}
+	},
+};
 </script>
 
 <style lang="scss" scoped>
-	.recycle-container {
-		min-height: 100vh;
-		padding-bottom: 20rpx;
-		background-color: #F4F8FB;
+.recycle-container {
+	min-height: 100vh;
+	padding-bottom: 20rpx;
+	background-color: #f4f8fb;
 
-		.image-bg {
-			width: 750rpx;
-			height: 639rpx;
-			position: absolute;
-			z-index: 0;
-			left: 0;
-			right: 0;
-			top: 0;
+	.image-bg {
+		width: 750rpx;
+		height: 639rpx;
+		position: absolute;
+		z-index: 0;
+		left: 0;
+		right: 0;
+		top: 0;
+	}
+
+	.recycle-top {
+		width: calc(750rpx - 65rpx);
+		height: 435rpx;
+		padding: 117rpx 0 87rpx 65rpx;
+		position: relative;
+		z-index: 99; // 支付宝小程序下背景不生效时，可以加上这个
+		// box-sizing: border-box;
+
+		.top-title {
+			font-size: 42rpx;
+			color: #03314b;
+			font-weight: bold;
 		}
 
-		.recycle-top {
-			width: 750rpx;
-			height: 435rpx;
-			padding: 117rpx 0 87rpx 65rpx;
-			position: relative;
-			z-index: 99; // 支付宝小程序下背景不生效时，可以加上这个
+		.top-num {
+			margin-top: 45rpx;
+			font-size: 60rpx;
+			color: #1ecc99;
+			font-weight: bold;
 
-			.top-title {
-				font-size: 42rpx;
-				color: #03314B;
-				font-weight: bold;
-			}
-
-			.top-num {
-				margin-top: 45rpx;
-				font-size: 60rpx;
-				color: #1ECC99;
-				font-weight: bold;
-
-				.wei {
-					margin-left: 7rpx;
-					font-size: 28rpx;
-					color: #03314B;
-				}
-			}
-
-			.top-font01 {
-				margin-top: 8rpx;
-				font-size: 30rpx;
-				color: #03314B;
-				letter-spacing: 2rpx;
-			}
-		}
-
-		.recycle-two {
-			padding: 50rpx 48rpx;
-			display: flex;
-			justify-content: space-around;
-			background-color: #fff;
-
-			.two-every {
-				width: 198rpx;
-				height: 224rpx;
-				display: flex;
-				flex-direction: column;
-				justify-content: center;
-				align-items: center;
-				border: 2rpx solid #CED4E0;
-				border-radius: 12rpx;
+			.wei {
+				margin-left: 7rpx;
 				font-size: 28rpx;
-				color: #03314B;
-
-				.sel-img {
-					width: 56rpx;
-					height: 57rpx;
-					margin-bottom: 24rpx;
-				}
-			}
-
-		}
-
-		.recycle-three {
-			margin-top: 10rpx;
-			padding: 49rpx 75rpx;
-			background-color: #fff;
-
-			.three-title {
-				display: flex;
-				justify-content: center;
-				align-items: center;
-
-				.title {
-					margin: 0 16rpx;
-					font-size: 30rpx;
-					color: #03314B;
-					font-weight: bold;
-					letter-spacing: 2rpx;
-				}
-
-				image {
-					width: 64rpx;
-					height: 3rpx;
-				}
-			}
-
-			.three-main {
-				margin-top: 55rpx;
-				display: flex;
-				justify-content: space-around;
-
-				.main-every {
-					text-align: center;
-
-					image {
-						width: 60rpx;
-						height: 61rpx;
-					}
-
-					.font {
-						margin-top: 23rpx;
-						font-size: 24rpx;
-						color: #81858C;
-						letter-spacing: 2rpx;
-					}
-				}
-
-				.main-right {
-					padding-bottom: 10rpx;
-					display: flex;
-					flex-direction: column;
-					justify-content: flex-end;
-
-					image {
-						width: 21rpx;
-						height: 11rpx;
-					}
-				}
+				color: #03314b;
 			}
 		}
 
-		.recycle-button {
-			margin: 63rpx 24rpx 40rpx;
-			padding: 28rpx 0;
-			text-align: center;
-			background-color: #1ECC99;
-			border-radius: 60rpx;
-			font-size: 36rpx;
-			color: #fff;
-			letter-spacing: 4rpx;
+		.top-font01 {
+			margin-top: 8rpx;
+			font-size: 30rpx;
+			color: #03314b;
+			letter-spacing: 2rpx;
 		}
 	}
+
+	.recycle-two {
+		padding: 50rpx 48rpx;
+		display: flex;
+		justify-content: space-around;
+		background-color: #fff;
+
+		.two-every {
+			width: 198rpx;
+			height: 224rpx;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			border: 2rpx solid #ced4e0;
+			border-radius: 12rpx;
+			font-size: 28rpx;
+			color: #03314b;
+
+			.sel-img {
+				width: 56rpx;
+				height: 57rpx;
+				margin-bottom: 24rpx;
+			}
+		}
+	}
+
+	.recycle-three {
+		margin-top: 10rpx;
+		padding: 49rpx 75rpx;
+		background-color: #fff;
+
+		.three-title {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+
+			.title {
+				margin: 0 16rpx;
+				font-size: 30rpx;
+				color: #03314b;
+				font-weight: bold;
+				letter-spacing: 2rpx;
+			}
+
+			image {
+				width: 64rpx;
+				height: 3rpx;
+			}
+		}
+
+		.three-main {
+			margin-top: 55rpx;
+			display: flex;
+			justify-content: space-around;
+
+			.main-every {
+				text-align: center;
+
+				image {
+					width: 60rpx;
+					height: 61rpx;
+				}
+
+				.font {
+					margin-top: 23rpx;
+					font-size: 24rpx;
+					color: #81858c;
+					letter-spacing: 2rpx;
+				}
+			}
+
+			.main-right {
+				padding-bottom: 10rpx;
+				display: flex;
+				flex-direction: column;
+				justify-content: flex-end;
+
+				image {
+					width: 21rpx;
+					height: 11rpx;
+				}
+			}
+		}
+	}
+
+	.recycle-button {
+		margin: 63rpx 24rpx 40rpx;
+		padding: 28rpx 0;
+		text-align: center;
+		background-color: #1ecc99;
+		border-radius: 60rpx;
+		font-size: 36rpx;
+		color: #fff;
+		letter-spacing: 4rpx;
+	}
+}
 </style>

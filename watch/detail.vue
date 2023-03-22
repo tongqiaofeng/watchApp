@@ -1,11 +1,24 @@
 <template>
 	<view class="detail" v-if="isShow">
 		<view style="background-color: #fff">
-			<uni-swiper-dot :info="imgSrc" :current="current" mode="dot" :dotsStyles="dotsStyles">
-				<swiper class="swiper-box" style="height: 700rpx" @change="swiperChange">
+			<uni-swiper-dot
+				:info="imgSrc"
+				:current="current"
+				mode="dot"
+				:dotsStyles="dotsStyles"
+			>
+				<swiper
+					class="swiper-box"
+					style="height: 700rpx"
+					@change="swiperChange"
+				>
 					<swiper-item v-for="(item, index) in imgSrc" :key="index">
 						<view class="swiper-item" @click="imagePreview(index)">
-							<image :src="item" mode="aspectFill" style="width: 100%; height: 700rpx"></image>
+							<image
+								:src="item"
+								mode="aspectFill"
+								style="width: 100%; height: 700rpx"
+							></image>
 						</view>
 					</swiper-item>
 				</swiper>
@@ -15,33 +28,49 @@
 		<view class="detail-top">
 			<view class="price">
 				<view class="price-left" @click="checkPrice">
-					<view class="left-hkd" :style="{
+					<view
+						class="left-hkd"
+						:style="{
 							'letter-spacing': detail.marketHkPrice == 0 ? '2rpx' : 0,
-						}">
+						}"
+					>
 						<view class="pos">
-							<text style="font-size: 28rpx" v-if="detail.marketHkPrice">HKD</text>
+							<text style="font-size: 28rpx" v-if="detail.marketHkPrice"
+								>HKD</text
+							>
 							<text>{{ getPrice(detail.marketHkPrice, '') }}</text>
 						</view>
 					</view>
 					<text style="margin: 0 14rpx; font-size: 28rpx">/</text>
-					<text class="left-usd" :style="{
+					<text
+						class="left-usd"
+						:style="{
 							'letter-spacing': detail.marketUsPrice == 0 ? '2rpx' : 0,
-						}">{{ getPrice(detail.marketUsPrice, 'USD') }}</text>
+						}"
+						>{{ getPrice(detail.marketUsPrice, 'USD') }}</text
+					>
 				</view>
-				<view class="price-right" @click="checkStockNum"
-					v-if="!detail.marketHkPrice && (role == 'admin' || role == 'seller')">
+				<view
+					class="price-right"
+					@click="checkStockNum"
+					v-if="!detail.marketHkPrice && (role == 'admin' || role == 'seller')"
+				>
 					库存：{{ detail.stockInNum }}
 				</view>
 			</view>
 			<view class="info">
 				<view class="flag" v-if="detail.marketHkPrice">
 					<text>此报价仅适用于香港地区</text>
-					<text
-						v-if="detail.marketPriceList && detail.marketPriceList[0]">，报价时间：{{detail.marketPriceList[0]['time']}}</text>
+					<text v-if="detail.marketPriceList && detail.marketPriceList[0]"
+						>，报价时间：{{ detail.marketPriceList[0]['time'] }}</text
+					>
 				</view>
 
-				<view class="price-right" @click="checkStockNum"
-					v-if="detail.marketHkPrice && (role == 'admin' || role == 'seller')">
+				<view
+					class="price-right"
+					@click="checkStockNum"
+					v-if="detail.marketHkPrice && (role == 'admin' || role == 'seller')"
+				>
 					库存：{{ detail.stockInNum }}
 				</view>
 			</view>
@@ -50,12 +79,21 @@
 				{{ detail.model }}
 			</view>
 			<view class="note">
-				<view class="publicPrice">公价：{{ getPrice(detail.publicPrice, '', '暂无') }}</view>
+				<view class="publicPrice"
+					>公价：{{ getPrice(detail.publicPrice, '', '暂无') }}</view
+				>
 			</view>
 		</view>
 
-		<uni-segmented-control v-if="tabItems.length > 1" style="background-color: #ffffff" :current="tabCurrent"
-			:values="tabItems" styleType="text" activeColor="#85dbd0" @clickItem="onClickTabItem">
+		<uni-segmented-control
+			v-if="tabItems.length > 1"
+			style="background-color: #ffffff"
+			:current="tabCurrent"
+			:values="tabItems"
+			styleType="text"
+			activeColor="#85dbd0"
+			@clickItem="onClickTabItem"
+		>
 		</uni-segmented-control>
 
 		<!-- -------------------参数------------------- -->
@@ -78,8 +116,11 @@
 				</view>
 				<view class="parameter-every" v-if="detail.limited == '是'">
 					<text class="title">限量版</text>
-					<text
-						class="container">{{ detail.limitedNum > 0 ? '限量个数(' + detail.limitedNum + ')' : '限量版' }}</text>
+					<text class="container">{{
+						detail.limitedNum > 0
+							? '限量个数(' + detail.limitedNum + ')'
+							: '限量版'
+					}}</text>
 				</view>
 				<view class="parameter-every" v-if="detail.special.length > 1">
 					<text class="title">特别版</text>
@@ -115,20 +156,59 @@
 		<view class="product-bottom">
 			<view class="bottom-left">
 				<view class="left-index" @click="goIndex">
-					<image class="index-img" src="../static/imgs/details/index.png" mode="aspectFit"></image>
+					<image
+						class="index-img"
+						src="../static/imgs/details/index.png"
+						mode="aspectFit"
+					></image>
 					<view class="index-font">首页</view>
 				</view>
+				<!-- #ifdef MP-WEIXIN -->
+				<view class="share-btn-wrap">
+					<button
+						class="share-mp-button"
+						open-type="share"
+						hover-class="none"
+						ref="mpShareRef"
+					>
+						<image
+							class="share-icon"
+							src="../static/imgs/index/share_icon.png"
+							mode="aspectFit"
+						></image>
+						<text class="font">分享</text>
+					</button>
+				</view>
+				<!-- #endif -->
+				<!-- #ifdef APP-PLUS -->
+				<view class="share-btn-wrap" @click="goShare">
+					<image
+						class="index-img"
+						src="../static/imgs/index/share_icon.png"
+						mode="aspectFit"
+					></image>
+					<view class="index-font">分享</view>
+				</view>
+				<!-- #endif -->
 			</view>
 			<view class="bottom-right">
 				<view class="right-collect" @click="isCollectChange">
-					<image class="index-img" :src="detail.isCollect ? collect2 : collect1" mode="aspectFit">
+					<image
+						class="index-img"
+						:src="detail.isCollect ? collect2 : collect1"
+						mode="aspectFit"
+					>
 					</image>
 					<view class="index-font">{{
 						detail.isCollect == 0 ? '收藏' : '已收藏'
 					}}</view>
 				</view>
 				<view class="right-service" @click="serviceClick">
-					<image class="index-img" src="../static/imgs/details/service.png" mode="aspectFit"></image>
+					<image
+						class="index-img"
+						src="../static/imgs/details/service.png"
+						mode="aspectFit"
+					></image>
 					<view class="index-font">联系客服</view>
 				</view>
 			</view>
@@ -137,595 +217,658 @@
 </template>
 
 <script>
-	export default {
-		data() {
-			return {
-				role: '',
-				token: '',
-				currency: '',
-				detail: {},
-				imgSrc: [],
-				dotsStyles: {
-					width: 6,
-					height: 6,
-					backgroundColor: '#fff',
-					border: '#fff',
-					selectedBackgroundColor: '#b0edd5',
-					selectedBorder: '#b0edd5',
-				},
-				current: 0,
-				current2: 0,
-				collect1: require('../static/imgs/details/collect.png'),
-				collect2: require('../static/imgs/details/collect01.png'),
+export default {
+	data() {
+		return {
+			role: '',
+			token: '',
+			currency: '',
+			detail: {},
+			imgSrc: [],
+			dotsStyles: {
+				width: 6,
+				height: 6,
+				backgroundColor: '#fff',
+				border: '#fff',
+				selectedBackgroundColor: '#b0edd5',
+				selectedBorder: '#b0edd5',
+			},
+			current: 0,
+			current2: 0,
+			collect1: require('../static/imgs/details/collect.png'),
+			collect2: require('../static/imgs/details/collect01.png'),
 
-				tabItems: ['参数'],
-				tabCurrent: 0,
-				tabSelType: 0, //0:参数 1:价格 2:销售
+			tabItems: ['参数'],
+			tabCurrent: 0,
+			tabSelType: 0, //0:参数 1:价格 2:销售
 
-				isShow: false,
-				detailId: null,
-				//设置默认的分享参数
-				share: {
-					title: '精品腕表，尽在TopTime',
-					path: '/watch/detail?id=' + this.detailId,
-					imageUrl: '',
-					desc: '',
-					content: '',
-				},
-			};
-		},
-		async onLoad(option) {
-			await this.$onLaunched;
+			isShow: false,
+			detailId: null,
+			//设置默认的分享参数
+			share: {
+				title: '精品腕表，尽在TopTime',
+				path: '/watch/detail?id=' + this.detailId,
+				imageUrl: '',
+				desc: '',
+				content: '',
+			},
+		};
+	},
+	async onLoad(option) {
+		console.log(option);
+		// await this.$onLaunched;
 
-			this.role = uni.getStorageSync('role');
-			this.token = uni.getStorageSync('token');
-			this.currency = getApp().globalData.userInfo.currency;
-			this.detailId = option.id;
-			this.getDetails(option.id);
-		},
-		onReady() {
-			this.hidePageNavInWechatBrowser();
-		},
-		onPullDownRefresh() {
-			uni.showLoading({
-				title: '正在刷新',
-			});
-			this.getDetails(this.detailId);
-			uni.stopPullDownRefresh();
-		},
-		// 分享好友
-		onShareAppMessage(res) {
-			this.share.path = '/watch/detail?id=' + this.detailId;
-			return {
-				title: this.share.title,
-				path: this.share.path,
-				imageUrl: this.share.imageUrl,
-				desc: this.share.desc,
-				content: this.share.content,
-				success: (res) => {
-					uni.showToast({
-						title: '分享成功',
-						icon: 'none',
-					});
-				},
-				fail: (res) => {
-					uni.showToast({
-						title: '分享失败',
-						icon: 'none',
-					});
-				},
-			};
-		},
-		// 分享朋友圈
-		onShareTimeline(res) {
-			this.share.path = '/watch/detail?id=' + this.detailId;
-			return {
-				title: this.share.title,
-				path: this.share.path,
-				imageUrl: this.share.imageUrl,
-				desc: this.share.desc,
-				content: this.share.content,
-				success: (res) => {
-					uni.showToast({
-						title: '分享成功',
-						icon: 'none',
-					});
-				},
-				fail: (res) => {
-					uni.showToast({
-						title: '分享失败',
-						icon: 'none',
-					});
-				},
-			};
-		},
-		methods: {
-			// 长按复制品牌
-			getCopyContent(info) {
-				uni.setClipboardData({
-					data: info, //要被复制的内容
-					success: () => {
-						//复制成功的回调函数
-						uni.showToast({
-							//提示
-							title: '复制成功',
-							icon: 'none',
-						});
-					},
+		this.role = uni.getStorageSync('role');
+		this.token = uni.getStorageSync('token');
+		this.currency = getApp().globalData.userInfo.currency;
+		this.detailId = option.id;
+		this.getDetails(option.id);
+	},
+	onReady() {
+		this.hidePageNavInWechatBrowser();
+	},
+	onPullDownRefresh() {
+		uni.showLoading({
+			title: '正在刷新',
+		});
+		this.getDetails(this.detailId);
+		uni.stopPullDownRefresh();
+	},
+	// 分享好友
+	onShareAppMessage(res) {
+		this.share.path = '/watch/detail?id=' + this.detailId;
+		return {
+			title: this.share.title,
+			path: this.share.path,
+			imageUrl: this.share.imageUrl,
+			desc: this.share.desc,
+			content: this.share.content,
+			success: (res) => {
+				uni.showToast({
+					title: '分享成功',
+					icon: 'none',
 				});
 			},
-			// 判断参数是否为其他，是 则不显示
-			isOther(text) {
-				if (text) {
+			fail: (res) => {
+				uni.showToast({
+					title: '分享失败',
+					icon: 'none',
+				});
+			},
+		};
+	},
+	// 分享朋友圈
+	onShareTimeline(res) {
+		this.share.path = '/watch/detail?id=' + this.detailId;
+		return {
+			title: this.share.title,
+			path: this.share.path,
+			imageUrl: this.share.imageUrl,
+			desc: this.share.desc,
+			content: this.share.content,
+			success: (res) => {
+				uni.showToast({
+					title: '分享成功',
+					icon: 'none',
+				});
+			},
+			fail: (res) => {
+				uni.showToast({
+					title: '分享失败',
+					icon: 'none',
+				});
+			},
+		};
+	},
+	onNavigationBarButtonTap(e) {
+		this.goShare();
+	},
+	methods: {
+		// 长按复制品牌
+		getCopyContent(info) {
+			uni.setClipboardData({
+				data: info, //要被复制的内容
+				success: () => {
+					//复制成功的回调函数
+					uni.showToast({
+						//提示
+						title: '复制成功',
+						icon: 'none',
+					});
+				},
+			});
+		},
+		// 判断参数是否为其他，是 则不显示
+		isOther(text) {
+			if (text) {
 				text = text.replace('|', '');
-					if (text == '其他' || text == '其它') {
-						return false;
-					} else {
-						return true;
-					}
-				} else {
+				if (text == '其他' || text == '其它') {
 					return false;
+				} else {
+					return true;
 				}
-			},
-			// 查看行情价历史
-			checkPrice() {
-				if (this.role == 'admin' || this.role == 'seller') {
-					if (this.detail.marketPriceList.length == 0) {
-						uni.showToast({
-							icon: 'none',
-							title: '暂无价格历史记录',
-						});
-					} else {
-						uni.navigateTo({
-							url: './priceHistory?marketPriceList=' +
-								encodeURIComponent(JSON.stringify(this.detail.marketPriceList)),
-						});
-					}
-				}
-			},
-			// 查看每个库存点手表数量
-			checkStockNum() {
-				if (this.detail.stockMsgList.length == 0) {
+			} else {
+				return false;
+			}
+		},
+		// 查看行情价历史
+		checkPrice() {
+			if (this.role == 'admin' || this.role == 'seller') {
+				if (this.detail.marketPriceList.length == 0) {
 					uni.showToast({
 						icon: 'none',
-						title: '暂无库存',
+						title: '暂无价格历史记录',
 					});
 				} else {
 					uni.navigateTo({
-						url: './stockNumber?stockMsgList=' +
-							encodeURIComponent(JSON.stringify(this.detail.stockMsgList)),
+						url:
+							'./priceHistory?marketPriceList=' +
+							encodeURIComponent(JSON.stringify(this.detail.marketPriceList)),
 					});
 				}
-			},
-			onClickTabItem(e) {
-				if (this.tabCurrent != e.currentIndex) {
-					this.tabCurrent = e.currentIndex;
-					if (this.tabItems[this.tabCurrent] == '参数') this.tabSelType = 0;
-					else if (this.tabItems[this.tabCurrent] == '价格') this.tabSelType = 1;
-					else if (this.tabItems[this.tabCurrent] == '销售') this.tabSelType = 2;
-					else this.tabSelType = 0;
-				}
-			},
-			// 指示点
-			swiperChange(e) {
-				this.current = e.detail.current;
-			},
-			//预览轮播图
-			imagePreview(index) {
-				//uniapp预览轮播图
-				uni.previewImage({
-					current: index, //预览图片的下标
-					urls: this.imgSrc, //预览图片的地址，必须要数组形式，如果不是数组形式就转换成数组形式就可以
+			}
+		},
+		// 查看每个库存点手表数量
+		checkStockNum() {
+			if (this.detail.stockMsgList.length == 0) {
+				uni.showToast({
+					icon: 'none',
+					title: '暂无库存',
 				});
-			},
-			// 获取商品详情
-			getDetails(id) {
-				console.log(id);
-				uni.showLoading({
-					title: '加载中......',
+			} else {
+				uni.navigateTo({
+					url:
+						'./stockNumber?stockMsgList=' +
+						encodeURIComponent(JSON.stringify(this.detail.stockMsgList)),
 				});
-				uni.request({
-					url: this.$baseUrl + '/newWatch/api/watchInfo?id=' + id,
-					header: {
-						'content-type': 'application/json',
-						token: uni.getStorageSync('token'),
-					},
-					success: (res) => {
-						console.log('详情', res.data);
-						uni.hideLoading();
-						this.detail = res.data;
+			}
+		},
+		onClickTabItem(e) {
+			if (this.tabCurrent != e.currentIndex) {
+				this.tabCurrent = e.currentIndex;
+				if (this.tabItems[this.tabCurrent] == '参数') this.tabSelType = 0;
+				else if (this.tabItems[this.tabCurrent] == '价格') this.tabSelType = 1;
+				else if (this.tabItems[this.tabCurrent] == '销售') this.tabSelType = 2;
+				else this.tabSelType = 0;
+			}
+		},
+		// 指示点
+		swiperChange(e) {
+			this.current = e.detail.current;
+		},
+		//预览轮播图
+		imagePreview(index) {
+			//uniapp预览轮播图
+			uni.previewImage({
+				current: index, //预览图片的下标
+				urls: this.imgSrc, //预览图片的地址，必须要数组形式，如果不是数组形式就转换成数组形式就可以
+			});
+		},
+		// 获取商品详情
+		getDetails(id) {
+			uni.showLoading({
+				title: '加载中......',
+			});
+			uni.request({
+				url: this.$baseUrl + '/newWatch/api/watchInfo?id=' + id,
+				header: {
+					'content-type': 'application/json',
+					token: uni.getStorageSync('token'),
+				},
+				success: (res) => {
+					console.log('详情', res.data);
+					uni.hideLoading();
+					this.detail = res.data;
 
-						uni.setNavigationBarTitle({
-							title: this.detail.brand + ' - ' + this.detail.model,
-						});
+					uni.setNavigationBarTitle({
+						title: this.detail.brand + ' - ' + this.detail.model,
+					});
 
-						this.imgSrc = [];
-						if (this.detail.pics != '' && this.detail.pics != null) {
-							this.detail.pics += '|';
-							let p = this.detail.pics.split('|');
-							for (let i = 0; i < p.length - 1; i++) {
-								if (p[i].trim().length > 0) {
-									this.imgSrc.push(this.$baseUrl + '/api/watch/stock' + p[i].trim());
-									if (!this.detail.pic2)
-										this.detail.pic2 = this.$baseUrl + '/api/watch/stock' + p[i].trim();
-								}
+					this.imgSrc = [];
+					if (this.detail.pics != '' && this.detail.pics != null) {
+						this.detail.pics += '|';
+						let p = this.detail.pics.split('|');
+						for (let i = 0; i < p.length - 1; i++) {
+							if (p[i].trim().length > 0) {
+								this.imgSrc.push(
+									this.$baseUrl + '/api/watch/stock' + p[i].trim()
+								);
+								if (!this.detail.pic2)
+									this.detail.pic2 =
+										this.$baseUrl + '/api/watch/stock' + p[i].trim();
 							}
 						}
+					}
 
-						this.setTabItem();
+					this.setTabItem();
 
-						this.isShow = true;
-					},
-					fail: (err) => {
-						uni.hideLoading();
-						console.log(err);
-					},
-				});
-			},
-			setTabItem() {
-				this.tabItems = ['参数'];
-				if (
-					this.detail.createTime ||
-					this.detail.cost ||
-					this.detail.pricePeer ||
-					this.detail.note
-				) {
-					this.tabItems.push('价格');
-				}
-				if (
-					this.detail.soldTime ||
-					this.detail.saleTotalHkPrice ||
-					this.detail.customer
-				) {
-					this.tabItems.push('销售');
-				}
-			},
-
-			// 返回首页
-			goIndex() {
-				uni.switchTab({
-					url: '../pages/index',
-				});
-			},
-			// 收藏
-			isCollectChange() {
-				if (uni.getStorageSync('token').length == 0) {
-					uni.showToast({
-						title: '请登录',
-						icon: 'none',
-						success: () => {
-							uni.switchTab({
-								url: '../pages/mine',
-							});
-						},
-					});
-				} else {
-					console.log('添加与取消收藏');
-					let list = [];
-					list.push(this.detail.id);
-					uni.request({
-						method: 'POST',
-						url: this.$baseUrl + '/newWatch/api/favoriteSave',
-						data: {
-							watchIdList: list,
-						},
-						header: {
-							token: uni.getStorageSync('token'),
-						},
-						complete: (res) => {
-							console.log('添加与取消收藏');
-							console.log(res);
-
-							if (this.checkBack(res, true) == false) return;
-							else {
-								this.getDetails(this.detail.id);
-							}
-						},
-					});
-				}
-			},
-			// 联系客服
-			serviceClick() {
-				let detail = {};
-				detail.type = 'watch';
-				detail.id = this.detail.id;
-				detail.pic = this.detail.pic2;
-				detail.title = this.detail.brand;
-				detail.subTitle = this.detail.model;
-				getApp().globalData.pageInItem = detail;
-				uni.navigateTo({
-					url: '../common/service',
-				});
-			},
+					this.isShow = true;
+				},
+				fail: (err) => {
+					uni.hideLoading();
+					console.log(err);
+				},
+			});
 		},
-	};
+		setTabItem() {
+			this.tabItems = ['参数'];
+			if (
+				this.detail.createTime ||
+				this.detail.cost ||
+				this.detail.pricePeer ||
+				this.detail.note
+			) {
+				this.tabItems.push('价格');
+			}
+			if (
+				this.detail.soldTime ||
+				this.detail.saleTotalHkPrice ||
+				this.detail.customer
+			) {
+				this.tabItems.push('销售');
+			}
+		},
+
+		// 返回首页
+		goIndex() {
+			uni.switchTab({
+				url: '../pages/index',
+			});
+		},
+		goShare() {
+			uni.shareWithSystem({
+				summary: this.detail.brand + ' - ' + this.detail.model,
+				href: 'https://toptimeclub.com/watch/detail?id=' + this.detailId,
+				success() {},
+				fail() {},
+			});
+		},
+		// 收藏
+		isCollectChange() {
+			if (uni.getStorageSync('token').length == 0) {
+				uni.showToast({
+					title: '请登录',
+					icon: 'none',
+					success: () => {
+						uni.switchTab({
+							url: '../pages/mine',
+						});
+					},
+				});
+			} else {
+				console.log('添加与取消收藏');
+				let list = [];
+				list.push(this.detail.id);
+				uni.request({
+					method: 'POST',
+					url: this.$baseUrl + '/newWatch/api/favoriteSave',
+					data: {
+						watchIdList: list,
+					},
+					header: {
+						token: uni.getStorageSync('token'),
+					},
+					complete: (res) => {
+						console.log('添加与取消收藏');
+						console.log(res);
+
+						if (this.checkBack(res, true) == false) return;
+						else {
+							this.getDetails(this.detail.id);
+						}
+					},
+				});
+			}
+		},
+		// 联系客服
+		serviceClick() {
+			let detail = {};
+			detail.type = 'watch';
+			detail.id = this.detail.id;
+			detail.pic = this.detail.pic2;
+			detail.title = this.detail.brand;
+			detail.subTitle = this.detail.model;
+			getApp().globalData.pageInItem = detail;
+			uni.navigateTo({
+				url: '../common/service',
+			});
+		},
+	},
+};
 </script>
 
 <style lang="scss" scoped>
-	.detail {
-		width: 100%;
-		padding-bottom: 150rpx;
-		background-color: #f4f8fb;
+.detail {
+	width: 100%;
+	padding-bottom: 150rpx;
+	background-color: #f4f8fb;
 
-		.uni-swiper__dots-nav {
-			justify-content: flex-end;
-		}
+	.uni-swiper__dots-nav {
+		justify-content: flex-end;
+	}
 
-		.detail-top {
-			margin: 20rpx 24rpx 0;
-			padding: 20rpx 19rpx 38rpx;
-			background-color: #fff;
-			border-radius: 20rpx;
+	.detail-top {
+		margin: 20rpx 24rpx 0;
+		padding: 20rpx 19rpx 38rpx;
+		background-color: #fff;
+		border-radius: 20rpx;
 
-			.price {
+		.price {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			font-size: 30rpx;
+			color: #000;
+
+			.price-left {
+				// width: 100%;
+				height: fit-content;
 				display: flex;
 				align-items: center;
-				justify-content: space-between;
-				font-size: 30rpx;
-				color: #000;
+				position: relative;
 
-				.price-left {
-					// width: 100%;
-					height: fit-content;
-					display: flex;
-					align-items: center;
+				.left-hkd {
+					font-size: 48rpx;
+					color: #1ecc99;
+					font-weight: bold;
 					position: relative;
-
-					.left-hkd {
-						font-size: 48rpx;
-						color: #1ecc99;
-						font-weight: bold;
-						position: relative;
-
-					}
-
-					.left-usd {
-						color: #4d555a;
-						font-weight: bold;
-						font-size: 28rpx;
-					}
-				}
-			}
-
-			.price-right {
-				font-size: 26rpx;
-				color: #03314b;
-				cursor: pointer;
-			}
-
-			.info {
-				margin-top: 8rpx;
-				width: 100%;
-				display: flex;
-				align-items: center;
-				justify-content: space-between;
-
-				.flag {
-					font-size: 24rpx;
-					background-color: #edf7f4;
-					padding: 6rpx 10rpx;
-					border-radius: 4rpx;
-					color: #23AD85;
 				}
 
-				.time {
-					font-size: 24rpx;
-					border: 0.5px solid #9BA0A9;
-					padding: 4rpx 8rpx;
-					margin-left: 20rpx;
-					color: #9BA0A9;
-					border-radius: 4rpx;
-				}
-			}
-
-
-			.name {
-				padding: 16rpx 0;
-				background-color: #fff;
-				font-size: 32rpx;
-				// overflow: hidden;
-				// text-overflow: ellipsis;
-				// white-space: nowrap;
-				color: #03314b;
-			}
-
-			.note {
-				background-color: #fff;
-				display: flex;
-				justify-content: space-between;
-
-				.publicPrice {
-					color: #b6bac9;
-					font-size: 20rpx;
+				.left-usd {
+					color: #4d555a;
+					font-weight: bold;
+					font-size: 28rpx;
 				}
 			}
 		}
 
-		.product-parameter {
-			margin: 20rpx 24rpx 0;
-			padding: 40rpx 20rpx;
+		.price-right {
+			font-size: 26rpx;
+			color: #03314b;
+			cursor: pointer;
+		}
+
+		.info {
+			margin-top: 8rpx;
+			width: 100%;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+
+			.flag {
+				font-size: 24rpx;
+				background-color: #edf7f4;
+				padding: 6rpx 10rpx;
+				border-radius: 4rpx;
+				color: #23ad85;
+			}
+
+			.time {
+				font-size: 24rpx;
+				border: 0.5px solid #9ba0a9;
+				padding: 4rpx 8rpx;
+				margin-left: 20rpx;
+				color: #9ba0a9;
+				border-radius: 4rpx;
+			}
+		}
+
+		.name {
+			padding: 16rpx 0;
 			background-color: #fff;
-			text-align: left;
-			border-radius: 20rpx;
-
-			.parameter {
-				font-size: 32rpx;
-				font-weight: bold;
-				color: #03314b;
-			}
-
-			.parameter-line {
-				height: 4rpx;
-				margin-top: 30rpx;
-				background-color: #f9f9f9;
-				border-radius: 5px;
-			}
-
-			.parameter-main {
-				margin-top: 39rpx;
-				border: 2rpx solid #c7cfd3;
-				border-top: none;
-
-				.parameter-every {
-					height: 70rpx;
-					display: flex;
-					justify-content: space-between;
-					align-items: center;
-					font-size: 24rpx;
-					border-top: 2rpx solid #c7cfd3;
-					background-color: #f4f8fb;
-					box-sizing: border-box;
-
-					.title {
-						width: 180rpx;
-						height: 100%;
-						padding-left: 20rpx;
-						line-height: 70rpx;
-						color: #54626a;
-						border-right: 2rpx solid #c7cfd3;
-						box-sizing: border-box;
-					}
-
-					.container {
-						height: 100%;
-						padding-left: 22rpx;
-						line-height: 70rpx;
-						flex: 1;
-						color: #03314b;
-						background-color: #fff;
-					}
-				}
-			}
+			font-size: 32rpx;
+			// overflow: hidden;
+			// text-overflow: ellipsis;
+			// white-space: nowrap;
+			color: #03314b;
 		}
 
-		.product-comment {
-			margin-top: 20rpx;
-			padding-bottom: 160rpx;
+		.note {
 			background-color: #fff;
-		}
-
-		.step {
-			padding: 30rpx 30rpx 10rpx 30rpx;
-			background-color: #ffffff;
-
-			.steptitle {
-				font-size: 28rpx;
-				margin-bottom: 20rpx;
-			}
-
-			.row {
-				display: flex;
-			}
-
-			.item {
-				margin-bottom: 60rpx;
-				color: #666666;
-				align-items: flex-start;
-
-				.dot {
-					width: 20rpx;
-					height: 20rpx;
-					background-color: #85dbd0;
-					border-radius: 30rpx;
-					margin-right: 20rpx;
-					// margin-top: 10rpx;
-				}
-
-				.time {
-					//color: #C0C0C0;
-					font-size: 24rpx;
-				}
-
-				.desc {
-					font-size: 24rpx;
-					word-break: break-all;
-					word-wrap: break-word;
-				}
-			}
-
-			.line {
-				margin: 10rpx 16rpx;
-				border-left: 1rpx solid #e2ebfd;
-				height: 56rpx;
-				line-height: 56rpx;
-				padding-left: 46rpx;
-				font-size: 22rpx;
-
-				.yesName {
-					color: #b6bac9;
-				}
-
-				.noName {
-					color: #b6bac9;
-				}
-			}
-		}
-
-		.product-bottom {
-			position: fixed;
-			bottom: 0;
-			left: 0;
-			right: 0;
-			padding: 20rpx 24rpx;
 			display: flex;
 			justify-content: space-between;
-			align-items: center;
-			background-color: #fff;
-			border-top: 1px solid #f9f9f9;
 
-			.bottom-left {
-				.left-index {
-					margin-right: 40rpx;
-					display: flex;
-					flex-direction: column;
-					align-items: center;
-					cursor: pointer;
-				}
-
-				.index-img {
-					width: 40rpx;
-					height: 41rpx;
-				}
-
-				.index-font {
-					margin-top: 8rpx;
-					font-size: 20rpx;
-					color: #757980;
-				}
+			.publicPrice {
+				color: #b6bac9;
+				font-size: 20rpx;
 			}
+		}
+	}
 
-			.bottom-right {
+	.product-parameter {
+		margin: 20rpx 24rpx 0;
+		padding: 40rpx 20rpx;
+		background-color: #fff;
+		text-align: left;
+		border-radius: 20rpx;
+
+		.parameter {
+			font-size: 32rpx;
+			font-weight: bold;
+			color: #03314b;
+		}
+
+		.parameter-line {
+			height: 4rpx;
+			margin-top: 30rpx;
+			background-color: #f9f9f9;
+			border-radius: 5px;
+		}
+
+		.parameter-main {
+			margin-top: 39rpx;
+			border: 2rpx solid #c7cfd3;
+			border-top: none;
+
+			.parameter-every {
+				height: 70rpx;
 				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				font-size: 24rpx;
+				border-top: 2rpx solid #c7cfd3;
+				background-color: #f4f8fb;
+				box-sizing: border-box;
 
-				.right-collect,
-				.right-service {
-					display: flex;
-					justify-content: center;
-					align-items: center;
-					font-size: 28rpx;
-					color: #fff;
-					border-radius: 60rpx;
-
-					.index-img {
-						width: 40rpx;
-						height: 40rpx;
-						margin-right: 6rpx;
-					}
+				.title {
+					width: 180rpx;
+					height: 100%;
+					padding-left: 20rpx;
+					line-height: 70rpx;
+					color: #54626a;
+					border-right: 2rpx solid #c7cfd3;
+					box-sizing: border-box;
 				}
 
-				.right-collect {
-					width: 236rpx;
-					height: 80rpx;
-					margin-right: 16rpx;
-					background-color: #03314b;
-				}
-
-				.right-service {
-					width: 343rpx;
-					height: 80rpx;
-					background-color: #1ecc99;
+				.container {
+					height: 100%;
+					padding-left: 22rpx;
+					line-height: 70rpx;
+					flex: 1;
+					color: #03314b;
+					background-color: #fff;
 				}
 			}
 		}
 	}
+
+	.product-comment {
+		margin-top: 20rpx;
+		padding-bottom: 160rpx;
+		background-color: #fff;
+	}
+
+	.step {
+		padding: 30rpx 30rpx 10rpx 30rpx;
+		background-color: #ffffff;
+
+		.steptitle {
+			font-size: 28rpx;
+			margin-bottom: 20rpx;
+		}
+
+		.row {
+			display: flex;
+		}
+
+		.item {
+			margin-bottom: 60rpx;
+			color: #666666;
+			align-items: flex-start;
+
+			.dot {
+				width: 20rpx;
+				height: 20rpx;
+				background-color: #85dbd0;
+				border-radius: 30rpx;
+				margin-right: 20rpx;
+				// margin-top: 10rpx;
+			}
+
+			.time {
+				//color: #C0C0C0;
+				font-size: 24rpx;
+			}
+
+			.desc {
+				font-size: 24rpx;
+				word-break: break-all;
+				word-wrap: break-word;
+			}
+		}
+
+		.line {
+			margin: 10rpx 16rpx;
+			border-left: 1rpx solid #e2ebfd;
+			height: 56rpx;
+			line-height: 56rpx;
+			padding-left: 46rpx;
+			font-size: 22rpx;
+
+			.yesName {
+				color: #b6bac9;
+			}
+
+			.noName {
+				color: #b6bac9;
+			}
+		}
+	}
+
+	.product-bottom {
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		padding: 20rpx 24rpx;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		background-color: #fff;
+		border-top: 1px solid #f9f9f9;
+
+		.bottom-left {
+			display: flex;
+			align-items: center;
+			.left-index {
+				margin-right: 40rpx;
+
+				// #ifdef H5
+				margin-left: 20rpx;
+				margin-right: 0;
+				// #endif
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				cursor: pointer;
+			}
+
+			.index-img {
+				width: 40rpx;
+				height: 41rpx;
+			}
+
+			.index-font {
+				margin-top: 8rpx;
+				font-size: 20rpx;
+				color: #757980;
+			}
+
+			.share-btn-wrap {
+				display: flex;
+				flex-direction: column;
+			}
+
+			.share-icon {
+				width: 40rpx;
+				height: 41rpx;
+			}
+
+			.share-mp-button {
+				background-color: #fff;
+				border: none;
+				padding: 0;
+				margin: 0;
+				font-size: 20rpx;
+				color: #757980;
+				display: inline-flex;
+				flex-direction: column;
+				align-items: center;
+				line-height: 1;
+
+				.font {
+					margin-top: 8rpx;
+				}
+			}
+		}
+
+		.bottom-right {
+			display: flex;
+
+			.right-collect,
+			.right-service {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				font-size: 28rpx;
+				color: #fff;
+				border-radius: 60rpx;
+
+				.index-img {
+					width: 40rpx;
+					height: 40rpx;
+					margin-right: 6rpx;
+					display: inline-block;
+				}
+			}
+
+			.right-collect {
+				// #ifdef H5
+				width: 236rpx;
+				// #endif
+
+				// #ifdef MP-WEIXIN || APP-PLUS
+				width: 212rpx;
+				// #endif
+
+				height: 80rpx;
+				margin-right: 16rpx;
+				background-color: #03314b;
+			}
+
+			.right-service {
+				// #ifdef H5
+				width: 343rpx;
+				// #endif
+
+				// #ifdef MP-WEIXIN || APP-PLUS
+				width: 306rpx;
+				// #endif
+
+				height: 80rpx;
+				background-color: #1ecc99;
+			}
+		}
+	}
+}
 </style>

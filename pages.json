@@ -1,5 +1,6 @@
 {
-	"pages": [{
+	"pages": [
+		{
 			"path": "pages/index",
 			"style": {
 				"navigationBarTextStyle": "black",
@@ -19,20 +20,23 @@
 				"navigationBarBackgroundColor": "#F4F8FB",
 				"enablePullDownRefresh": true
 			}
-		}, {
+		},
+		{
 			"path": "pages/chatList",
 			"style": {
 				"navigationBarTitleText": "消息",
 				"app-plus": {
 					"titleNView": {
-						"buttons": [{
-							"width": "80rpx",
-							"text": "\ue600",
-							"fontSrc": "/static/font/uni.ttf",
-							"fontSize": "44rpx",
-							"fontWeight": "bold",
-							"color": "#03314B"
-						}]
+						"buttons": [
+							{
+								"width": "80rpx",
+								"text": "\ue600",
+								"fontSrc": "/static/font/uni.ttf",
+								"fontSize": "44rpx",
+								"fontWeight": "bold",
+								"color": "#03314B"
+							}
+						]
 					}
 				}
 			}
@@ -53,7 +57,8 @@
 					"titleView": false
 				}
 			}
-		}, {
+		},
+		{
 			"path": "common/search",
 			"style": {
 				"navigationBarTitleText": "商品搜索",
@@ -64,7 +69,8 @@
 				},
 				"enablePullDownRefresh": true
 			}
-		}, {
+		},
+		{
 			"path": "common/login",
 			"style": {
 				"navigationBarTitleText": "登录",
@@ -88,9 +94,11 @@
 			}
 		}
 	],
-	"subPackages": [{
+	"subPackages": [
+		{
 			"root": "my",
-			"pages": [{
+			"pages": [
+				{
 					"path": "collectGoods",
 					"style": {
 						"navigationBarTitleText": "商品收藏",
@@ -98,7 +106,8 @@
 						"navigationBarBackgroundColor": "#ffffff",
 						"enablePullDownRefresh": true
 					}
-				}, {
+				},
+				{
 					"path": "footprint",
 					"style": {
 						"navigationBarTitleText": "浏览记录",
@@ -130,7 +139,8 @@
 							"titleView": false
 						}
 					}
-				}, {
+				},
+				{
 					"path": "updateMyMsg",
 					"style": {
 						"navigationBarTitleText": "个人信息",
@@ -140,7 +150,8 @@
 							"titleView": false
 						}
 					}
-				}, {
+				},
+				{
 					"path": "updatePhone",
 					"style": {
 						"navigationBarTitleText": "修改邮箱",
@@ -150,7 +161,8 @@
 							"titleView": false
 						}
 					}
-				}, {
+				},
+				{
 					"path": "share",
 					"style": {
 						"navigationBarTitleText": "邀请客户",
@@ -160,12 +172,19 @@
 							"titleView": false
 						}
 					}
+				},
+				{
+					"path": "serviceWebview",
+					"style": {
+						"navigationStyle": "custom"
+					}
 				}
 			]
 		},
 		{
 			"root": "watch",
-			"pages": [{
+			"pages": [
+				{
 					"path": "newsList",
 					"style": {
 						"navigationBarTitleText": "新闻资讯",
@@ -176,7 +195,8 @@
 							"titleView": false
 						}
 					}
-				}, {
+				},
+				{
 					"path": "detail",
 					"style": {
 						"navigationBarTitleText": "详情",
@@ -184,7 +204,20 @@
 						"navigationBarBackgroundColor": "#fff",
 						"enablePullDownRefresh": true,
 						"app-plus": {
-							"titleView": false
+							// #ifdef APP-PLUS
+							"titleNView": {
+								"buttons": [
+									{
+										"width": "80rpx",
+										"text": "\ue6f3",
+										"fontSrc": "/static/font/uni.ttf",
+										"fontSize": "44rpx",
+										"fontWeight": "bold",
+										"color": "#03314B"
+									}
+								]
+							}
+							// #endif
 						}
 					}
 				},
@@ -196,7 +229,8 @@
 						"navigationBarBackgroundColor": "#F4F8FB",
 						"enablePullDownRefresh": true
 					}
-				}, {
+				},
+				{
 					"path": "updateSale",
 					"style": {
 						"navigationBarTitleText": "修改销售单",
@@ -206,15 +240,17 @@
 							"titleView": false
 						}
 					}
-				}, {
+				},
+				{
 					"path": "order",
 					"style": {
 						"navigationBarTitleText": "销售单凭证",
 						"navigationBarTextStyle": "black",
 						"navigationBarBackgroundColor": "#F4F8FB",
-						"app-plus": {
+						"h5": {
 							"titleNView": {
-								"buttons": [{
+								"buttons": [
+									{
 										"width": "80rpx",
 										"text": "\ue66c",
 										"fontSrc": "/static/font/uni.ttf",
@@ -222,8 +258,27 @@
 										"fontWeight": "bold",
 										"color": "#03314B"
 									}
-									// #ifdef APP-PLUS
-									, {
+								]
+							}
+						},
+						"mp-weixin": {
+							"titleNView": {
+								"buttons": [
+									{
+										"width": "80rpx",
+										"text": "\ue66c",
+										"fontSrc": "/static/font/uni.ttf",
+										"fontSize": "44rpx",
+										"fontWeight": "bold",
+										"color": "#03314B"
+									}
+								]
+							}
+						},
+						"app-plus": {
+							"titleNView": {
+								"buttons": [
+									{
 										"width": "80rpx",
 										"text": "\ue6f3",
 										"fontSrc": "/static/font/uni.ttf",
@@ -231,11 +286,9 @@
 										"fontWeight": "bold",
 										"color": "#03314B"
 									}
-									//#endif
 								]
 							}
 						}
-
 					}
 				},
 				{
@@ -259,27 +312,29 @@
 							"titleView": false
 						}
 					}
-				}, {
+				},
+				{
 					"path": "newsDetail",
 					"style": {
 						"navigationBarTitleText": "精品腕表，尽在TopTime",
 						"enablePullDownRefresh": true,
 						"app-plus": {
-							// #ifdef APP-PLUS
 							"titleNView": {
-								"buttons": [{
-									"width": "80rpx",
-									"text": "\ue6f3",
-									"fontSrc": "/static/font/uni.ttf",
-									"fontSize": "44rpx",
-									"fontWeight": "bold",
-									"color": "#03314B"
-								}]
+								"buttons": [
+									{
+										"width": "80rpx",
+										"text": "\ue6f3",
+										"fontSrc": "/static/font/uni.ttf",
+										"fontSize": "44rpx",
+										"fontWeight": "bold",
+										"color": "#03314B"
+									}
+								]
 							}
-							// #endif
 						}
 					}
-				}, {
+				},
+				{
 					"path": "special",
 					"style": {
 						"navigationBarTextStyle": "black",
@@ -295,18 +350,19 @@
 		},
 		{
 			"root": "chat",
-			"pages": [{
+			"pages": [
+				{
 					"path": "chat",
 					"style": {
 						"navigationBarTitleText": "聊天"
 					}
-				}, {
+				},
+				{
 					"path": "chatSet",
 					"style": {
 						"navigationBarTitleText": "聊天设置",
 						"enablePullDownRefresh": false
 					}
-
 				},
 				{
 					"path": "footprint",
@@ -339,7 +395,6 @@
 						"app-plus": {
 							"titleView": false
 						}
-
 					}
 				},
 				{
@@ -363,97 +418,81 @@
 							"titleView": false
 						}
 					}
-				},{
-				"path": "purchaseReport",
-				"style": {
-					"navigationBarTitleText": "采购报表",
-					"enablePullDownRefresh": true
-				}
-
-			}, {
-				"path": "index",
-				"style": {
-					"navigationBarTitleText": "管理模块",
-					"enablePullDownRefresh": false
-				}
-
-			}, {
-				"path": "table",
-				"style": {
-					"navigationBarTitleText": "详情",
-					"enablePullDownRefresh": false
-					// "navigationStyle": "custom",
-					// "app-plus": {
-					// 	"titleView": false
-					// }
-				}
-
-			}, {
-				"path": "saleReport",
-				"style": {
-					"navigationBarTitleText": "销售报表",
-					"enablePullDownRefresh": true
-				}
-
-			}    ,{
-                    "path" : "stockReport",
-                    "style" :                                                                                    
-                {
-                    "navigationBarTitleText": "仓库报表",
-                    "enablePullDownRefresh": true
-                }
-                
-                }
-                ,{
-                    "path" : "stockList",
-                    "style" :                                                                                    
-                {
-                    "navigationBarTitleText": "库存查询",
-                    "enablePullDownRefresh": true
-                }
-                
-                }
-                ,{
-                    "path" : "stockDetail",
-                    "style" :                                                                                    
-                {
-                    "navigationBarTitleText": "库存详情",
-                    "enablePullDownRefresh": true,
-					//"navigationStyle": "custom",
-					"app-plus": {
-						"titleView": false
+				},
+				{
+					"path": "purchaseReport",
+					"style": {
+						"navigationBarTitleText": "采购报表",
+						"enablePullDownRefresh": true
 					}
-                }
-                
-                }
-                ,{
-                    "path" : "bill",
-                    "style" :                                                                                    
-                {
-                    "navigationBarTitleText": "账单",
-                    "enablePullDownRefresh": true
-                }
-                
-                }
-                ,{
-                    "path" : "billDetail",
-                    "style" :                                                                                    
-                {
-                    "navigationBarTitleText": "帐单详情",
-                    "enablePullDownRefresh": true
-                }
-                
-                }
-                ,{
-                    "path" : "watchList",
-                    "style" :                                                                                    
-                {
-                    "navigationBarTitleText": "手表销售列表",
-                    "enablePullDownRefresh": true
-                }
-                
-                }
-            ]
+				},
+				{
+					"path": "index",
+					"style": {
+						"navigationBarTitleText": "管理模块",
+						"enablePullDownRefresh": false
+					}
+				},
+				{
+					"path": "table",
+					"style": {
+						"navigationBarTitleText": "详情",
+						"enablePullDownRefresh": false
+					}
+				},
+				{
+					"path": "saleReport",
+					"style": {
+						"navigationBarTitleText": "销售报表",
+						"enablePullDownRefresh": true
+					}
+				},
+				{
+					"path": "stockReport",
+					"style": {
+						"navigationBarTitleText": "仓库报表",
+						"enablePullDownRefresh": true
+					}
+				},
+				{
+					"path": "stockList",
+					"style": {
+						"navigationBarTitleText": "库存查询",
+						"enablePullDownRefresh": true
+					}
+				},
+				{
+					"path": "stockDetail",
+					"style": {
+						"navigationBarTitleText": "库存详情",
+						"enablePullDownRefresh": true,
+						"app-plus": {
+							"titleView": false
+						}
+					}
+				},
+				{
+					"path": "bill",
+					"style": {
+						"navigationBarTitleText": "账单",
+						"enablePullDownRefresh": true
+					}
+				},
+				{
+					"path": "billDetail",
+					"style": {
+						"navigationBarTitleText": "帐单详情",
+						"enablePullDownRefresh": true
+					}
+				},
+				{
+					"path": "watchList",
+					"style": {
+						"navigationBarTitleText": "手表销售列表",
+						"enablePullDownRefresh": true
+					}
+				}
+			]
 		}
 	],
 	"globalStyle": {
@@ -462,7 +501,7 @@
 		"navigationBarBackgroundColor": "#F4F8FB",
 		"backgroundColor": "#F4F8FB",
 		"app-plus": {
-			"scrollIndicator": "none" //全局 在APP页面都不显示滚动条
+			"scrollIndicator": "none"
 		}
 	},
 	"tabBar": {
@@ -471,7 +510,8 @@
 		"backgroundColor": "#FFFFFF",
 		"borderStyle": "black",
 		"spacing": "4px",
-		"list": [{
+		"list": [
+			{
 				"pagePath": "pages/index",
 				"text": "首页",
 				"iconPath": "static/imgs/tabBar/index.png",

@@ -2,12 +2,27 @@
 	<view class="content" v-if="isShow">
 		<view class="main" :style="{ height: height + 'px' }">
 			<scroll-view scroll-y="true" class="leftScroll">
-				<view v-for="(item, index) in watchList" :key="index" :class="['letter-item', { 'letter-item-active': index == curWatchIdx }]" @click="clickWatch(index)">
-					<text :class="{'letter-item-active-txt': index == curWatchIdx }">{{ item.brandName }}</text>
+				<view
+					v-for="(item, index) in watchList"
+					:key="index"
+					:class="[
+						'letter-item',
+						{ 'letter-item-active': index == curWatchIdx },
+					]"
+					@click="clickWatch(index)"
+				>
+					<text :class="{ 'letter-item-active-txt': index == curWatchIdx }">{{
+						item.brandName
+					}}</text>
 				</view>
 			</scroll-view>
 
-			<scroll-view scroll-y="true" class="rightScroll" :scroll-top="scrollTop" @scroll="scrollChange">
+			<scroll-view
+				scroll-y="true"
+				class="rightScroll"
+				:scroll-top="scrollTop"
+				@scroll="scrollChange"
+			>
 				<view v-if="watchList.length == 0" class="no-data">
 					<image src="../static/imgs/common/no.png" mode="aspectFill"></image>
 					<text style="font-size: 30rpx">暂无数据~</text>
@@ -16,29 +31,44 @@
 					<view class="main-title">
 						<view class="title-left">
 							<text class="left-one">{{
-                watchList[curWatchIdx].brandName
-              }}</text>
+								watchList[curWatchIdx].brandName
+							}}</text>
 							<text class="left-two">{{
-                "(共" + watchList[curWatchIdx].styleNum + "枚)"
-              }}</text>
+								'(共' + watchList[curWatchIdx].styleNum + '枚)'
+							}}</text>
 						</view>
-						<view class="title-right" @click="gotoWatchSearch(watchList[curWatchIdx].brandName, '')">
+						<view
+							class="title-right"
+							@click="gotoWatchSearch(watchList[curWatchIdx].brandName, '')"
+						>
 							<text>查看详情</text>
-							<image src="../static/imgs/common/right.png" mode="aspectFill"></image>
+							<image
+								src="../static/imgs/common/right.png"
+								mode="aspectFill"
+							></image>
 						</view>
 					</view>
 					<view class="main-container">
-						<view v-for="(item, index2) in selectWatch" :key="index2" class="size-every" @click="
-                gotoWatchSearch(
-                  watchList[curWatchIdx].brandName,
-                  item.seriesName
-                )
-              ">
+						<view
+							v-for="(item, index2) in selectWatch"
+							:key="index2"
+							class="size-every"
+							@click="
+								gotoWatchSearch(
+									watchList[curWatchIdx].brandName,
+									item.seriesName
+								)
+							"
+						>
 							<view class="size-image">
-								<image class="image" :src="watchImgUrl + item.pic.replace('\\', '/')" mode="aspectFill">
+								<image
+									class="image"
+									:src="watchImgUrl + item.pic.replace('\\', '/')"
+									mode="aspectFill"
+								>
 								</image>
 							</view>
-<!-- 							<view class="num-circle" :style="{
+							<!-- 							<view class="num-circle" :style="{
                   'background-color': item.num > 0 ? '#1ECC99' : '#f6f6f6',
                   color: item.num > 0 ? '#fff' : '#959595',
                 }">
@@ -56,244 +86,243 @@
 </template>
 
 <script>
-	export default {
-		data() {
-			return {
-				haveData: 1,
-				watchImgUrl: this.$baseUrl + "/api/watch/stock",
+export default {
+	data() {
+		return {
+			haveData: 1,
+			watchImgUrl: this.$baseUrl + '/api/watch/stock',
 
-				watchList: [],
-				selectWatch: [],
-				curWatchIdx: 0,
+			watchList: [],
+			selectWatch: [],
+			curWatchIdx: 0,
 
-				topNum: 0,
-				isShow: false,
-				isSel: 0,
+			topNum: 0,
+			isShow: false,
+			isSel: 0,
 
-				scrollTop: 0,
-				lastScrollY: 0,
-				height: 400,
-			};
+			scrollTop: 0,
+			lastScrollY: 0,
+			height: 400,
+		};
+	},
+	onLoad() {
+		this.getWatchSort();
+
+		uni.getSystemInfo({
+			success: (data) => {
+				// 将其赋值给this
+				console.log('距离', data);
+				this.topNum = data.windowTop + 64;
+			},
+		});
+	},
+	onShow() {
+		if (getApp().globalData.g_chat) getApp().globalData.g_chat.updateReddot();
+		let type = getApp().globalData.pageInItem;
+		getApp().globalData.pageInItem = '';
+	},
+	onPullDownRefresh() {
+		this.getWatchSort();
+
+		uni.stopPullDownRefresh();
+	},
+	onReady() {
+		this.hidePageNavInWechatBrowser();
+
+		this.height = uni.getSystemInfoSync().windowHeight;
+	},
+	methods: {
+		// 回到顶部
+		goTop() {
+			this.scrollTop = this.lastScrollY; //先把滚动的距离赋值给scrollTop
+			// console.log(this.scrollTop);
+			this.$nextTick(() => {
+				//然后在突然把scrollTop赋值为0达到回到顶部效果
+				this.scrollTop = 0;
+			});
 		},
-		onLoad() {
-			this.getWatchSort();
+		scrollChange(e) {
+			// console.log(e.detail.scrollTop);
+			this.lastScrollY = e.detail.scrollTop;
+		},
 
-			uni.getSystemInfo({
-				success: (data) => {
-					// 将其赋值给this
-					console.log("距离", data);
-					this.topNum = data.windowTop + 64;
+		// 获取款式分类
+		getWatchSort() {
+			uni.showLoading({
+				title: '加载中......',
+			});
+			uni.request({
+				url: this.$baseUrl + '/newWatch/api/watchSort',
+				header: {
+					'content-type': 'application/json',
+				},
+				complete: (res) => {
+					console.log('手表分类', res);
+					uni.hideLoading();
+
+					this.watchList = res.data;
+					this.clickWatch(0);
+					this.isShow = true;
 				},
 			});
 		},
-		onShow() {
-			if (getApp().globalData.g_chat) getApp().globalData.g_chat.updateReddot();
-			let type = getApp().globalData.pageInItem;
-			getApp().globalData.pageInItem = "";
+
+		// 侧边栏选择
+		clickWatch(index) {
+			this.goTop();
+
+			this.curWatchIdx = index;
+			this.selectWatch = this.watchList[this.curWatchIdx].seriesList;
+			if (this.selectWatch.length == 0) this.haveData = 0;
+			else this.haveData = 1;
 		},
-		onPullDownRefresh() {
-			this.getWatchSort();
-
-			uni.stopPullDownRefresh();
+		gotoWatchSearch(brand, series) {
+			uni.navigateTo({
+				url:
+					'../common/search?brand=' +
+					encodeURIComponent(JSON.stringify(brand)) +
+					'&series=' +
+					encodeURIComponent(JSON.stringify(series)),
+			});
 		},
-		onReady() {
-			this.hidePageNavInWechatBrowser();
-
-			this.height = uni.getSystemInfoSync().windowHeight;
+		// 查询页
+		goSearch(name) {
+			uni.navigateTo({
+				url: '../comm/search?tag=' + name + '&type=珠宝',
+			});
 		},
-		methods: {
-			// 回到顶部
-			goTop() {
-				this.scrollTop = this.lastScrollY; //先把滚动的距离赋值给scrollTop
-				// console.log(this.scrollTop);
-				this.$nextTick(() => {
-					//然后在突然把scrollTop赋值为0达到回到顶部效果
-					this.scrollTop = 0;
-				});
-			},
-			scrollChange(e) {
-				// console.log(e.detail.scrollTop);
-				this.lastScrollY = e.detail.scrollTop;
-			},
-
-			// 获取款式分类
-			getWatchSort() {
-				uni.showLoading({
-					title: "加载中......",
-				});
-				uni.request({
-					url: this.$baseUrl + "/newWatch/api/watchSort",
-					header: {
-						"content-type": "application/json",
-					},
-					complete: (res) => {
-						console.log("手表分类", res);
-						uni.hideLoading();
-
-						this.watchList = res.data;
-						this.clickWatch(0);
-						this.isShow = true;
-					},
-				});
-			},
-
-			// 侧边栏选择
-			clickWatch(index) {
-				this.goTop();
-
-				this.curWatchIdx = index;
-				this.selectWatch = this.watchList[this.curWatchIdx].seriesList;
-				if (this.selectWatch.length == 0) this.haveData = 0;
-				else this.haveData = 1;
-			},
-			gotoWatchSearch(brand, series) {
-				uni.navigateTo({
-					url: "../common/search?brand=" +
-						encodeURIComponent(JSON.stringify(brand)) +
-						"&series=" +
-						encodeURIComponent(JSON.stringify(series)),
-				});
-			},
-			// 查询页
-			goSearch(name) {
-				uni.navigateTo({
-					url: "../comm/search?tag=" + name + "&type=珠宝",
-				});
-			},
-		},
-	};
+	},
+};
 </script>
 
 <style lang="scss" scoped>
-	.content {
-		width: 100%;
+.content {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	background-color: #f4f8fb;
+
+	.main {
 		display: flex;
-		flex-direction: column;
+		padding-right: 24rpx;
 		background-color: #f4f8fb;
 
-		.main {
-			display: flex;
-			padding-right: 24rpx;
-			background-color: #f4f8fb;
+		.leftScroll {
+			width: 25vw;
+			margin-right: 20rpx;
+			background-color: #fff;
 
-			.leftScroll {
-				width: 25vw;
-				margin-right: 20rpx;
-				background-color: #fff;
+			.letter-item {
+				margin: 0 auto;
+				padding: 26rpx 0;
+				color: #5e6570;
+				text-align: center;
+				box-sizing: border-box;
+				font-size: 26rpx;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
 
-				.letter-item {
-					margin: 0 auto;
-					padding: 26rpx 0;
-					color: #5E6570;
-					text-align: center;
-					box-sizing: border-box;
-					font-size: 26rpx;
-					overflow: hidden;
-					text-overflow: ellipsis;
-					white-space: nowrap;
+			.letter-item-active {
+				font-size: 30rpx;
+				color: #03314b;
+				background-color: #f4f8fb;
+				font-weight: bold;
+			}
+
+			.letter-item-active-txt {
+				background-image: url('../static/imgs/common/classify_sel_bk.png');
+				background-size: 100% 100%;
+			}
+		}
+
+		.rightScroll {
+			flex: 1;
+			background-color: #fff;
+			border-top-left-radius: 20rpx;
+			border-top-right-radius: 20rpx;
+
+			.main-title {
+				padding: 30rpx;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+
+				.title-left {
+					display: flex;
+					align-items: center;
+
+					.left-one {
+						color: #03314b;
+						font-size: 30rpx;
+					}
+
+					.left-two {
+						color: #cacaca;
+						font-size: 24rpx;
+					}
 				}
-				
-				.letter-item-active {
-					font-size: 30rpx;
-					color: #03314B;
-					background-color: #f4f8fb;
-					font-weight: bold;
-				}
-				
-				.letter-item-active-txt {
-					background-image: url("../static/imgs/common/classify_sel_bk.png");
-					background-size: 100% 100%;
+
+				.title-right {
+					display: flex;
+					align-items: center;
+					cursor: pointer;
+
+					text {
+						color: #cacaca;
+						font-size: 24rpx;
+					}
+
+					image {
+						width: 32rpx;
+						height: 32rpx;
+					}
 				}
 			}
 
-			.rightScroll {
-				flex: 1;
-				background-color: #fff;
-				border-top-left-radius: 20rpx;
-				border-top-right-radius: 20rpx;
+			.main-container {
+				padding: 10rpx 30rpx 0;
+				display: flex;
+				justify-content: flex-start;
+				flex-wrap: wrap;
 
-				.main-title {
-					padding: 30rpx;
-					display: flex;
-					align-items: center;
-					justify-content: space-between;
+				.size-every {
+					width: 32%;
+					margin-bottom: 50rpx;
+					position: relative;
+					text-align: center;
+					cursor: pointer;
 
-					.title-left {
-						display: flex;
-						align-items: center;
-
-						.left-one {
-							color: #03314b;
-							font-size: 30rpx;
-						}
-
-						.left-two {
-							color: #cacaca;
-							font-size: 24rpx;
-						}
-					}
-
-					.title-right {
-						display: flex;
-						align-items: center;
-						cursor: pointer;
-
-						text {
-							color: #cacaca;
-							font-size: 24rpx;
-						}
-
-						image {
-							width: 32rpx;
-							height: 32rpx;
-						}
-					}
-				}
-
-				.main-container {
-					padding: 10rpx 30rpx 0;
-					display: flex;
-					justify-content: flex-start;
-					flex-wrap: wrap;
-
-					.size-every {
-						width: 32%;
-						margin-bottom: 50rpx;
-						position: relative;
+					.size-image {
+						padding: 0 20rpx;
+						margin-bottom: 15rpx;
 						text-align: center;
-						cursor: pointer;
 
-						.size-image {
-							padding: 0 20rpx;
-							margin-bottom: 15rpx;
-							text-align: center;
-
-							.image {
-								width: 120rpx;
-								height: 148rpx;
-							}
+						.image {
+							width: 120rpx;
+							height: 148rpx;
 						}
+					}
 
-						.num-circle {
-							padding: 5rpx 10rpx;
-							position: absolute;
-							top: 0;
-							right: 0;
-							border-radius: 30rpx;
-							border-bottom-left-radius: 0;
-							font-size: 20rpx;
-						}
+					.num-circle {
+						padding: 5rpx 10rpx;
+						position: absolute;
+						top: 0;
+						right: 0;
+						border-radius: 30rpx;
+						border-bottom-left-radius: 0;
+						font-size: 20rpx;
+					}
 
-						.size {
-							color: #03314b;
-							font-size: 20rpx;
-							text-align: center;
-						}
+					.size {
+						color: #03314b;
+						font-size: 20rpx;
+						text-align: center;
 					}
 				}
 			}
 		}
 	}
-
-	
+}
 </style>
