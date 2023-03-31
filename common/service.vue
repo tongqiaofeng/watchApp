@@ -1,13 +1,15 @@
 <template>
-	<view>
-		<view>
+	<view class="container">
+		<view class="middle">
 			<view v-if="type == 0">
-				<view
-					class="user-wrapper"
-					v-for="(user, index) in userList"
-					:key="index"
-				>
-					<view class="flex-row" @click="goToChat(user)">
+				<view class="user-wrapper">
+					<view class="title">在线客服</view>
+					<view
+						class="flex-row"
+						v-for="(user, index) in userList"
+						:key="index"
+						@click="goToChat(user)"
+					>
 						<view class="info">
 							<image
 								class="service-icon"
@@ -29,12 +31,14 @@
 					</view>
 				</view>
 
-				<view
-					class="user-wrapper"
-					v-for="(item, index) in serviceList"
-					:key="index"
-				>
-					<view class="flex-row" @click="showService(item)">
+				<view class="user-wrapper other-service-wrapper">
+					<view class="title">其他联系方式</view>
+					<view
+						class="flex-row"
+						v-for="(item, index) in serviceList"
+						:key="index"
+						@click="showService(item)"
+					>
 						<view class="info">
 							<image
 								class="service-icon"
@@ -264,15 +268,34 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.container {
+	width: 100%;
+	min-height: calc(100vh - 88rpx);
+	background: #f4f8fb;
+}
+.middle {
+	padding-top: 20rpx;
+}
 .user-wrapper {
+	padding: 0 30rpx;
+	box-sizing: border-box;
+	background-color: #fff;
+	.title {
+		font-size: 30rpx;
+		font-family: 'PingFang SC-Medium, PingFang SC';
+		font-weight: 500;
+		color: #757980;
+		padding-top: 30rpx;
+		padding-bottom: 20rpx;
+	}
 	.flex-row {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 		border-bottom: 1rpx solid #f0f0f0;
-
-		padding: 20rpx 30rpx;
+		padding: 30rpx 0;
 		box-sizing: border-box;
+
 		.info {
 			display: inline-flex;
 			align-items: center;
@@ -293,6 +316,10 @@ export default {
 			height: 24rpx;
 		}
 	}
+}
+
+.other-service-wrapper {
+	margin-top: 20rpx;
 }
 
 .service-container {

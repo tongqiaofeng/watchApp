@@ -174,8 +174,9 @@
 						class="item"
 						v-for="(item, index) in bagSearchList"
 						:key="index"
+						@click="checkDetails(item)"
 					>
-						<view v-if="item.pic" class="img" @click="checkDetails(item)">
+						<view v-if="item.pic" class="img">
 							<easy-loadimage
 								class="img"
 								:image-src="item.pic"
@@ -185,25 +186,24 @@
 							></easy-loadimage>
 						</view>
 						<image
+              v-show="specialImgShow"
 							class="specialImg"
 							:src="getSpecialImg(item)"
 							mode="aspectFit"
 						></image>
 						<view class="title">{{ getShowTitle(item) }}</view>
-						<view class="title" style="margin-top: 10rpx">{{
+						<view class="title model" style="margin-top: 10rpx">{{
 							item.model
 						}}</view>
 						<view v-if="item.marketHkPrice != 0" class="price">
 							<text>
 								HKD
-								<text style="font-size: 36rpx; font-weight: bold">{{
+								<text>{{
 									' ' + formatNumberRgx(item.marketHkPrice)
 								}}</text></text
 							>
 						</view>
-						<view v-else class="price" style="font-size: 24rpx"
-							>价格请咨询客服</view
-						>
+						<view v-else class="price">价格请咨询客服</view>
 					</view>
 				</view>
 			</view>
@@ -260,8 +260,6 @@ export default {
 			.exec();
 	},
 	onLoad(option) {
-		console.log('options', option);
-
 		// 获取手机状态栏高度
 		uni.getSystemInfo({
 			success: (data) => {
@@ -300,6 +298,14 @@ export default {
 		this.getList();
 
 		this.getModelSeriesList();
+	},
+	computed: {
+		specialImgShow() {
+			if (this.isAuction || this.isDiscount || this.isNewStyle || this.isTop) {
+				return false;
+			}
+			return true;
+		},
 	},
 	onPageScroll(e) {
 		this.scrollTop = e.scrollTop;
@@ -555,10 +561,10 @@ export default {
 			if (type) {
 				switch (type) {
 					case 'isAuction':
-						this.isAuction == 1 ? (this.isAuction = 0) : (this.isAuction = 1);
 						this.isDiscount = 0;
 						this.isNewStyle = 0;
-						this.isTop == 0;
+						this.isTop = 0;
+						this.isAuction == 1 ? (this.isAuction = 0) : (this.isAuction = 1);
 						break;
 					case 'isNewStyle':
 						this.isAuction = 0;
@@ -805,8 +811,8 @@ export default {
 		border-top-right-radius: 30rpx;
 
 		.item {
-			padding: 15rpx 15rpx 22rpx;
-			border-radius: 30rpx;
+			padding: 15rpx 15rpx 26rpx;
+			border-radius: 20rpx;
 			background-color: #fff;
 			position: relative;
 
@@ -852,8 +858,8 @@ export default {
 			}
 
 			.price {
-				margin-top: 22rpx;
-				font-size: 22rpx;
+				margin-top: 12rpx;
+				font-size: 28rpx;
 				color: #1ecc99;
 			}
 		}

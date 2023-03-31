@@ -38,17 +38,23 @@
 							<text style="font-size: 28rpx" v-if="detail.marketHkPrice"
 								>HKD</text
 							>
-							<text>{{ getPrice(detail.marketHkPrice, '') }}</text>
+							<text v-if="detail.marketHkPrice">{{
+								getPrice(detail.marketHkPrice, '')
+							}}</text>
+
+							<text v-if="!detail.marketHkPrice" class="notice"
+								>价格请咨询客服</text
+							>
 						</view>
 					</view>
-					<text style="margin: 0 14rpx; font-size: 28rpx">/</text>
-					<text
+					<!-- <text style="margin: 0 14rpx; font-size: 28rpx">/</text> -->
+					<!-- <text
 						class="left-usd"
 						:style="{
 							'letter-spacing': detail.marketUsPrice == 0 ? '2rpx' : 0,
 						}"
 						>{{ getPrice(detail.marketUsPrice, 'USD') }}</text
-					>
+					> -->
 				</view>
 				<view
 					class="price-right"
@@ -110,7 +116,11 @@
 					<text class="title">系列</text>
 					<text class="container">{{ detail.series }}</text>
 				</view>
-				<view class="parameter-every" v-if="isOther(detail.model)">
+				<view
+					class="parameter-every"
+					v-if="isOther(detail.model)"
+					@longpress="getCopyContent(detail.model)"
+				>
 					<text class="title">型号</text>
 					<text class="container">{{ detail.model }}</text>
 				</view>
@@ -869,6 +879,11 @@ export default {
 				background-color: #1ecc99;
 			}
 		}
+	}
+
+	.notice {
+		font-size: 40rpx;
+		color: #1ecc99;
 	}
 }
 </style>

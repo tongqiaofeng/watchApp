@@ -87,7 +87,7 @@
 			"style": {
 				"navigationBarTitleText": "联系客服",
 				"navigationBarTextStyle": "black",
-				"navigationBarBackgroundColor": "#F4F8FB",
+				"navigationBarBackgroundColor": "#fff",
 				"app-plus": {
 					"titleView": false
 				}

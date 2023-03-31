@@ -210,7 +210,7 @@
 										<view v-if="item.marketHkPrice != 0" class="price">
 											<text>
 												HKD
-												<text style="font-size: 36rpx">{{
+												<text>{{
 													' ' + formatNumberRgx(item.marketHkPrice)
 												}}</text>
 											</text>
@@ -754,7 +754,7 @@ export default {
 
 					.goods-item {
 						width: 340rpx;
-						padding: 20rpx 0 30rpx;
+						padding: 20rpx 0 26rpx;
 						border-radius: 20rpx;
 						background-color: #fff;
 						position: relative;
@@ -785,7 +785,7 @@ export default {
 							padding: 0 15rpx;
 							box-sizing: border-box;
 							.title {
-								margin-top: 20rpx;
+								margin-top: 16rpx;
 								font-size: 28rpx;
 								overflow: hidden;
 								text-overflow: ellipsis;
@@ -795,9 +795,9 @@ export default {
 
 							.price {
 								margin-top: 12rpx;
-								font-size: 22rpx;
+								font-size: 28rpx;
 								color: #1ecc99;
-								font-weight: bold;
+								// font-weight: bold;
 							}
 						}
 					}
